@@ -1,4 +1,4 @@
-import Header from './Header';
+import Header from "./Header";
 
 export default function App() {
   return (
@@ -6,5 +6,5 @@ export default function App() {
       <Header />
       <p>Hi!</p>
     </>
-  )
+  );
 }
