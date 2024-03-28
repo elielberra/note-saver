@@ -1,11 +1,11 @@
 import "./Header.css";
-import noteIcon from "../assets/note-icon.svg";
+import NoteIcon from "../components/icons/NoteIcon";
 
 export default function Header() {
 	return (
 		<div id="header">
 			<div id="title">
-				<img src={noteIcon} alt="NoteKeeper logo" id="note-icon" />
+				<NoteIcon />
 				<h1>NoteKeeper</h1>
 			</div>
 		</div>

@@ -11,13 +11,13 @@
 }
 
 #search-form {
-    width: 90%;
-    height: 50%;
-    margin: auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+  width: 90%;
+  height: 50%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 #search-input {
@@ -35,7 +35,7 @@
 }
 
 #search-input:focus {
-    outline: none;
+  outline: none;
 }
 
 #search-input::placeholder {
@@ -44,20 +44,21 @@
 }
 
 #search-form:focus-within {
-    border-radius: 15px;
-    outline: 3px solid #536dc0;
+  border-radius: 15px;
+  outline: 3px solid #536dc0;
 }
 
 #search-button {
-    background: #d9d9d9;
-    width: 60px;
-    height: 100%;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding: 0px 10px;
-    border: 0px;
+  background: #d9d9d9;
+  width: 60px;
+  height: 100%;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  padding: 0px 10px;
+  border: 0px;
+  cursor: pointer;
 }
 
 #magnifying-glass-icon {
-    width: 30px;
-  }
+  width: 30px;
+}

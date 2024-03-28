@@ -1,13 +1,14 @@
 import './SearchBar.css';
-import magnifyingGlassIcon from '../assets/magnifying-glass.svg'
+import MaginfyingGlass from '../components/icons/MagnifyingGlass'
+
 
 export default function SearchBar() {
     return (
         <div id="search-bar">
             <form id="search-form">
-                <input placeholder="Search note by tag..." id="search-input"/>
+                <input placeholder="Search notes by its tag..." id="search-input"/>
                 <button type="submit" id="search-button">
-                    <img src={magnifyingGlassIcon} alt="Magnifying glass icon" id="magnifying-glass-icon" />
+                <MaginfyingGlass />
                 </button>
             </form>
         </div>)
