@@ -22,10 +22,9 @@
     background: #FFA500;
     font-family: "Bellota Text";
     font-weight: bold;
-    
 }
 
-.tag-btn #btn-span {
+.tag-btn .btn-icon {
     background: red;
     border-radius: 50%;
 }
@@ -33,11 +32,14 @@
 .del-arch-btn {
     aspect-ratio: 1 / 1;
     border-radius: 50%;
-
 }
 
 .note-btn:hover {
     cursor: pointer;
+}
+
+#archive-btn {
+    background: #b2b2b2;
 }
 
 #delete-btn {

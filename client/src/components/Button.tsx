@@ -10,9 +10,9 @@ export default function Button({ text, Icon, iconProps, ...buttonProps }: Button
   return (
     <>
       <button {...buttonProps}>
-        <span id="btn-text">{text}</span>
+        <span className="btn-text">{text}</span>
         {Icon && (
-          <span id="btn-span">
+          <span className="btn-icon">
             <Icon {...iconProps} />
           </span>
         )}
