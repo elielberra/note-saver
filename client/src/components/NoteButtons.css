@@ -14,19 +14,13 @@
     align-items: center;
     justify-content: center;
     border: 2px solid #161F3C;
+    margin: 0 2.5px;
 }
 
-.tag-btn {
-    width: 70px;
-    border-radius: 25px;
-    background: #FFA500;
-    font-family: "Bellota Text";
-    font-weight: bold;
-}
-
-.tag-btn .btn-icon {
-    background: red;
-    border-radius: 50%;
+#del-arch-btns {
+    background-color: red;
+    display: flex;
+    position: relative;
 }
 
 .del-arch-btn {
@@ -34,14 +28,49 @@
     border-radius: 50%;
 }
 
-.note-btn:hover {
-    cursor: pointer;
+.del-arch-btn:hover {
+    cursor: pointer
+}
+
+#delete-btn {
+    background: red;
 }
 
 #archive-btn {
     background: #b2b2b2;
 }
 
-#delete-btn {
+#add-tag-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+}
+
+#add-tag-btn .btn-icon:hover {
+    cursor: pointer;
+}
+
+.tag {
+    min-width: 60px;
+    border-radius: 25px;
+    background: #FFA500;
+    font-family: "Bellota Text";
+    font-weight: bold;
+}
+
+.tag-text {
+    margin-left: 10px;
+}
+.tag .btn-icon {
     background: red;
+    border-radius: 50%;
+}
+
+.tag .btn-icon:hover {
+    cursor: pointer;
+}
+
+.tag .delete-tag-icon {
+    background: transparent;
+    border: 0;
 }
