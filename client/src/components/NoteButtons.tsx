@@ -11,8 +11,8 @@ export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
       {tags.map((tag) => {
         return <Button className="note-btn" text={tag} />;
       })}
-      <Button className="note-btn" Icon={ArchivedIcon} />
-      <Button id="delete-btn" className="note-btn" Icon={DeleteIcon} />
+      <Button className="note-btn" Icon={ArchivedIcon} iconProps={{ height: 21 }} />
+      <Button id="delete-btn" className="note-btn" Icon={DeleteIcon} iconProps={{ height: 21, fill: "white" }} />
     </div>
   );
 }
