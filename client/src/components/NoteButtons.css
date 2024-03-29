@@ -9,12 +9,31 @@
 }
 
 .note-btn {
-    aspect-ratio: 1 / 1;
     height: 30px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 2px solid #161F3C;
+}
+
+.tag-btn {
+    width: 70px;
+    border-radius: 25px;
+    background: #FFA500;
+    font-family: "Bellota Text";
+    font-weight: bold;
+    
+}
+
+.tag-btn #btn-span {
+    background: red;
+    border-radius: 50%;
+}
+
+.del-arch-btn {
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+
 }
 
 .note-btn:hover {
