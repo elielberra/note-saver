@@ -1,6 +1,7 @@
 import Header from "./Header";
 import SearchBar from "./SearchBar";
 import NoteActions from "./NoteActions";
+import Notes from "./Notes";
 import "./App.css"
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
       <Header />
       <SearchBar />
       <NoteActions />
+      <Notes />
     </>
   );
 }

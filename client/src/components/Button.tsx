@@ -1,6 +1,6 @@
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    text: string;
-    Icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    text?: string;
+    Icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
     iconProps?: React.SVGProps<SVGSVGElement>;
 }
 
@@ -10,7 +10,7 @@ export default function Button({ text, Icon, iconProps, ...buttonProps }: Button
         <>
             <button {...buttonProps}>
                 <span id="btn-text">{text}</span>
-                <Icon {...iconProps} />
+                {Icon && <Icon {...iconProps} />}
             </button>
         </>
     )
