@@ -2,7 +2,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     position: absolute;
     bottom: 10px;
@@ -14,11 +14,10 @@
     align-items: center;
     justify-content: center;
     border: 2px solid #161F3C;
-    margin: 0 2.5px;
+    margin: 2.5px;
 }
 
 #del-arch-btns {
-    background-color: red;
     display: flex;
     position: relative;
 }
@@ -40,14 +39,9 @@
     background: #b2b2b2;
 }
 
-#add-tag-btn {
-    border: 0;
-    background: transparent;
-    padding: 0;
-}
-
-#add-tag-btn .btn-icon:hover {
-    cursor: pointer;
+#tags {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .tag {
@@ -59,8 +53,15 @@
 }
 
 .tag-text {
+    background: transparent;
+    border: 0;
     margin-left: 10px;
 }
+
+.tag-text:focus {
+    outline: 1px solid #161f3c;
+}
+
 .tag .btn-icon {
     background: red;
     border-radius: 50%;
@@ -73,4 +74,14 @@
 .tag .delete-tag-icon {
     background: transparent;
     border: 0;
+}
+
+#add-tag-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+}
+
+#add-tag-btn .btn-icon:hover {
+    cursor: pointer;
 }

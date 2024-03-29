@@ -8,7 +8,7 @@ export type Note = {
 const notes: Note[] = [
   {
     content: "Hi! I am a note :)",
-    tags: ["Tag1", "Tag2"]
+    tags: ["Tag1", "Tag2aaaaaaaaaa"]
   }
 ];
 export default function Notes() {

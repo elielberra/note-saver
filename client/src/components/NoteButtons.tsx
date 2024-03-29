@@ -7,6 +7,7 @@ import { NoteProps } from "./Note";
 import AddIcon from "./icons/AddIcon";
 
 export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
+  // TODO adjust input size as user types https://stackoverflow.com/questions/3392493/adjust-width-of-input-field-to-its-input
   return (
     <div className="note-btns">
       <div id="del-arch-btns">
@@ -23,19 +24,27 @@ export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
           iconProps={{ height: 17 }}
         />
       </div>
-      {tags.map((tag) => {
-        return (
-          <div className="note-btn tag">
-            <span className="tag-text">{tag}</span>
-            <Button
-              className="delete-tag-icon"
-              Icon={CrossIcon}
-              iconProps={{ fill: "white", height: 19 }}
-            />
-          </div>
-        );
-      })}
-      <Button id="add-tag-btn" className="note-btn" Icon={AddIcon} iconProps={{ height: 22 }} />
+      <div id="tags">
+        {tags.map((tag) => {
+          return (
+            <div className="note-btn tag">
+              <input
+                className="tag-text"
+                type="text"
+                style={{ width: tag.length + "ch" }}
+                maxLength={20}
+                defaultValue={tag}
+              />
+              <Button
+                className="delete-tag-icon"
+                Icon={CrossIcon}
+                iconProps={{ fill: "white", height: 19 }}
+              />
+            </div>
+          );
+        })}
+        <Button id="add-tag-btn" className="note-btn" Icon={AddIcon} iconProps={{ height: 22 }} />
+      </div>
     </div>
   );
 }
