@@ -3,7 +3,6 @@
   width: 30%;
   height: 70px;
   margin: auto;
-  margin-top: 20px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -45,7 +44,7 @@
 
 #search-form:focus-within {
   border-radius: 15px;
-  outline: 3px solid #536dc0;
+  outline: 3px solid #5f7dde;
 }
 
 #search-button {
