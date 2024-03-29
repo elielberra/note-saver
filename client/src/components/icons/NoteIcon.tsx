@@ -4,10 +4,10 @@ export default function NoteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={props.width || "100%"}
-      height={props.height || "100%"}
       fill="#161F3C"
       viewBox="0 0 36 36"
+      height={props.height || "100%"}
+      preserveAspectRatio="true"
       {...props}
     >
       <path

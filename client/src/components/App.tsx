@@ -1,17 +1,14 @@
 import Header from "./Header";
 import SearchBar from "./SearchBar";
-import Button from "./Button";
-// import AddIcon from "./icons/AddIcon"
-// import MagnifyingGlass from "./icons/MagnifyingGlass";
+import NoteActions from "./NoteActions";
+import "./App.css"
 
 export default function App() {
   return (
     <>
       <Header />
       <SearchBar />
-      {/* <Button Icon={icon}/> */}
-      {/* <Button Icon={MagnifyingGlass}/> */}
-      {/* <AddIcon/> */}
+      <NoteActions />
     </>
   );
 }

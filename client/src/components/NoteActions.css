@@ -1,0 +1,40 @@
+#note-actions {
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    position: relative;
+}
+
+.note-actions-btn {
+    width: 120px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 18px;
+    background: #FFA500;
+    border-radius: 15px;
+    border: 0;
+}
+
+.note-actions-btn:hover {
+    cursor: pointer;
+}
+
+
+#toggle-notes-show {
+    left: 20px;
+}
+
+#add-note {
+    right: 20px;
+}
+
+.note-actions-btn #btn-text {
+    margin-right: 10px;
+}

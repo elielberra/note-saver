@@ -1,13 +1,13 @@
 import type { SVGProps } from "react";
 
-export default function MagnifyingGlass(props: SVGProps<SVGSVGElement>) {
+export default function MagnifyingGlassIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={props.width || "100%"}
-      height={props.height || "100%"}
       fill="#161f3c"
       viewBox="0 0 15 15"
+      height={props.height || "100%"}
+      preserveAspectRatio="true"
       {...props}
     >
       <path

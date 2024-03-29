@@ -1,5 +1,5 @@
 import './SearchBar.css';
-import MaginfyingGlass from '../components/icons/MagnifyingGlass'
+import MaginfyingGlassIcon from '../components/icons/MagnifyingGlassIcon'
 
 
 export default function SearchBar() {
@@ -8,7 +8,7 @@ export default function SearchBar() {
             <form id="search-form">
                 <input placeholder="Search notes by its tag..." id="search-input"/>
                 <button type="submit" id="search-button">
-                <MaginfyingGlass />
+                <MaginfyingGlassIcon width="95%"/>
                 </button>
             </form>
         </div>)

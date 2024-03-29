@@ -1,18 +1,16 @@
-import React from 'react';
-
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    text: string;
     Icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    iconProps?: React.SVGProps<SVGSVGElement>;
 }
 
-interface ButtonProps {
-}
-export default function Button({ Icon, ...buttonProps }: ButtonProps) {
+export default function Button({ text, Icon, iconProps, ...buttonProps }: ButtonProps) {
     console.log(Icon)
     return (
         <>
             <button {...buttonProps}>
-                Add note
-                <Icon fill="orange" width="100%" height="100%"/>
+                <span id="btn-text">{text}</span>
+                <Icon {...iconProps} />
             </button>
         </>
     )
