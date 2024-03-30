@@ -23,7 +23,7 @@
 }
 
 .tag-text:focus {
-  outline: 1px solid #161f3c;
+  outline: none;
 }
 
 .tag .btn-icon {
