@@ -5,15 +5,18 @@
     border-radius: 10px;
     border: 5px solid #161f3c;
     margin: 0px 20px;
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 .note-content {
+    background-color: transparent;
     height: 90%;
     width: 330px;
-    margin: 10px;
-    background-color: red;
+    resize: none;
+    margin: 5px 0;
+    border: 0;
+    outline: none;
 }
