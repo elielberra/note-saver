@@ -9,7 +9,7 @@ export type NoteProps = {
 export default function Note({ content, tags }: NoteProps) {
   return (
     <div className="note">
-      <span className="note-content">{content}</span>
+      <textarea className="note-content" defaultValue={content} />
       <NoteButtons tags={tags}/>
     </div>
   );

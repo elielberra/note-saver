@@ -7,7 +7,7 @@ export default function NoteIcon(props: SVGProps<SVGSVGElement>) {
       fill="#161F3C"
       viewBox="0 0 36 36"
       height={props.height || "100%"}
-      preserveAspectRatio="true"
+      
       {...props}
     >
       <path

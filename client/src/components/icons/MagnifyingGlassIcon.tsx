@@ -7,7 +7,7 @@ export default function MagnifyingGlassIcon(props: SVGProps<SVGSVGElement>) {
       fill="#161f3c"
       viewBox="0 0 15 15"
       height={props.height || "100%"}
-      preserveAspectRatio="true"
+      
       {...props}
     >
       <path

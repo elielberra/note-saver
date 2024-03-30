@@ -7,7 +7,7 @@ export default function CrossIcon(props: SVGProps<SVGSVGElement>) {
       fill="none"
       viewBox="0 0 15 15"
       height={props.height || "100%"}
-      preserveAspectRatio="true"
+      
       {...props}
     >
       <path

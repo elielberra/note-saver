@@ -4,18 +4,18 @@ import "./Notes.css";
 export type Note = {
     content: string;
     tags: string[];
+    active: boolean;
 }
 const notes: Note[] = [
   {
     content: "Hi! I am a note :)",
-    tags: ["Tag1", "Tag2aaaaaaaaaa"]
+    tags: ["Tag", "Interna"],
+    active: true
   }
 ];
 export default function Notes() {
   return <div id="notes-section">
-    {notes.map(note => {
-        return <Note content={note.content} tags={note.tags}/>
-    })}
+    {notes.map((note, index) => <Note key={index} content={note.content} tags={note.tags}/>)}
   </div>;
 }
 

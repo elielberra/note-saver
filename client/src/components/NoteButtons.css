@@ -1,11 +1,7 @@
 .note-btns {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    position: absolute;
-    bottom: 10px;
+    align-items: end;
 }
 
 .note-btn {
@@ -19,7 +15,7 @@
 
 #del-arch-btns {
     display: flex;
-    position: relative;
+    width: 20%;
 }
 
 .del-arch-btn {
@@ -40,7 +36,10 @@
 }
 
 #tags {
+    width: 80%;
     display: flex;
+    justify-content: flex-end;
+    align-items: center;
     flex-wrap: wrap;
 }
 
@@ -50,12 +49,14 @@
     background: #FFA500;
     font-family: "Bellota Text";
     font-weight: bold;
+    height: 20px
 }
 
 .tag-text {
     background: transparent;
     border: 0;
     margin-left: 10px;
+    text-align: center;
 }
 
 .tag-text:focus {

@@ -4,7 +4,6 @@ module.exports = {
   typescript: true,
   svgProps: {
     height: "{props.height || '100%'}",
-    preserveAspectRatio: "true"
   },
   jsxRuntime: "automatic",
   index: false,
