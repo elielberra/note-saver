@@ -1,88 +1,36 @@
 .note-btns {
-    width: 100%;
-    display: flex;
-    align-items: end;
+  width: 100%;
+  display: flex;
+  align-items: end;
 }
 
 .note-btn {
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #161F3C;
-    margin: 2.5px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #161f3c;
+  margin: 2.5px;
 }
 
 #del-arch-btns {
-    display: flex;
-    width: 20%;
+  display: flex;
+  width: 20%;
 }
 
 .del-arch-btn {
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
 }
 
 .del-arch-btn:hover {
-    cursor: pointer
+  cursor: pointer;
 }
 
 #delete-btn {
-    background: red;
+  background: red;
 }
 
 #archive-btn {
-    background: #b2b2b2;
-}
-
-#tags {
-    width: 80%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.tag {
-    min-width: 60px;
-    border-radius: 25px;
-    background: #FFA500;
-    font-family: "Bellota Text";
-    font-weight: bold;
-    height: 20px
-}
-
-.tag-text {
-    background: transparent;
-    border: 0;
-    margin-left: 10px;
-    text-align: center;
-}
-
-.tag-text:focus {
-    outline: 1px solid #161f3c;
-}
-
-.tag .btn-icon {
-    background: red;
-    border-radius: 50%;
-}
-
-.tag .btn-icon:hover {
-    cursor: pointer;
-}
-
-.tag .delete-tag-icon {
-    background: transparent;
-    border: 0;
-}
-
-#add-tag-btn {
-    border: 0;
-    background: transparent;
-    padding: 0;
-}
-
-#add-tag-btn .btn-icon:hover {
-    cursor: pointer;
+  background: #b2b2b2;
 }
