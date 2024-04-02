@@ -10,7 +10,7 @@ export default function Button({ text, Icon, iconProps, ...buttonProps }: Button
   return (
     <>
       <button {...buttonProps}>
-        <span className="btn-text">{text}</span>
+        {text && <span className="btn-text">{text}</span>}
         {Icon && (
           <span className="btn-icon">
             <Icon {...iconProps} />

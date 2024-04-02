@@ -6,8 +6,13 @@
   flex-wrap: wrap;
 }
 
+.note-btn {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .tag {
-  min-width: 60px;
   border-radius: 25px;
   background: #ffa500;
   font-family: "Bellota Text";
@@ -17,18 +22,13 @@
 
 .tag-text {
   background: transparent;
+  margin-inline: 4px;
   border: 0;
-  margin-left: 10px;
   text-align: center;
 }
 
 .tag-text:focus {
-  outline: none;
-}
-
-.tag .btn-icon {
-  background: red;
-  border-radius: 50%;
+  outline: 1px solid #161f3c;
 }
 
 .tag .btn-icon:hover {
@@ -38,6 +38,12 @@
 .tag .delete-tag-icon {
   background: transparent;
   border: 0;
+  padding: 0;
+}
+
+.tag .btn-icon {
+  background: red;
+  border-radius: 50%;
 }
 
 #add-tag-btn {
@@ -49,3 +55,4 @@
 #add-tag-btn .btn-icon:hover {
   cursor: pointer;
 }
+
