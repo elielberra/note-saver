@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { Client } from "pg";
+import {createTable} from "./db/utils"
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ async function connectToDB(client: Client) {
 }
 
 connectToDB(dbClient);
+createTable(dbClient);
 
 const port = process.env.BACKEND_PORT || 3000;
 app.listen(port, () => {
