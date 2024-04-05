@@ -18,4 +18,3 @@ export default function Notes() {
     {notes.map((note, index) => <Note key={index} content={note.content} tags={note.tags}/>)}
   </div>;
 }
-
