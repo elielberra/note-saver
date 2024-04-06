@@ -3,7 +3,6 @@ import express, { Request, Response } from "express";
 import { getNotes } from "./dao";
 
 dotenv.config();
-
 const app = express();
 
 app.get("/", (req: Request, res: Response) => {
