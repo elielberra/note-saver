@@ -15,7 +15,8 @@ app.get("/test", async (req: Request, res: Response) => {
 
 app.get("/notes", async (req: Request, res: Response) => {
   const notes = await getNotes();
-  console.log(notes.rows)
+  console.log(notes.rows);
+  res.send(notes.rows);
 });
 
 const port = process.env.BACKEND_PORT || 3000;
