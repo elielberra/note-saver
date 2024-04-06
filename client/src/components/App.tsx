@@ -7,9 +7,9 @@ import "./App.css"
 export default function App() {
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch("/test")
-      const data = await res.json()
-      console.log(data)
+      const res = await fetch("/notes")
+      // const data = await res.json()
+      // console.log(data)
     }
     fetchData();
   }, [])

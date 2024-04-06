@@ -1,12 +1,8 @@
 import Note from "./Note";
 import "./Notes.css";
+import {NoteT} from "@backend/types"
 
-export type Note = {
-    content: string;
-    tags: string[];
-    active: boolean;
-}
-const notes: Note[] = [
+const notes: NoteT[] = [
   {
     content: "Hi! I am a note :)",
     tags: ["Tag", "Interna"],

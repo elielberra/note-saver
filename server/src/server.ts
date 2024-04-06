@@ -1,7 +1,6 @@
-import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { Client } from "pg";
-import {createTable} from "./db/utils"
+import express, { Request, Response } from "express";
+import { getNotes } from "./dao";
 
 dotenv.config();
 
@@ -11,29 +10,14 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Express + Typescript server");
 });
 
-app.get("/test", (req: Request, res: Response) => {
+app.get("/test", async (req: Request, res: Response) => {
   res.send({ message: "Testing content" });
 });
 
-const dbClient = new Client({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || ''),
-  database: process.env.DB_DATABASE
+app.get("/notes", async (req: Request, res: Response) => {
+  const notes = await getNotes();
+  console.log(notes.rows)
 });
-
-async function connectToDB(client: Client) {
-  try {
-    await client.connect();
-    console.log("Connected to PostgreSQL Database");
-  } catch (error) {
-    console.log("Error while connecting to DB", error);
-  }
-}
-
-connectToDB(dbClient);
-createTable(dbClient);
 
 const port = process.env.BACKEND_PORT || 3000;
 app.listen(port, () => {
