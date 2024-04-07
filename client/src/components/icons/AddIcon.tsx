@@ -1,6 +1,11 @@
+import React from "react";
 import type { SVGProps } from "react";
 
-export default function AddIcon(props: SVGProps<SVGSVGElement>) {
+type AddIconProps = {
+  addBackgroundCircle?: boolean;
+} & SVGProps<SVGSVGElement>;
+
+export default function AddIcon({ addBackgroundCircle, ...props }: AddIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -10,6 +15,7 @@ export default function AddIcon(props: SVGProps<SVGSVGElement>) {
       height={props.height || "100%"}
       {...props}
     >
+      {addBackgroundCircle && <circle r="50%" cx="50%" cy="50%" fill="#FFA500" />}
       <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0m149.3 277.3c0 11.8-9.5 21.3-21.3 21.3h-85.3V384c0 11.8-9.5 21.3-21.3 21.3h-42.7c-11.8 0-21.3-9.6-21.3-21.3v-85.3H128c-11.8 0-21.3-9.6-21.3-21.3v-42.7c0-11.8 9.5-21.3 21.3-21.3h85.3V128c0-11.8 9.5-21.3 21.3-21.3h42.7c11.8 0 21.3 9.6 21.3 21.3v85.3H384c11.8 0 21.3 9.6 21.3 21.3z" />
     </svg>
   );

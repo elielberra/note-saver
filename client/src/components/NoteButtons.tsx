@@ -28,7 +28,7 @@ export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
         {tags.map((tag, index) => (
           <Tag key={index} tag={tag} />
         ))}
-        <Button id="add-tag-btn" className="note-btn" Icon={AddIcon} iconProps={{ height: 22 }} />
+        <Button id="add-tag-btn" className="note-btn" Icon={AddIcon} iconProps={{ height: 22, addBackgroundCircle: true  }} />
       </div>
     </div>
   );
