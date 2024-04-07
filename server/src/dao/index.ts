@@ -7,7 +7,6 @@ export async function getNotes() {
   try {
     dbClient.connect();
     const notes: QueryResult<NoteT> = await dbClient.query("SELECT * FROM notes");
-    console.log(notes);
     return notes;
   } catch (error) {
     console.log("Error executing query");

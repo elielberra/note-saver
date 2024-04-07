@@ -7,7 +7,6 @@ import { NoteProps } from "./Note";
 import AddIcon from "./icons/AddIcon";
 
 export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
-  // TODO adjust input size as user submits tag https://stackoverflow.com/questions/3392493/adjust-width-of-input-field-to-its-input
   return (
     <div className="note-btns">
       <div id="del-arch-btns">
