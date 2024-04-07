@@ -24,6 +24,7 @@ export default function Notes() {
       <NoteModal setNoteSelected={setNoteSelected}>
         <Note
           key={selectedNoteData!.id}
+          id={selectedNoteData!.id}
           content={selectedNoteData!.content}
           tags={selectedNoteData!.tags}
         />
@@ -35,6 +36,7 @@ export default function Notes() {
       {notes.map((note) => (
         <Note
           key={note.id}
+          id={note.id}
           content={note.content}
           tags={note.tags}
           setNoteSelected={setNoteSelected}
