@@ -13,7 +13,7 @@ async function runQueries(client: Client) {
         is_active BOOLEAN NOT NULL
     )`;
                           // Ask quesiton on StackOverflow and possible PushRequest on GIT
-  const insertNotesQuery: QueryConfig<any> = {
+  const insertNotesQuery: QueryConfig = {
     text: "INSERT INTO notes(content, tags, is_active) VALUES($1, $2, $3)",
     values: ["The nth note", ["tag1", "tag2"], true]
   };

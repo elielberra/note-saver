@@ -6,16 +6,20 @@ dotenv.config();
 const app = express();
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Express + Typescript server");
+  res.status(200).send("Express + Typescript server");
 });
 
 app.get("/test", async (req: Request, res: Response) => {
-  res.send({ message: "Testing content" });
+  res.status(200).send({ message: "Testing content" });
 });
 
 app.get("/notes", async (req: Request, res: Response) => {
   const notes = await getNotes();
-  res.send(notes.rows);
+  res.status(200).send(notes.rows);
+});
+
+app.post("update-note-content", async (req: Request, res: Response) => {
+  // add logic
 });
 
 const port = process.env.BACKEND_PORT || 3000;
