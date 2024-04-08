@@ -24,7 +24,7 @@ export async function updateNoteContent(noteId: number) {
   const dbClient = getDBClient();
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_TABLE} SET content=$1 WHERE id=$2`,
-    values: ["NEW CONTENT", noteId]
+    values: ["NEW CONTENT3", noteId]
   };
   try {
     dbClient.connect();

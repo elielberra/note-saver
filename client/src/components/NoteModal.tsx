@@ -7,7 +7,7 @@ type NoteModalProps = {
   notes: NoteT[];
   idNoteSelected: SelectedNoteIdT;
   setIdNoteSelected: React.Dispatch<React.SetStateAction<SelectedNoteIdT>>;
-  getNoteContent: () => string ;
+  getNoteContent: () => string;
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
 };
 
@@ -35,12 +35,11 @@ export default function NoteModal({
       const newSelectedNoteData: NoteT = {
         ...oldSelectedNoteData!,
         content: getNoteContent()
-      }
-      setNotes(prevNotes => ([
-          ...prevNotes.filter(note => note.id !== idNoteSelected),
-          newSelectedNoteData
-        ]))
-      
+      };
+      setNotes((prevNotes) => [
+        ...prevNotes.filter((note) => note.id !== idNoteSelected),
+        newSelectedNoteData
+      ]);
     }
   }
   return (
