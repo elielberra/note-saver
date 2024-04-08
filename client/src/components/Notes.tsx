@@ -1,14 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Note from "./Note";
 import NoteModal from "./NoteModal";
 import "./Notes.css";
 import { NoteT } from "@backend/types";
 
-export type SelectedNoteT = number | null;
+export type SelectedNoteIdT = number | null;
 
 export default function Notes() {
   const [notes, setNotes] = useState<NoteT[]>([]);
-  const [noteSelected, setNoteSelected] = useState<SelectedNoteT>(null);
+  const [idNoteSelected, setIdNoteSelected] = useState<SelectedNoteIdT>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  function getNoteContent() {
+    if (textareaRef.current) {
+      return textareaRef.current.value;
+    }
+    // Evaluate if I can use non nullish operator instead
+    return '';
+  }
+
   useEffect(() => {
     async function fetchNotes() {
       const response = await fetch("/notes");
@@ -18,15 +28,22 @@ export default function Notes() {
     fetchNotes();
   }, []);
 
-  if (noteSelected) {
-    const selectedNoteData = notes.find((note) => note.id === noteSelected);
+  if (idNoteSelected) {
+    const selectedNoteData = notes.find((note) => note.id === idNoteSelected);
     return (
-      <NoteModal setNoteSelected={setNoteSelected}>
+      <NoteModal
+        notes={notes}
+        idNoteSelected={idNoteSelected}
+        setIdNoteSelected={setIdNoteSelected}
+        getNoteContent={getNoteContent}
+        setNotes={setNotes}
+      >
         <Note
           key={selectedNoteData!.id}
           id={selectedNoteData!.id}
           content={selectedNoteData!.content}
           tags={selectedNoteData!.tags}
+          textareaRef={textareaRef}
         />
       </NoteModal>
     );
@@ -39,7 +56,8 @@ export default function Notes() {
           id={note.id}
           content={note.content}
           tags={note.tags}
-          setNoteSelected={setNoteSelected}
+          setIdNoteSelected={setIdNoteSelected}
+          textareaRef={textareaRef}
         />
       ))}
     </div>

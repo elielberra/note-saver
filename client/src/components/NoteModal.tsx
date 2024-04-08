@@ -1,13 +1,22 @@
 import { useRef, useState, useEffect } from "react";
 import Button from "./Button";
-import { SelectedNoteT } from "./Notes";
+import { SelectedNoteIdT } from "./Notes";
+import { NoteT } from "@backend/types";
 
 type NoteModalProps = {
-  setNoteSelected: React.Dispatch<React.SetStateAction<SelectedNoteT>>;
+  notes: NoteT[];
+  idNoteSelected: SelectedNoteIdT;
+  setIdNoteSelected: React.Dispatch<React.SetStateAction<SelectedNoteIdT>>;
+  getNoteContent: () => string ;
+  setNotes: (value: React.SetStateAction<NoteT[]>) => void;
 };
 
 export default function NoteModal({
-  setNoteSelected,
+  notes,
+  idNoteSelected,
+  setIdNoteSelected,
+  getNoteContent,
+  setNotes,
   children
 }: React.PropsWithChildren<NoteModalProps>) {
   const modalRef = useRef<HTMLDialogElement | null>(null);
@@ -20,12 +29,29 @@ export default function NoteModal({
 
   function closeModal() {
     setIsOpen(false);
-    setNoteSelected(null);
+    setIdNoteSelected(null);
+    const oldSelectedNoteData = notes.find((note) => note.id === idNoteSelected);
+    if (oldSelectedNoteData!.content !== getNoteContent()) {
+      const newSelectedNoteData: NoteT = {
+        ...oldSelectedNoteData!,
+        content: getNoteContent()
+      }
+      setNotes(prevNotes => ([
+          ...prevNotes.filter(note => note.id !== idNoteSelected),
+          newSelectedNoteData
+        ]))
+      
+    }
   }
   return (
     <dialog ref={modalRef}>
       {children}
-      <Button text="Close" onClick={() => {closeModal()}} />
+      <Button
+        text="Close"
+        onClick={() => {
+          closeModal();
+        }}
+      />
     </dialog>
   );
 }

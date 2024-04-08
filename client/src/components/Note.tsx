@@ -1,18 +1,19 @@
 import NoteButtons from "./NoteButtons";
 import "./Note.css";
-import { SelectedNoteT } from "./Notes";
+import { SelectedNoteIdT } from "./Notes";
 
 export type NoteProps = {
   id: number;
   content: string;
   tags: string[];
-  setNoteSelected?: React.Dispatch<React.SetStateAction<SelectedNoteT>>;
+  setIdNoteSelected?: React.Dispatch<React.SetStateAction<SelectedNoteIdT>>;
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
-export default function Note({ id, content, tags, setNoteSelected }: NoteProps) {
+export default function Note({ id, content, tags, setIdNoteSelected, textareaRef }: NoteProps) {
   return (
-    <div className="note" onClick={setNoteSelected ? () => setNoteSelected(id) : undefined}> 
-      <textarea className="note-content" defaultValue={content} maxLength={500} />
+    <div className="note" onClick={setIdNoteSelected ? () => setIdNoteSelected(id) : undefined}> 
+      <textarea className="note-content" defaultValue={content} maxLength={500} ref={textareaRef}/>
       <NoteButtons tags={tags} />
     </div>
   );
