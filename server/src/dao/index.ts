@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export async function getNotes() {
-  const dbClient = getDBClient();
+  const dbClient = getDBClient(true);
   const query = `SELECT * FROM ${process.env.DB_TABLE}`;
   try {
     dbClient.connect();
@@ -21,7 +21,7 @@ export async function getNotes() {
 }
 
 export async function updateNoteContent(noteId: number) {
-  const dbClient = getDBClient();
+  const dbClient = getDBClient(true);
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_TABLE} SET content=$1 WHERE id=$2`,
     values: ["NEW CONTENT3", noteId]
