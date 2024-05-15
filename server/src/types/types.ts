@@ -11,3 +11,8 @@ export interface NotePSQL extends NoteBase {
 export interface NoteT extends NoteBase {
   isActive: boolean;
 }
+
+export interface UpdateNoteRequestBody {
+  id: number;
+  newContent: string;
+}

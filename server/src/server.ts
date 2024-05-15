@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import { getNotes, updateNoteContent } from "./dao";
-import { NoteT } from "./types/types";
+import { NoteT, UpdateNoteRequestBody } from "./types/types";
 
 dotenv.config();
 const app = express();
@@ -24,12 +24,6 @@ app.get("/notes", async (req: Request, res: Response) => {
   });
   res.status(200).send(notesCamelKeys);
 });
-
-// TODO: move types to separate file
-interface UpdateNoteRequestBody {
-  id: number;
-  newContent: string;
-}
 
 app.post("/update-note-content", async (req: Request<{}, {}, UpdateNoteRequestBody>, res: Response) => {
   const { id, newContent } = req.body;

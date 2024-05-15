@@ -6,10 +6,10 @@ import { useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 
 export type NoteProps = {
-  id: number;
-  content: string;
-  tags: string[];
-  isActive: boolean;
+  id: NoteT["id"];
+  content: NoteT["content"];
+  tags: NoteT["tags"];
+  isActive: NoteT["isActive"];
   setIdNoteSelected?: React.Dispatch<React.SetStateAction<SelectedNoteIdT>>;
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
 };
