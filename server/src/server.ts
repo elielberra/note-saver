@@ -1,9 +1,11 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import { getNotes, updateNoteContent } from "./dao";
+import { NoteT } from "./types/types";
 
 dotenv.config();
 const app = express();
+app.use(express.json())
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).send("Express + Typescript server");
@@ -15,17 +17,27 @@ app.get("/test", async (req: Request, res: Response) => {
 
 app.get("/notes", async (req: Request, res: Response) => {
   const notes = await getNotes();
-  res.status(200).send(notes.rows);
+  console.debug("notes", notes)
+  const notesCamelKeys: NoteT[] = notes.rows.map(note => {
+    const { is_active, ...rest } = note;
+    return { ...rest, isActive: is_active };
+  });
+  res.status(200).send(notesCamelKeys);
 });
 
-app.post("/update-note-content", async (req: Request, res: Response) => {
-  const noteIdStr = req.query.noteId as string;
-  if (!noteIdStr) return res.status(400).send("Query parameter noteId is missing in Request");
-  const noteId = parseInt(noteIdStr);
-  if (Number.isNaN(noteId))
+// TODO: move types to separate file
+interface UpdateNoteRequestBody {
+  id: number;
+  newContent: string;
+}
+
+app.post("/update-note-content", async (req: Request<{}, {}, UpdateNoteRequestBody>, res: Response) => {
+  const { id, newContent } = req.body;
+  if (!id) return res.status(400).send("Query parameter noteId is missing in Request");
+  if (Number.isNaN(id))
     return res.status(400).send("Query parameter noteId has to be a number");
   try {
-    await updateNoteContent(noteId);
+    await updateNoteContent(id, newContent);
     res.sendStatus(204);
   } catch (error) {
     if (error instanceof Error) {

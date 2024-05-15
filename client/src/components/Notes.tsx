@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Note from "./Note";
 import NoteModal from "./NoteModal";
 import "./Notes.css";
@@ -8,16 +8,8 @@ export type SelectedNoteIdT = number | null;
 
 export default function Notes() {
   const [notes, setNotes] = useState<NoteT[]>([]);
+  
   const [idNoteSelected, setIdNoteSelected] = useState<SelectedNoteIdT>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  function getNoteContent() {
-    if (textareaRef.current) {
-      return textareaRef.current.value;
-    }
-    // Evaluate if I can use non nullish operator instead
-    return '';
-  }
 
   useEffect(() => {
     async function fetchNotes() {
@@ -27,6 +19,7 @@ export default function Notes() {
     }
     fetchNotes();
   }, []);
+  console.debug("notes", notes[0])
 
   if (idNoteSelected) {
     const selectedNoteData = notes.find((note) => note.id === idNoteSelected);
@@ -35,7 +28,6 @@ export default function Notes() {
         notes={notes}
         idNoteSelected={idNoteSelected}
         setIdNoteSelected={setIdNoteSelected}
-        getNoteContent={getNoteContent}
         setNotes={setNotes}
       >
         <Note
@@ -43,7 +35,8 @@ export default function Notes() {
           id={selectedNoteData!.id}
           content={selectedNoteData!.content}
           tags={selectedNoteData!.tags}
-          textareaRef={textareaRef}
+          isActive={selectedNoteData!.isActive}
+          setNotes={setNotes}
         />
       </NoteModal>
     );
@@ -56,8 +49,9 @@ export default function Notes() {
           id={note.id}
           content={note.content}
           tags={note.tags}
+          isActive={note.isActive}
           setIdNoteSelected={setIdNoteSelected}
-          textareaRef={textareaRef}
+          setNotes={setNotes}
         />
       ))}
     </div>

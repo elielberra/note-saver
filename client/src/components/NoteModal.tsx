@@ -7,15 +7,12 @@ type NoteModalProps = {
   notes: NoteT[];
   idNoteSelected: SelectedNoteIdT;
   setIdNoteSelected: React.Dispatch<React.SetStateAction<SelectedNoteIdT>>;
-  getNoteContent: () => string;
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
 };
 
 export default function NoteModal({
   notes,
-  idNoteSelected,
   setIdNoteSelected,
-  getNoteContent,
   setNotes,
   children
 }: React.PropsWithChildren<NoteModalProps>) {
@@ -30,23 +27,13 @@ export default function NoteModal({
   function closeModal() {
     setIsOpen(false);
     setIdNoteSelected(null);
-    const oldSelectedNoteData = notes.find((note) => note.id === idNoteSelected);
-    if (oldSelectedNoteData!.content !== getNoteContent()) {
-      const newSelectedNoteData: NoteT = {
-        ...oldSelectedNoteData!,
-        content: getNoteContent()
-      };
-      setNotes((prevNotes) => [
-        ...prevNotes.filter((note) => note.id !== idNoteSelected),
-        newSelectedNoteData
-      ]);
-    }
+    
   }
   return (
     <dialog ref={modalRef}>
       {children}
       <Button
-        text="Save  "
+        text="Close"
         onClick={() => {
           closeModal();
         }}
