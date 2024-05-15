@@ -46,7 +46,7 @@ export default function NoteModal({
     <dialog ref={modalRef}>
       {children}
       <Button
-        text="Close"
+        text="Save  "
         onClick={() => {
           closeModal();
         }}

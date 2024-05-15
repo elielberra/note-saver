@@ -3,7 +3,8 @@ import { Client } from "pg";
 
 dotenv.config();
 
-export function getDBClient(isUsingDatabase: boolean): Client {
+export function getDBClient(isUsingDatabase: boolean = true): Client {
+  console.log(process.env.DB_NAME)
   return new Client({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,

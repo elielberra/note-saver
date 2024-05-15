@@ -36,7 +36,7 @@ app.post("/update-note-content", async (req: Request, res: Response) => {
   }
 });
 
-const port = process.env.BACKEND_PORT || 3000;
+const port = process.env.BACKEND_PORT || 3333;
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

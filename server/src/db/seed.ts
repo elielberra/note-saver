@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config()
 
 async function createDatabase(client: Client) {
-  const createDBQuery = `SELECT 'CREATE DATABASE  ${process.env.DB_NAME}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${process.env.DB_NAME}')`;
+  const createDBQuery = `SELECT 'CREATE DATABASE ${process.env.DB_NAME}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${process.env.DB_NAME}')`;
   try {
     await client.query(createDBQuery);
   } catch (error) {
@@ -45,7 +45,7 @@ async function main() {
   const dbClientWithNoDB = getDBClient(false);
   await connectToDB(dbClientWithNoDB);
   await createDatabase(dbClientWithNoDB);
-  const dbClientWithDB = getDBClient(true);
+  const dbClientWithDB = getDBClient();
   await connectToDB(dbClientWithDB);
   await runQueries(dbClientWithDB);
 }
