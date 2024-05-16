@@ -34,8 +34,27 @@ export async function getNotes() {
 export async function updateNoteContent(noteId: number, newContent: string) {
   const dbClient = getDBClient();
   const query: QueryConfig = {
-    text: `UPDATE ${process.env.DB_NOTES_TABLE} SET content=$1 WHERE id=$2`,
+    text: `UPDATE ${process.env.DB_NOTES_TABLE} SET content = $1 WHERE id = $2`,
     values: [newContent, noteId]
+  };
+  try {
+    dbClient.connect();
+    await dbClient.query(query);
+  } catch (error) {
+    console.error(`Error executing query: ${query}`);
+    throw error;
+  } finally {
+    dbClient.end();
+  }
+}
+
+// TODO: Use a more efficient design to avoid code duplication
+// Pearhaps send the query as dependency injection
+export async function updateTagContent(tagId: number, newContent: string) {
+  const dbClient = getDBClient();
+  const query: QueryConfig = {
+    text: `UPDATE ${process.env.DB_TAGS_TABLE} SET tag = $1 WHERE id = $2`,
+    values: [newContent, tagId]
   };
   try {
     dbClient.connect();

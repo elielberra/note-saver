@@ -29,6 +29,8 @@ export default function NoteModal({
     setIdNoteSelected(null);
     
   }
+  // TODO?: Remove autofocus of textarea when modal is opened
+  // Or move it to the end of the text
   return (
     <dialog ref={modalRef}>
       {children}
