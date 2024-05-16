@@ -28,8 +28,8 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
     }
   }
 
-  async function deleteTag(tagId: TagT["tagId"]) {
-    // TODO: setNotes logic is repeacted, evaluate ways to DRY
+  async function deleteTag() {
+    // TODO: setNotes logic is repeated, evaluate ways to DRY
     setNotes((prevNotes) => {
       // Review if throwing an Error is the best course of action
       const oldNote = prevNotes.find((note) => note.noteId === noteId);
@@ -45,6 +45,17 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
       return sortedNewNotes;
     });
+    try {
+      await fetch("/delete-tag", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: tag.tagId })
+      });
+    } catch (error) {
+      console.error("Error while updating note content:", error);
+    }
   }
 
   // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
@@ -91,7 +102,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         className="delete-tag-icon"
         Icon={CrossIcon}
         iconProps={{ fill: "white", height: 19 }}
-        onClick={() => deleteTag(tag.tagId)}
+        onClick={deleteTag}
       />
     </div>
   );

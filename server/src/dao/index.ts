@@ -90,7 +90,23 @@ export async function deleteNote(id: number) {
   };
   try {
     dbClient.connect();
-    console.debug(query);
+    await dbClient.query(query);
+  } catch (error) {
+    console.error(`Error executing query: ${query}`);
+    throw error;
+  } finally {
+    dbClient.end();
+  }
+}
+
+export async function deleteTag(id: number) {
+  const dbClient = getDBClient();
+  const query: QueryConfig = {
+    text: `DELETE FROM ${process.env.DB_TAGS_TABLE} WHERE id = $1`,
+    values: [id]
+  };
+  try {
+    dbClient.connect();
     await dbClient.query(query);
   } catch (error) {
     console.error(`Error executing query: ${query}`);

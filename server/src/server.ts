@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { createNote, deleteNote, getNotes, updateNoteContent, updateTagContent } from "./dao";
+import { createNote, deleteNote, deleteTag, getNotes, updateNoteContent, updateTagContent } from "./dao";
 import { DeleteRequestBody, UpdateRequestBody } from "./types/types";
 
 dotenv.config();
@@ -74,6 +74,20 @@ app.delete("/delete-note", async (req: Request<{}, {}, DeleteRequestBody>, res: 
   const { id } = req.body;
   try {
     await deleteNote(id);
+    res.sendStatus(204);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send(error);
+    }
+  }
+});
+
+app.delete("/delete-tag", async (req: Request<{}, {}, DeleteRequestBody>, res: Response) => {
+  const { id } = req.body;
+  try {
+    await deleteTag(id);
     res.sendStatus(204);
   } catch (error) {
     if (error instanceof Error) {

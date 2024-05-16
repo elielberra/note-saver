@@ -23,8 +23,6 @@ export default function NoteActions({ setNotes }: NoteActionsProps) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const { newNoteId } = await response.json();
-      console.debug("newNoteId", newNoteId);
-
       setNotes((prevNotes) => [
         ...prevNotes,
         {
