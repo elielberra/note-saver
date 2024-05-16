@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Note from "./Note";
-import NoteModal from "./NoteModal";
 import "./Notes.css";
 import { NoteT } from "@backend/types";
 
@@ -8,8 +7,6 @@ export type SelectedNoteIdT = number | null;
 
 export default function Notes() {
   const [notes, setNotes] = useState<NoteT[]>([]);
-  const [idNoteSelected, setIdNoteSelected] = useState<SelectedNoteIdT>(null);
-
   useEffect(() => {
     async function fetchNotes() {
       const response = await fetch("/notes");
@@ -19,26 +16,6 @@ export default function Notes() {
     fetchNotes();
   }, []);
 
-  if (idNoteSelected) {
-    const selectedNoteData = notes.find((note) => note.noteId === idNoteSelected);
-    return (
-      <NoteModal
-        notes={notes}
-        idNoteSelected={idNoteSelected}
-        setIdNoteSelected={setIdNoteSelected}
-        setNotes={setNotes}
-      >
-        <Note
-          key={selectedNoteData!.noteId}
-          id={selectedNoteData!.noteId}
-          content={selectedNoteData!.noteContent}
-          tags={selectedNoteData!.tags}
-          isActive={selectedNoteData!.isActive}
-          setNotes={setNotes}
-        />
-      </NoteModal>
-    );
-  }
   return (
     <div id="notes-section">
       {notes.map((note) => (
@@ -48,7 +25,6 @@ export default function Notes() {
           content={note.noteContent}
           tags={note.tags}
           isActive={note.isActive}
-          setIdNoteSelected={setIdNoteSelected}
           setNotes={setNotes}
         />
       ))}
