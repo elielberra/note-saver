@@ -5,7 +5,7 @@ import { UpdateRequestBody } from "./types/types";
 
 dotenv.config();
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
 // TODO?: Separate into routes folder
 
@@ -25,9 +25,9 @@ app.get("/notes", async (req: Request, res: Response) => {
 app.post("/update-tag-content", async (req: Request<{}, {}, UpdateRequestBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
-  if (!newContent) return res.status(400).send("Query parameter newContent is missing in Request");
-  if (Number.isNaN(id))
-    return res.status(400).send("Query parameter noteId has to be a number");
+  if ((newContent === null) || (newContent === undefined))
+    return res.status(400).send("Query parameter newContent is missing in Request");
+  if (Number.isNaN(id)) return res.status(400).send("Query parameter noteId has to be a number");
   try {
     await updateTagContent(id, newContent);
     res.sendStatus(204);
@@ -44,8 +44,7 @@ app.post("/update-note-content", async (req: Request<{}, {}, UpdateRequestBody>,
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter noteId is missing in Request");
   if (!newContent) return res.status(400).send("Query parameter newContent is missing in Request");
-  if (Number.isNaN(id))
-    return res.status(400).send("Query parameter noteId has to be a number");
+  if (Number.isNaN(id)) return res.status(400).send("Query parameter noteId has to be a number");
   try {
     await updateNoteContent(id, newContent);
     res.sendStatus(204);

@@ -33,6 +33,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newTagContent = event.target.value || "";
+    console.debug("newTagContent", newTagContent)
     setTagContent(newTagContent);
     setNotes((prevNotes) => {
       // Review if throwing an Error is the best course of action
@@ -64,7 +65,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         maxLength={25}
         onChange={handleInputChange}
         value={tagContent}
-        
+
       />
       <Button
         className="delete-tag-icon"

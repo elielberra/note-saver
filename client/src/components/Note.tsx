@@ -1,6 +1,5 @@
 import NoteButtons from "./NoteButtons";
 import "./Note.css";
-import { SelectedNoteIdT } from "./Notes";
 import { NoteT } from "@backend/types";
 import { useState, useCallback, useRef, useEffect } from "react";
 import debounce from "lodash/debounce";
@@ -16,14 +15,6 @@ export type NoteProps = {
 export default function Note({ id, content, tags, setNotes }: NoteProps) {
   const [noteContent, setNoteContent] = useState(content);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      const textarea = textareaRef.current;
-      textarea.focus();
-      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
-    }
-  }, []); 
 
   async function saveNoteOnDB(newContent: string) {
     try {
