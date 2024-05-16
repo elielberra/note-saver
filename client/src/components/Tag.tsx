@@ -4,7 +4,7 @@ import "./Tag.css";
 import { NoteProps } from "./Note";
 import { useCallback, useState } from "react";
 import debounce from "lodash/debounce";
-import { NoteT } from "@backend/types";
+import { NoteT, TagT } from "@backend/types";
 
 type TagProps = {
   tag: NoteProps["tags"][number];
@@ -28,12 +28,30 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
     }
   }
 
+  async function deleteTag(tagId: TagT["tagId"]) {
+    // TODO: setNotes logic is repeacted, evaluate ways to DRY
+    setNotes((prevNotes) => {
+      // Review if throwing an Error is the best course of action
+      const oldNote = prevNotes.find((note) => note.noteId === noteId);
+      if (!oldNote) {
+        throw new Error(`No corresponding note was found for the note id ${noteId}`);
+      }
+      const filteredTags = oldNote.tags.filter((oldTag) => oldTag.tagId !== tag.tagId);
+      const newNote: NoteT = {
+        ...oldNote,
+        tags: filteredTags
+      };
+      const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
+      const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
+      return sortedNewNotes;
+    });
+  }
+
   // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
   const delayedTagSave = useCallback(debounce(saveTagOnDB, 500), []);
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newTagContent = event.target.value || "";
-    console.debug("newTagContent", newTagContent)
     setTagContent(newTagContent);
     setNotes((prevNotes) => {
       // Review if throwing an Error is the best course of action
@@ -48,7 +66,9 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         ...oldNote,
         tags: tagsSortedAsc
       };
-      return [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
+      const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
+      const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
+      return sortedNewNotes;
     });
     delayedTagSave(newTagContent);
   }
@@ -71,6 +91,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         className="delete-tag-icon"
         Icon={CrossIcon}
         iconProps={{ fill: "white", height: 19 }}
+        onClick={() => deleteTag(tag.tagId)}
       />
     </div>
   );
