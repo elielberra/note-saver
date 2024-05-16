@@ -1,21 +1,13 @@
-import { useState, useEffect } from "react";
+import { NoteT } from "@backend/types";
 import Note from "./Note";
 import "./Notes.css";
-import { NoteT } from "@backend/types";
 
-export type SelectedNoteIdT = number | null;
+type NotesProps = {
+  notes: NoteT[];
+  setNotes: (value: React.SetStateAction<NoteT[]>) => void;
+}
 
-export default function Notes() {
-  const [notes, setNotes] = useState<NoteT[]>([]);
-  useEffect(() => {
-    async function fetchNotes() {
-      const response = await fetch("/notes");
-      const notes: NoteT[] = await response.json();
-      setNotes(notes);
-    }
-    fetchNotes();
-  }, []);
-
+export default function Notes({notes, setNotes}: NotesProps) {
   return (
     <div id="notes-section">
       {notes.map((note) => (

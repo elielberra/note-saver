@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { getNotes, updateNoteContent, updateTagContent } from "./dao";
+import { createNote, getNotes, updateNoteContent, updateTagContent } from "./dao";
 import { UpdateRequestBody } from "./types/types";
 
 dotenv.config();
@@ -25,7 +25,7 @@ app.get("/notes", async (req: Request, res: Response) => {
 app.post("/update-tag-content", async (req: Request<{}, {}, UpdateRequestBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
-  if ((newContent === null) || (newContent === undefined))
+  if (newContent === null || newContent === undefined)
     return res.status(400).send("Query parameter newContent is missing in Request");
   if (Number.isNaN(id)) return res.status(400).send("Query parameter noteId has to be a number");
   try {
@@ -33,9 +33,9 @@ app.post("/update-tag-content", async (req: Request<{}, {}, UpdateRequestBody>, 
     res.sendStatus(204);
   } catch (error) {
     if (error instanceof Error) {
-      res.send(500).send(error.message);
+      res.status(500).send(error.message);
     } else {
-      res.sendStatus(500).send(error);
+      res.status(500).send(error);
     }
   }
 });
@@ -50,9 +50,22 @@ app.post("/update-note-content", async (req: Request<{}, {}, UpdateRequestBody>,
     res.sendStatus(204);
   } catch (error) {
     if (error instanceof Error) {
-      res.send(500).send(error.message);
+      res.status(500).send(error.message);
     } else {
-      res.sendStatus(500).send(error);
+      res.status(500).send(error);
+    }
+  }
+});
+
+app.post("/create-note", async (req: Request, res: Response) => {
+  try {
+    const newNoteId = await createNote();
+    res.status(201).json({ newNoteId });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send(error);
     }
   }
 });

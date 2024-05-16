@@ -64,8 +64,8 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         // TODO: Add scrollbar for input overflow
         maxLength={25}
         onChange={handleInputChange}
+        // Warning: `value` prop on `input` should not be null. Consider using an empty string to clear the component or `undefined` for uncontrolled components.
         value={tagContent}
-
       />
       <Button
         className="delete-tag-icon"

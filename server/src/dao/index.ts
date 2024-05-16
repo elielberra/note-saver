@@ -51,7 +51,6 @@ export async function updateNoteContent(noteId: number, newContent: string) {
 // Pearhaps send the query as dependency injection
 export async function updateTagContent(tagId: number, newContent: string) {
   const dbClient = getDBClient();
-  console.debug("newCOntent", newContent)
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_TAGS_TABLE} SET tag = $1 WHERE id = $2`,
     values: [newContent, tagId]
@@ -59,6 +58,22 @@ export async function updateTagContent(tagId: number, newContent: string) {
   try {
     dbClient.connect();
     await dbClient.query(query);
+  } catch (error) {
+    console.error(`Error executing query: ${query}`);
+    throw error;
+  } finally {
+    dbClient.end();
+  }
+}
+
+export async function createNote() {
+  const dbClient = getDBClient();
+  const query = `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`;
+  try {
+    dbClient.connect();
+    const res: QueryResult<{id: number}> = await dbClient.query(query);
+    const insertedId = res.rows[0].id;
+    return insertedId;
   } catch (error) {
     console.error(`Error executing query: ${query}`);
     throw error;
