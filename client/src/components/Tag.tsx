@@ -4,7 +4,7 @@ import "./Tag.css";
 import { NoteProps } from "./Note";
 import { useCallback, useState } from "react";
 import debounce from "lodash/debounce";
-import { NoteT, TagT } from "@backend/types";
+import { NoteT } from "@backend/types";
 
 type TagProps = {
   tag: NoteProps["tags"][number];

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { createNote, deleteNote, deleteTag, getNotes, updateNoteContent, updateTagContent } from "./dao";
-import { DeleteRequestBody, UpdateRequestBody } from "./types/types";
+import { createNote, createTag, deleteNote, deleteTag, getNotes, updateNoteContent, updateTagContent } from "./dao";
+import { CreateReqBody, DeleteReqBody, UpdateReqBody } from "./types/types";
 
 dotenv.config();
 const app = express();
@@ -22,8 +22,9 @@ app.get("/notes", async (req: Request, res: Response) => {
   res.status(200).send(notes);
 });
 
-app.post("/update-tag-content", async (req: Request<{}, {}, UpdateRequestBody>, res: Response) => {
+app.post("/update-tag-content", async (req: Request<{}, {}, UpdateReqBody>, res: Response) => {
   const { id, newContent } = req.body;
+  console.debug(id, newContent)
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
   if (newContent === null || newContent === undefined)
     return res.status(400).send("Query parameter newContent is missing in Request");
@@ -40,7 +41,7 @@ app.post("/update-tag-content", async (req: Request<{}, {}, UpdateRequestBody>, 
   }
 });
 
-app.post("/update-note-content", async (req: Request<{}, {}, UpdateRequestBody>, res: Response) => {
+app.post("/update-note-content", async (req: Request<{}, {}, UpdateReqBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter noteId is missing in Request");
   if (!newContent) return res.status(400).send("Query parameter newContent is missing in Request");
@@ -70,7 +71,21 @@ app.post("/create-note", async (req: Request, res: Response) => {
   }
 });
 
-app.delete("/delete-note", async (req: Request<{}, {}, DeleteRequestBody>, res: Response) => {
+app.post("/create-tag", async (req: Request<{}, {}, CreateReqBody>, res: Response) => {
+  const { noteId } = req.body;
+  try {
+    const newTagId = await createTag(noteId);
+    res.status(201).json({ newTagId });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send(error);
+    }
+  }
+});
+
+app.delete("/delete-note", async (req: Request<{}, {}, DeleteReqBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteNote(id);
@@ -84,7 +99,7 @@ app.delete("/delete-note", async (req: Request<{}, {}, DeleteRequestBody>, res: 
   }
 });
 
-app.delete("/delete-tag", async (req: Request<{}, {}, DeleteRequestBody>, res: Response) => {
+app.delete("/delete-tag", async (req: Request<{}, {}, DeleteReqBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteTag(id);

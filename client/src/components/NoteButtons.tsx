@@ -14,7 +14,7 @@ export type NoteButtonsProps = {
 };
 
 export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsProps) {
-  async function deleteNote(noteId: NoteT["noteId"]) {
+  async function deleteNote() {
     setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     try {
       await fetch("/delete-note", {
@@ -25,7 +25,42 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
         body: JSON.stringify({ id: noteId })
       });
     } catch (error) {
-      console.error("Error while updating note content:", error);
+      console.error("Error while deleting a note:", error);
+    }
+  }
+
+  async function addTag() {
+    try {
+      const response = await fetch("/create-tag", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ noteId })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const { newTagId } = await response.json();
+      console.debug("newTagId", newTagId)
+      setNotes((prevNotes) => {
+        const oldNote = prevNotes.find((note) => note.noteId === noteId);
+        if (!oldNote) {
+          throw new Error(`No corresponding note was found for the note id ${noteId}`);
+        }
+        const newNote: NoteT = {
+          ...oldNote,
+          tags: [...oldNote.tags, {
+            tagId: newTagId,
+            tagContent: ""
+          }]
+        };
+        const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
+        const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
+        return sortedNewNotes;
+      });
+    } catch (error) {
+      console.error("Error while creating a new note:", error);
     }
   }
   return (
@@ -36,7 +71,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
           className="note-btn del-arch-btn"
           Icon={DeleteIcon}
           iconProps={{ height: 17, fill: "white" }}
-          onClick={() => deleteNote(noteId)}
+          onClick={deleteNote}
         />
         <Button
           id="archive-btn"
@@ -54,6 +89,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
           className="note-btn"
           Icon={AddIcon}
           iconProps={{ height: 22, addBackgroundCircle: true }}
+          onClick={addTag}
         />
       </div>
     </div>

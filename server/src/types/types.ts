@@ -1,17 +1,3 @@
-// interface NoteBase {
-//   id: number;
-//   content: string;
-//   tags: string[];
-// };
-
-// export interface NotePSQL extends NoteBase {
-//   is_active: boolean;
-// }
-
-// export interface NoteT extends NoteBase {
-//   isActive: boolean;
-// }
-
 export interface TagT {
   tagId: number;
   tagContent: string;
@@ -24,11 +10,15 @@ export interface NoteT {
   isActive: boolean;
 };
 
-export interface UpdateRequestBody {
+export interface UpdateReqBody {
   id: number;
   newContent: string;
 }
 
-export interface DeleteRequestBody {
+export interface DeleteReqBody {
   id: number;
+}
+
+export interface CreateReqBody {
+  noteId: number;
 }

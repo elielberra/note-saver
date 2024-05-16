@@ -49,6 +49,7 @@ export async function updateNoteContent(noteId: number, newContent: string) {
 
 // TODO: Use a more efficient design to avoid code duplication
 // Pearhaps send the query as dependency injection
+// Set param type from the types of the entities
 export async function updateTagContent(tagId: number, newContent: string) {
   const dbClient = getDBClient();
   const query: QueryConfig = {
@@ -69,6 +70,25 @@ export async function updateTagContent(tagId: number, newContent: string) {
 export async function createNote() {
   const dbClient = getDBClient();
   const query = `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`;
+  try {
+    dbClient.connect();
+    const res: QueryResult<{id: number}> = await dbClient.query(query);
+    const insertedId = res.rows[0].id;
+    return insertedId;
+  } catch (error) {
+    console.error(`Error executing query: ${query}`);
+    throw error;
+  } finally {
+    dbClient.end();
+  }
+}
+
+export async function createTag(noteId: number) {
+  const dbClient = getDBClient();
+  const query: QueryConfig = {
+    text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES('', $1) RETURNING id`,
+    values: [noteId]
+  };
   try {
     dbClient.connect();
     const res: QueryResult<{id: number}> = await dbClient.query(query);
