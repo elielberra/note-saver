@@ -28,3 +28,7 @@ export interface UpdateRequestBody {
   id: number;
   newContent: string;
 }
+
+export interface DeleteRequestBody {
+  id: number;
+}

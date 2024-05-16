@@ -81,3 +81,21 @@ export async function createNote() {
     dbClient.end();
   }
 }
+
+export async function deleteNote(id: number) {
+  const dbClient = getDBClient();
+  const query: QueryConfig = {
+    text: `DELETE FROM ${process.env.DB_NOTES_TABLE} WHERE id = $1`,
+    values: [id]
+  };
+  try {
+    dbClient.connect();
+    console.debug(query);
+    await dbClient.query(query);
+  } catch (error) {
+    console.error(`Error executing query: ${query}`);
+    throw error;
+  } finally {
+    dbClient.end();
+  }
+}

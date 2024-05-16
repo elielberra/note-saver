@@ -14,6 +14,20 @@ export type NoteButtonsProps = {
 };
 
 export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsProps) {
+  async function deleteNote(noteId: NoteT["noteId"]) {
+    setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
+    try {
+      await fetch("/delete-note", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: noteId })
+      });
+    } catch (error) {
+      console.error("Error while updating note content:", error);
+    }
+  }
   return (
     <div className="note-btns">
       <div id="del-arch-btns">
@@ -22,6 +36,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
           className="note-btn del-arch-btn"
           Icon={DeleteIcon}
           iconProps={{ height: 17, fill: "white" }}
+          onClick={() => deleteNote(noteId)}
         />
         <Button
           id="archive-btn"
@@ -32,7 +47,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
       </div>
       <div id="tags">
         {noteTags.map((tag) => (
-          <Tag key={tag.tagId} tag={tag} setNotes={setNotes} noteId={noteId}/>
+          <Tag key={tag.tagId} tag={tag} setNotes={setNotes} noteId={noteId} />
         ))}
         <Button
           id="add-tag-btn"
