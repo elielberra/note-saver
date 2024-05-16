@@ -24,7 +24,7 @@ export interface NoteT {
   isActive: boolean;
 };
 
-export interface UpdateNoteRequestBody {
+export interface UpdateRequestBody {
   id: number;
   newContent: string;
 }

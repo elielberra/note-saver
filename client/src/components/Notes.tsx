@@ -39,7 +39,6 @@ export default function Notes() {
       </NoteModal>
     );
   }
-  console.debug("notes", notes)
   return (
     <div id="notes-section">
       {notes.map((note) => (

@@ -32,7 +32,7 @@ export default function Note({ id, content, tags, setIdNoteSelected, setNotes }:
   }
 
   // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
-  const delayedNoteSave = useCallback(debounce(saveNoteOnDB, 1500), [])
+  const delayedNoteSave = useCallback(debounce(saveNoteOnDB, 500), [])
 
   function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const newContent = event.target.value;
