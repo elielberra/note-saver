@@ -5,8 +5,15 @@ import Tag from "./Tag";
 import "./NoteButtons.css";
 import { NoteProps } from "./Note";
 import AddIcon from "./icons/AddIcon";
+import { NoteT } from "@backend/types";
 
-export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
+export type NoteButtonsProps = {
+  noteTags: NoteProps["tags"];
+  setNotes: (value: React.SetStateAction<NoteT[]>) => void;
+  noteId: NoteT["noteId"];
+};
+
+export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsProps) {
   return (
     <div className="note-btns">
       <div id="del-arch-btns">
@@ -24,10 +31,15 @@ export default function NoteButtons({ tags }: { tags: NoteProps["tags"] }) {
         />
       </div>
       <div id="tags">
-        {tags.map((tag, index) => (
-          <Tag key={index} tag={tag} />
+        {noteTags.map((tag) => (
+          <Tag key={tag.tagId} tag={tag} setNotes={setNotes} noteId={noteId}/>
         ))}
-        <Button id="add-tag-btn" className="note-btn" Icon={AddIcon} iconProps={{ height: 22, addBackgroundCircle: true  }} />
+        <Button
+          id="add-tag-btn"
+          className="note-btn"
+          Icon={AddIcon}
+          iconProps={{ height: 22, addBackgroundCircle: true }}
+        />
       </div>
     </div>
   );

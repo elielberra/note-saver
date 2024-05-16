@@ -6,8 +6,8 @@ import { useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 
 export type NoteProps = {
-  id: NoteT["id"];
-  content: NoteT["content"];
+  id: NoteT["noteId"];
+  content: NoteT["noteContent"];
   tags: NoteT["tags"];
   isActive: NoteT["isActive"];
   setIdNoteSelected?: React.Dispatch<React.SetStateAction<SelectedNoteIdT>>;
@@ -16,7 +16,8 @@ export type NoteProps = {
 
 export default function Note({ id, content, tags, setIdNoteSelected, setNotes }: NoteProps) {
   const [noteContent, setNoteContent] = useState(content);
-  async function saveNote(newContent: string) {
+
+  async function saveNoteOnDB(newContent: string) {
     try {
       await fetch('/update-note-content', {
         method: 'POST',
@@ -31,16 +32,16 @@ export default function Note({ id, content, tags, setIdNoteSelected, setNotes }:
   }
 
   // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
-  const delayedNoteSave = useCallback(debounce(saveNote, 1500), [])
+  const delayedNoteSave = useCallback(debounce(saveNoteOnDB, 1500), [])
 
-  function handleNoteChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+  function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const newContent = event.target.value;
     setNoteContent(newContent);
     setNotes((prevNotes) => [
-      ...prevNotes.filter((note) => note.id !== id),
+      ...prevNotes.filter((note) => note.noteId !== id),
         {
-          id: id,
-          content: newContent,
+          noteId: id,
+          noteContent: newContent,
           tags: tags,
           isActive: true
         }
@@ -50,8 +51,8 @@ export default function Note({ id, content, tags, setIdNoteSelected, setNotes }:
 
   return (
     <div className="note" onClick={setIdNoteSelected ? () => setIdNoteSelected(id) : undefined}> 
-      <textarea className="note-content" value={noteContent} maxLength={500} onChange={handleNoteChange}/>
-      <NoteButtons tags={tags} />
+      <textarea className="note-content" value={noteContent} maxLength={500} onChange={handleNoteContentChange}/>
+      <NoteButtons noteTags={tags} setNotes={setNotes} noteId={id}/>
     </div>
   );
 }

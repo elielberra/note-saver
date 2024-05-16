@@ -18,6 +18,6 @@ export async function connectToDB(client: Client) {
     await client.connect();
     console.log("Connected to PostgreSQL Database");
   } catch (error) {
-    console.log("Error while connecting to DB", error);
+    console.error("Error while connecting to DB", error);
   }
 }

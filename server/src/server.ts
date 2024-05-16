@@ -17,12 +17,7 @@ app.get("/test", async (req: Request, res: Response) => {
 
 app.get("/notes", async (req: Request, res: Response) => {
   const notes = await getNotes();
-  console.debug("notes", notes)
-  const notesCamelKeys: NoteT[] = notes.rows.map(note => {
-    const { is_active, ...rest } = note;
-    return { ...rest, isActive: is_active };
-  });
-  res.status(200).send(notesCamelKeys);
+  res.status(200).send(notes);
 });
 
 app.post("/update-note-content", async (req: Request<{}, {}, UpdateNoteRequestBody>, res: Response) => {

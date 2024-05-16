@@ -8,7 +8,6 @@ export type SelectedNoteIdT = number | null;
 
 export default function Notes() {
   const [notes, setNotes] = useState<NoteT[]>([]);
-  
   const [idNoteSelected, setIdNoteSelected] = useState<SelectedNoteIdT>(null);
 
   useEffect(() => {
@@ -19,10 +18,9 @@ export default function Notes() {
     }
     fetchNotes();
   }, []);
-  console.debug("notes", notes[0])
 
   if (idNoteSelected) {
-    const selectedNoteData = notes.find((note) => note.id === idNoteSelected);
+    const selectedNoteData = notes.find((note) => note.noteId === idNoteSelected);
     return (
       <NoteModal
         notes={notes}
@@ -31,9 +29,9 @@ export default function Notes() {
         setNotes={setNotes}
       >
         <Note
-          key={selectedNoteData!.id}
-          id={selectedNoteData!.id}
-          content={selectedNoteData!.content}
+          key={selectedNoteData!.noteId}
+          id={selectedNoteData!.noteId}
+          content={selectedNoteData!.noteContent}
           tags={selectedNoteData!.tags}
           isActive={selectedNoteData!.isActive}
           setNotes={setNotes}
@@ -41,13 +39,14 @@ export default function Notes() {
       </NoteModal>
     );
   }
+  console.debug("notes", notes)
   return (
     <div id="notes-section">
       {notes.map((note) => (
         <Note
-          key={note.id}
-          id={note.id}
-          content={note.content}
+          key={note.noteId}
+          id={note.noteId}
+          content={note.noteContent}
           tags={note.tags}
           isActive={note.isActive}
           setIdNoteSelected={setIdNoteSelected}
