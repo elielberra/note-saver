@@ -24,7 +24,6 @@ app.get("/notes", async (req: Request, res: Response) => {
 
 app.post("/update-tag-content", async (req: Request<{}, {}, UpdateRequestBody>, res: Response) => {
   const { id, newContent } = req.body;
-  console.debug(id, newContent)
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
   if (!newContent) return res.status(400).send("Query parameter newContent is missing in Request");
   if (Number.isNaN(id))

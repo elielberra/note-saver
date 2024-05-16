@@ -2,7 +2,7 @@ import Button from "./Button";
 import CrossIcon from "./icons/CrossIcon";
 import "./Tag.css";
 import { NoteProps } from "./Note";
-import { useRef, useCallback } from "react";
+import { useCallback, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "@backend/types";
 
@@ -13,45 +13,43 @@ type TagProps = {
 };
 
 export default function Tag({ tag, setNotes, noteId }: TagProps) {
-  const spanRef = useRef<HTMLSpanElement | null>(null);
-
+  const [tagContent, setTagContent] = useState(tag.tagContent);
   async function saveTagOnDB(newContent: string) {
     try {
-      await fetch('/update-tag-content', {
-        method: 'POST',
+      await fetch("/update-tag-content", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ id: tag.tagId, newContent })
       });
     } catch (error) {
-      console.error('Error while updating tag content:', error);
+      console.error("Error while updating tag content:", error);
     }
   }
 
   // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
-  const delayedTagSave = useCallback(debounce(saveTagOnDB, 500), [])
+  const delayedTagSave = useCallback(debounce(saveTagOnDB, 500), []);
 
-  function handleNoteTagChange(event: React.KeyboardEvent<HTMLSpanElement>) {
-    const newTagContent = spanRef.current?.innerText + event.key ?? "";
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const newTagContent = event.target.value || "";
+    setTagContent(newTagContent);
     setNotes((prevNotes) => {
       // Review if throwing an Error is the best course of action
       const oldNote = prevNotes.find((note) => note.noteId === noteId);
       if (!oldNote) {
-        throw new Error(`No corresponding note was found for the note id ${noteId}`)
+        throw new Error(`No corresponding note was found for the note id ${noteId}`);
       }
-      const oldTags = oldNote.tags.filter((oldTag) => oldTag.tagId !== tag.tagId )
-      const tagsUnsorted = [...oldTags, { tagId: tag.tagId, tagContent: newTagContent} ]
-      const tagsSortedAsc = tagsUnsorted.sort((a, b) => a.tagId - b.tagId)
+      const oldTags = oldNote.tags.filter((oldTag) => oldTag.tagId !== tag.tagId);
+      const tagsUnsorted = [...oldTags, { tagId: tag.tagId, tagContent: newTagContent }];
+      const tagsSortedAsc = tagsUnsorted.sort((a, b) => a.tagId - b.tagId);
       const newNote: NoteT = {
         ...oldNote,
         tags: tagsSortedAsc
-      }
-      return ([
-      ...prevNotes.filter((note) => note.noteId !== noteId),
-      newNote
-    ])});
-    delayedTagSave(newTagContent)
+      };
+      return [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
+    });
+    delayedTagSave(newTagContent);
   }
 
   return (
@@ -59,21 +57,15 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       <label id="edit-tag-label" hidden>
         Edit tag:
       </label>
-      {/* TODO: Add maximum length of 25 */}
-      {/* TODO: Instead the best idea would be to migrate to an input for better state control */}
-      <span
-        role="textbox"
-        aria-multiline="false"
-        aria-labelledby="edit-tag-label"
-        contentEditable="true"
-        suppressContentEditableWarning={true}
+      <input
         className="tag-text"
-        // TODO: change to onChange
-        onKeyDown={handleNoteTagChange}
-        ref={spanRef}
-      >
-        {tag.tagContent}
-      </span>
+        type="text"
+        // TODO: Add scrollbar for input overflow
+        maxLength={25}
+        onChange={handleInputChange}
+        value={tagContent}
+        
+      />
       <Button
         className="delete-tag-icon"
         Icon={CrossIcon}

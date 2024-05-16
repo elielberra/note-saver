@@ -1,6 +1,5 @@
 import { QueryConfig, QueryResult } from "pg";
 import { getDBClient } from "../db/utils";
-// import { NotePSQL } from "../types/types";
 import { NoteT } from "../types/types";
 import dotenv from "dotenv";
 
@@ -12,7 +11,7 @@ export async function getNotes() {
                   n.id AS "noteId",
                   n.content AS "noteContent",
                   n.is_active as "isActive",
-                  jsonb_agg(jsonb_build_object('tagId', t.id, 'tagContent', t.tag)) AS tags
+                  jsonb_agg(jsonb_build_object('tagId', t.id, 'tagContent', t.tag) ORDER BY t.id) AS tags
                 FROM
                   ${process.env.DB_NOTES_TABLE} n
                 LEFT JOIN
@@ -52,6 +51,7 @@ export async function updateNoteContent(noteId: number, newContent: string) {
 // Pearhaps send the query as dependency injection
 export async function updateTagContent(tagId: number, newContent: string) {
   const dbClient = getDBClient();
+  console.debug("newCOntent", newContent)
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_TAGS_TABLE} SET tag = $1 WHERE id = $2`,
     values: [newContent, tagId]

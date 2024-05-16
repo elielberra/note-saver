@@ -25,6 +25,7 @@
   margin-inline: 4px;
   border: 0;
   text-align: center;
+  width: 80px
 }
 
 .tag-text:focus {
