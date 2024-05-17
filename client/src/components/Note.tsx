@@ -10,9 +10,10 @@ export type NoteProps = {
   tags: NoteT["tags"];
   isActive: NoteT["isActive"];
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
+  isShowingActiveNotes: boolean;
 };
 
-export default function Note({ id, content, tags, setNotes }: NoteProps) {
+export default function Note({ id, content, tags, setNotes, isShowingActiveNotes }: NoteProps) {
   const [noteContent, setNoteContent] = useState(content);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -57,7 +58,12 @@ export default function Note({ id, content, tags, setNotes }: NoteProps) {
         onChange={handleNoteContentChange}
         ref={textareaRef}
       />
-      <NoteButtons noteTags={tags} setNotes={setNotes} noteId={id} />
+      <NoteButtons
+        noteTags={tags}
+        setNotes={setNotes}
+        noteId={id}
+        isShowingActiveNotes={isShowingActiveNotes}
+      />
     </div>
   );
 }

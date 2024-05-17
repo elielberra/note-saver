@@ -20,7 +20,7 @@ export default function App() {
     <>
       <Header />
       <NoteActions setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes} setIsShowingActiveNotes={setIsShowingActiveNotes} />
-      <Notes notes={notes} setNotes={setNotes} />
+      <Notes notes={notes} setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes}/>
     </>
   );
 }

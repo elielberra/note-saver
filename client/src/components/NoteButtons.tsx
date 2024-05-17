@@ -1,5 +1,6 @@
 import Button from "./Button";
 import ArchivedIcon from "./icons/ArchivedIcon";
+import UnarchivedIcon from "./icons/UnarchivedIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tag from "./Tag";
 import "./NoteButtons.css";
@@ -11,9 +12,10 @@ export type NoteButtonsProps = {
   noteTags: NoteProps["tags"];
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   noteId: NoteT["noteId"];
+  isShowingActiveNotes: boolean;
 };
 
-export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsProps) {
+export default function NoteButtons({ noteTags, setNotes, noteId, isShowingActiveNotes }: NoteButtonsProps) {
   async function deleteNote() {
     setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     try {
@@ -84,7 +86,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
     } catch (error) {
       console.error("Error while creating a new tag:", error);
     }
-  } 
+  }
 
   return (
     <div className="note-btns">
@@ -99,7 +101,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
         <Button
           id="archive-btn"
           className="note-btn del-arch-btn"
-          Icon={ArchivedIcon}
+          Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
           iconProps={{ height: 17 }}
           onClick={archiveNote}
         />

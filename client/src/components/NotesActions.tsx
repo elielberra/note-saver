@@ -1,6 +1,7 @@
 import Button from "./Button";
 import AddIcon from "./icons/AddIcon";
 import ArchivedIcon from "./icons/ArchivedIcon";
+import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { GetNotesParams, NoteT } from "@backend/types";
@@ -10,7 +11,11 @@ type NoteActionsProps = {
   isShowingActiveNotes: boolean;
   setIsShowingActiveNotes: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export default function NoteActions({ setNotes, isShowingActiveNotes, setIsShowingActiveNotes }: NoteActionsProps) {
+export default function NoteActions({
+  setNotes,
+  isShowingActiveNotes,
+  setIsShowingActiveNotes
+}: NoteActionsProps) {
   const iconProps = { height: 20, fill: "#D9D9D9" };
 
   async function addNote() {
@@ -58,22 +63,24 @@ export default function NoteActions({ setNotes, isShowingActiveNotes, setIsShowi
   return (
     <div id="note-actions">
       <Button
-        text={isShowingActiveNotes  ? "Archived" : "Active"}
+        text={isShowingActiveNotes ? "Archived" : "Active"}
         className="note-actions-btn"
         id="toggle-notes-show"
-        Icon={ArchivedIcon}
+        Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
         iconProps={iconProps}
-        onClick={() => getNotesAccordingToStatus(!isShowingActiveNotes) }
+        onClick={() => getNotesAccordingToStatus(!isShowingActiveNotes)}
       />
       <SearchBar />
-      <Button
-        text="Add"
-        className="note-actions-btn"
-        id="add-note"
-        Icon={AddIcon}
-        iconProps={iconProps}
-        onClick={addNote}
-      />
+      {isShowingActiveNotes && (
+        <Button
+          text="Add"
+          className="note-actions-btn"
+          id="add-note"
+          Icon={AddIcon}
+          iconProps={iconProps}
+          onClick={addNote}
+        />
+      )}
     </div>
   );
 }

@@ -5,9 +5,10 @@ import "./Notes.css";
 type NotesProps = {
   notes: NoteT[];
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
+  isShowingActiveNotes: boolean;
 }
 
-export default function Notes({notes, setNotes}: NotesProps) {
+export default function Notes({notes, setNotes, isShowingActiveNotes}: NotesProps) {
   return (
     <div id="notes-section">
       {notes.map((note) => (
@@ -18,6 +19,7 @@ export default function Notes({notes, setNotes}: NotesProps) {
           tags={note.tags}
           isActive={note.isActive}
           setNotes={setNotes}
+          isShowingActiveNotes={isShowingActiveNotes}
         />
       ))}
     </div>

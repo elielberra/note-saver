@@ -1,0 +1,1 @@
+To generate the React icon component from an svg un npx @svgr/cli -- client/src/assets/
