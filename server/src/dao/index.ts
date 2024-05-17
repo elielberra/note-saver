@@ -140,3 +140,21 @@ export async function deleteTag(id: number) {
     dbClient.end();
   }
 }
+
+export async function updateNoteStatus(noteId: number, isActive: boolean) {
+  const dbClient = getDBClient();
+  console.debug(`UPDATE ${process.env.DB_NOTES_TABLE} SET is_active = $1 WHERE id = $2`)
+  const query: QueryConfig = {
+    text: `UPDATE ${process.env.DB_NOTES_TABLE} SET is_active = $1 WHERE id = $2`,
+    values: [isActive, noteId]
+  };
+  try {
+    dbClient.connect();
+    await dbClient.query(query);
+  } catch (error) {
+    console.error(`Error executing query: ${query}`);
+    throw error;
+  } finally {
+    dbClient.end();
+  }
+}

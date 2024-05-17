@@ -31,11 +31,13 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
 
   async function addTag() {
     try {
+      // TODO: Review logic of optimistic updates
       const response = await fetch("/create-tag", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
+        // TODO?: Add typing to this body
         body: JSON.stringify({ noteId })
       });
       if (!response.ok) {
@@ -65,6 +67,25 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
       console.error("Error while creating a new tag:", error);
     }
   }
+
+  async function archiveNote() {
+    try {
+      const response = await fetch("/set-note-status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ noteId, isActive: false })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
+    } catch (error) {
+      console.error("Error while creating a new tag:", error);
+    }
+  } 
+
   return (
     <div className="note-btns">
       <div id="del-arch-btns">
@@ -80,6 +101,7 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
           className="note-btn del-arch-btn"
           Icon={ArchivedIcon}
           iconProps={{ height: 17 }}
+          onClick={archiveNote}
         />
       </div>
       <div id="tags">

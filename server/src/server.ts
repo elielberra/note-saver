@@ -7,9 +7,10 @@ import {
   deleteTag,
   getNotes,
   updateNoteContent,
+  updateNoteStatus,
   updateTagContent
 } from "./dao";
-import { CreateReqBody, DeleteReqBody, UpdateReqBody } from "./types/types";
+import { CreateReqBody, DeleteReqBody, SetNoteStatusBody, UpdateReqBody } from "./types/types";
 
 dotenv.config();
 const app = express();
@@ -27,8 +28,7 @@ app.get("/test", async (req: Request, res: Response) => {
 
 
 app.get("/notes", async (req: Request, res: Response) => {
-  const areActive: boolean = req.query.areActive === 'true';
-  console.debug("areActive", areActive)
+  const areActive = req.query.areActive === 'true';
   const notes = await getNotes(areActive);
   res.status(200).send(notes);
 });
@@ -122,6 +122,20 @@ app.delete("/delete-tag", async (req: Request<{}, {}, DeleteReqBody>, res: Respo
     }
   }
 });
+
+app.post("/set-note-status", async (req: Request<{}, {}, SetNoteStatusBody>, res: Response) => {
+  const { noteId, isActive } = req.body;
+  try {
+    await updateNoteStatus(noteId, isActive);
+    res.sendStatus(204);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send(error);
+    }
+  }
+})
 
 const port = process.env.BACKEND_PORT || 3333;
 app.listen(port, () => {

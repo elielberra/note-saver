@@ -24,4 +24,9 @@ export interface CreateReqBody {
   noteId: number;
 }
 
+export interface SetNoteStatusBody {
+  noteId: number;
+  isActive: boolean;
+}
+
 export type GetNotesParams = "areActive=true" | "areActive=false";
