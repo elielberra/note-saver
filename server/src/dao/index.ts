@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export async function getNotes() {
+export async function getNotes(areActive: boolean) {
   const dbClient = getDBClient();
   const query = `SELECT
                   n.id AS "noteId",
@@ -19,6 +19,8 @@ export async function getNotes() {
                   ${process.env.DB_NOTES_TABLE} n
                 LEFT JOIN
                   tags t ON n.id = t.note_id
+                WHERE
+                  n.is_active = ${areActive}
                 GROUP BY
                   n.id, n.content, n.is_active;`;
   try {

@@ -25,8 +25,11 @@ app.get("/test", async (req: Request, res: Response) => {
   res.status(200).send({ message: "Testing content" });
 });
 
+
 app.get("/notes", async (req: Request, res: Response) => {
-  const notes = await getNotes();
+  const areActive: boolean = req.query.areActive === 'true';
+  console.debug("areActive", areActive)
+  const notes = await getNotes(areActive);
   res.status(200).send(notes);
 });
 

@@ -10,6 +10,7 @@ export interface NoteT {
   isActive: boolean;
 }
 
+// TODO: Replace Req for Note or Tag
 export interface UpdateReqBody {
   id: number;
   newContent: string;
@@ -22,3 +23,5 @@ export interface DeleteReqBody {
 export interface CreateReqBody {
   noteId: number;
 }
+
+export type GetNotesParams = "areActive=true" | "areActive=false";
