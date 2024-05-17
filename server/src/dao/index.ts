@@ -11,7 +11,10 @@ export async function getNotes() {
                   n.id AS "noteId",
                   n.content AS "noteContent",
                   n.is_active as "isActive",
-                  jsonb_agg(jsonb_build_object('tagId', t.id, 'tagContent', t.tag) ORDER BY t.id) AS tags
+                  CASE
+                    WHEN COUNT(t.id) > 0 THEN jsonb_agg(jsonb_build_object('tagId', t.id, 'tagContent', t.tag) ORDER BY t.id)
+                    ELSE '[]'::jsonb
+                  END AS tags
                 FROM
                   ${process.env.DB_NOTES_TABLE} n
                 LEFT JOIN
@@ -72,7 +75,7 @@ export async function createNote() {
   const query = `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`;
   try {
     dbClient.connect();
-    const res: QueryResult<{id: number}> = await dbClient.query(query);
+    const res: QueryResult<{ id: number }> = await dbClient.query(query);
     const insertedId = res.rows[0].id;
     return insertedId;
   } catch (error) {
@@ -91,7 +94,7 @@ export async function createTag(noteId: number) {
   };
   try {
     dbClient.connect();
-    const res: QueryResult<{id: number}> = await dbClient.query(query);
+    const res: QueryResult<{ id: number }> = await dbClient.query(query);
     const insertedId = res.rows[0].id;
     return insertedId;
   } catch (error) {

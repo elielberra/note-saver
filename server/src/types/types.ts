@@ -8,7 +8,7 @@ export interface NoteT {
   noteContent: string;
   tags: TagT[];
   isActive: boolean;
-};
+}
 
 export interface UpdateReqBody {
   id: number;

@@ -42,7 +42,6 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const { newTagId } = await response.json();
-      console.debug("newTagId", newTagId)
       setNotes((prevNotes) => {
         const oldNote = prevNotes.find((note) => note.noteId === noteId);
         if (!oldNote) {
@@ -50,17 +49,20 @@ export default function NoteButtons({ noteTags, setNotes, noteId }: NoteButtonsP
         }
         const newNote: NoteT = {
           ...oldNote,
-          tags: [...oldNote.tags, {
-            tagId: newTagId,
-            tagContent: ""
-          }]
+          tags: [
+            ...oldNote.tags,
+            {
+              tagId: newTagId,
+              tagContent: ""
+            }
+          ]
         };
         const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
         const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
         return sortedNewNotes;
       });
     } catch (error) {
-      console.error("Error while creating a new note:", error);
+      console.error("Error while creating a new tag:", error);
     }
   }
   return (

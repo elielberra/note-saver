@@ -1,6 +1,14 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { createNote, createTag, deleteNote, deleteTag, getNotes, updateNoteContent, updateTagContent } from "./dao";
+import {
+  createNote,
+  createTag,
+  deleteNote,
+  deleteTag,
+  getNotes,
+  updateNoteContent,
+  updateTagContent
+} from "./dao";
 import { CreateReqBody, DeleteReqBody, UpdateReqBody } from "./types/types";
 
 dotenv.config();
@@ -24,7 +32,6 @@ app.get("/notes", async (req: Request, res: Response) => {
 
 app.post("/update-tag-content", async (req: Request<{}, {}, UpdateReqBody>, res: Response) => {
   const { id, newContent } = req.body;
-  console.debug(id, newContent)
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
   if (newContent === null || newContent === undefined)
     return res.status(400).send("Query parameter newContent is missing in Request");
