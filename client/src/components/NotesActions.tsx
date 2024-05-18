@@ -4,7 +4,8 @@ import ArchivedIcon from "./icons/ArchivedIcon";
 import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
-import { GetNotesParams, NoteT } from "@backend/types";
+import { NoteT } from "@backend/types";
+import { getNotes } from "../lib/utils";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -27,8 +28,7 @@ export default function NoteActions({
         }
       });
       if (!response.ok) {
-        // TODO: Review Error messages on this component
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`Error while adding a note. Request Status Code: ${response.status}`);
       }
       const { newNoteId } = await response.json();
       setNotes((prevNotes) => [
@@ -47,14 +47,7 @@ export default function NoteActions({
 
   async function getNotesAccordingToStatus(notesStatus: boolean) {
     try {
-      const queryParams: GetNotesParams = `areActive=${notesStatus}`;
-      const response = await fetch(`/notes?${queryParams}`);
-      if (!response.ok) {
-        // TODO: Review Error messages on this component
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const notes: NoteT[] = await response.json();
-      setNotes(notes);
+      getNotes(setNotes, notesStatus);
       setIsShowingActiveNotes(notesStatus);
     } catch (error) {
       console.error("Error while creating a new note:", error);
@@ -70,7 +63,7 @@ export default function NoteActions({
         iconProps={iconProps}
         onClick={() => getNotesAccordingToStatus(!isShowingActiveNotes)}
       />
-      <SearchBar />
+      <SearchBar setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes}/>
       {isShowingActiveNotes && (
         <Button
           text="Add"
