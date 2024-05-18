@@ -5,7 +5,7 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "@backend/types";
-import { getNotes } from "../lib/utils";
+import { fetchNotes } from "../lib/utils";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -47,7 +47,7 @@ export default function NoteActions({
 
   async function getNotesAccordingToStatus(notesStatus: boolean) {
     try {
-      getNotes(setNotes, notesStatus);
+      fetchNotes(setNotes, notesStatus);
       setIsShowingActiveNotes(notesStatus);
     } catch (error) {
       console.error("Error while creating a new note:", error);

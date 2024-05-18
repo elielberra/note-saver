@@ -29,4 +29,3 @@ export interface SetNoteStatusBody {
   isActive: boolean;
 }
 
-export type GetNotesParams = "areActive=true" | "areActive=false";

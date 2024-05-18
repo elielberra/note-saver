@@ -1,12 +1,12 @@
-import { GetNotesParams, NoteT } from "@backend/types";
+import { NoteT } from "@backend/types";
 
-export async function getNotes(
+export async function fetchNotes(
   setNotes: (value: React.SetStateAction<NoteT[]>) => void,
-  notesStatus: boolean
+  notesStatus: boolean,
+  filteringText: string | null = null
 ) {
-  const queryParams: GetNotesParams = `areActive=${notesStatus}`;
   try {
-    const response = await fetch(`/notes?${queryParams}`);
+    const response = await fetch(`/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ''}`);
   if (!response.ok) {
     throw new Error(`Error while fetching the notes. Request Status Code: ${response.status}`);
   }
