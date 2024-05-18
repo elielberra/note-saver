@@ -5,16 +5,14 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import debounce from "lodash/debounce";
 
 export type NoteProps = {
-  id: NoteT["noteId"];
-  content: NoteT["noteContent"];
-  tags: NoteT["tags"];
-  isActive: NoteT["isActive"];
+  note: NoteT;
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   isShowingActiveNotes: boolean;
 };
 
-export default function Note({ id, content, tags, setNotes, isShowingActiveNotes }: NoteProps) {
-  const [noteContent, setNoteContent] = useState(content);
+export default function Note({ note , setNotes, isShowingActiveNotes }: NoteProps) {
+  const { noteId, noteContent, tags } = note;
+  const [noteText, setNoteText] = useState(noteContent);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   async function saveNoteOnDB(newContent: string) {
@@ -24,7 +22,7 @@ export default function Note({ id, content, tags, setNotes, isShowingActiveNotes
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id, newContent })
+        body: JSON.stringify({ id: noteId, newContent })
       });
     } catch (error) {
       console.error("Error while updating note content:", error);
@@ -36,11 +34,11 @@ export default function Note({ id, content, tags, setNotes, isShowingActiveNotes
 
   function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const newContent = event.target.value;
-    setNoteContent(newContent);
+    setNoteText(newContent);
     setNotes((prevNotes) => [
-      ...prevNotes.filter((note) => note.noteId !== id),
+      ...prevNotes.filter((note) => note.noteId !== noteId),
       {
-        noteId: id,
+        noteId: noteId,
         noteContent: newContent,
         tags: tags,
         isActive: true
@@ -53,15 +51,14 @@ export default function Note({ id, content, tags, setNotes, isShowingActiveNotes
     <div className="note">
       <textarea
         className="note-content"
-        value={noteContent}
+        value={noteText}
         maxLength={500}
         onChange={handleNoteContentChange}
         ref={textareaRef}
       />
       <NoteButtons
-        noteTags={tags}
+        note={note}
         setNotes={setNotes}
-        noteId={id}
         isShowingActiveNotes={isShowingActiveNotes}
       />
     </div>

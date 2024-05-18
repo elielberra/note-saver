@@ -1,13 +1,12 @@
 import Button from "./Button";
 import CrossIcon from "./icons/CrossIcon";
 import "./Tag.css";
-import { NoteProps } from "./Note";
 import { useCallback, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "@backend/types";
 
 type TagProps = {
-  tag: NoteProps["tags"][number];
+  tag: NoteT["tags"][number];
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   noteId: NoteT["noteId"];
 };

@@ -9,13 +9,13 @@ import AddIcon from "./icons/AddIcon";
 import { NoteT } from "@backend/types";
 
 export type NoteButtonsProps = {
-  noteTags: NoteProps["tags"];
+  note: NoteT;
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
-  noteId: NoteT["noteId"];
   isShowingActiveNotes: boolean;
 };
 
-export default function NoteButtons({ noteTags, setNotes, noteId, isShowingActiveNotes }: NoteButtonsProps) {
+export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: NoteButtonsProps) {
+  const { noteId, tags, isActive } = note;
   async function deleteNote() {
     setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     try {
@@ -70,14 +70,14 @@ export default function NoteButtons({ noteTags, setNotes, noteId, isShowingActiv
     }
   }
 
-  async function archiveNote() {
+  async function changeNoteStatus(noteStatus: boolean) {
     try {
       const response = await fetch("/set-note-status", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ noteId, isActive: false })
+        body: JSON.stringify({ noteId, isActive: noteStatus })
       });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -99,15 +99,16 @@ export default function NoteButtons({ noteTags, setNotes, noteId, isShowingActiv
           onClick={deleteNote}
         />
         <Button
+        // TODO: Change id name and classes
           id="archive-btn"
           className="note-btn del-arch-btn"
           Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
           iconProps={{ height: 17 }}
-          onClick={archiveNote}
+          onClick={() => changeNoteStatus(!isActive)}
         />
       </div>
       <div id="tags">
-        {noteTags.map((tag) => (
+        {tags.map((tag) => (
           <Tag key={tag.tagId} tag={tag} setNotes={setNotes} noteId={noteId} />
         ))}
         <Button

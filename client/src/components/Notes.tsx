@@ -14,10 +14,7 @@ export default function Notes({notes, setNotes, isShowingActiveNotes}: NotesProp
       {notes.map((note) => (
         <Note
           key={note.noteId}
-          id={note.noteId}
-          content={note.noteContent}
-          tags={note.tags}
-          isActive={note.isActive}
+          note={note}
           setNotes={setNotes}
           isShowingActiveNotes={isShowingActiveNotes}
         />
