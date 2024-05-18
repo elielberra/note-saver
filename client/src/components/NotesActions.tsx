@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "@backend/types";
 import { fetchNotes } from "../lib/utils";
+import { useState } from "react";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -17,6 +18,7 @@ export default function NoteActions({
   isShowingActiveNotes,
   setIsShowingActiveNotes
 }: NoteActionsProps) {
+  const [searchText, setSearchText] = useState("");
   const iconProps = { height: 20, fill: "#D9D9D9" };
 
   async function addNote() {
@@ -49,6 +51,7 @@ export default function NoteActions({
     try {
       fetchNotes(setNotes, notesStatus);
       setIsShowingActiveNotes(notesStatus);
+      setSearchText("");
     } catch (error) {
       console.error("Error while creating a new note:", error);
     }
@@ -63,7 +66,12 @@ export default function NoteActions({
         iconProps={iconProps}
         onClick={() => getNotesAccordingToStatus(!isShowingActiveNotes)}
       />
-      <SearchBar setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes}/>
+      <SearchBar
+        setNotes={setNotes}
+        isShowingActiveNotes={isShowingActiveNotes}
+        searchText={searchText}
+        setSearchText={setSearchText}
+      />
       {isShowingActiveNotes && (
         <Button
           text="Add"

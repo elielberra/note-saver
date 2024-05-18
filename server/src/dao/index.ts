@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export async function getNotes(areActive: boolean) {
+export async function getNotes(areActive: boolean, filteringText: string | undefined) {
   const dbClient = getDBClient();
   const query = `SELECT
                   n.id AS "noteId",
@@ -21,6 +21,7 @@ export async function getNotes(areActive: boolean) {
                   tags t ON n.id = t.note_id
                 WHERE
                   n.is_active = ${areActive}
+                  ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ''}
                 GROUP BY
                   n.id, n.content, n.is_active;`;
   try {

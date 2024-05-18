@@ -1,23 +1,44 @@
-import './SearchBar.css';
-import MaginfyingGlassIcon from '../components/icons/MagnifyingGlassIcon'
-import { NoteT } from '@backend/types';
-import { useState } from 'react';
+import "./SearchBar.css";
+import MaginfyingGlassIcon from "../components/icons/MagnifyingGlassIcon";
+import { NoteT } from "@backend/types";
+import { FormEventHandler, useState } from "react";
+import { fetchNotes } from "../lib/utils";
 
 type SearchBarProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   isShowingActiveNotes: boolean;
-}
+  searchText: string;
+  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  
+};
 
-export default function SearchBar({setNotes, isShowingActiveNotes}: SearchBarProps) {
-    const [searchText, setSearchText] = useState("");
+export default function SearchBar({ setNotes, isShowingActiveNotes, searchText, setSearchText }: SearchBarProps) {
 
-    return (
-        <div id="search-bar">
-            <form id="search-form">
-                <input placeholder="Search by tag..." id="search-input" value={searchText} />
-                <button type="submit" id="search-button">
-                <MaginfyingGlassIcon width="95%"/>
-                </button>
-            </form>
-        </div>)
+  async function filterNotes(event: React.ChangeEvent<HTMLInputElement>) {
+    const filteringText = event.target.value;
+    setSearchText(filteringText);
+    if (!filteringText) fetchNotes(setNotes, isShowingActiveNotes);
+    fetchNotes(setNotes, isShowingActiveNotes, filteringText);
+  }
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
+    fetchNotes(setNotes, isShowingActiveNotes, searchText);
+  };
+
+  return (
+    <div id="search-bar">
+      <form id="search-form" onSubmit={handleSubmit}>
+        <input
+          placeholder="Search by tag..."
+          id="search-input"
+          value={searchText}
+          onChange={filterNotes}
+        />
+        <button type="submit" id="search-button">
+          <MaginfyingGlassIcon width="95%" />
+        </button>
+      </form>
+    </div>
+  );
 }

@@ -29,7 +29,8 @@ app.get("/test", async (req: Request, res: Response) => {
 
 app.get("/notes", async (req: Request, res: Response) => {
   const areActive = req.query.areActive === 'true';
-  const notes = await getNotes(areActive);
+  const filteringText= req.query.filteringText as string | undefined ;
+  const notes = await getNotes(areActive, filteringText);
   res.status(200).send(notes);
 });
 
