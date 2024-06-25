@@ -39,7 +39,6 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         headers: {
           "Content-Type": "application/json"
         },
-        // TODO?: Add typing to this body
         body: JSON.stringify({ noteId })
       });
       if (!response.ok) {

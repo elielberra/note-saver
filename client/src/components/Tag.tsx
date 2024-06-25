@@ -91,7 +91,6 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       <input
         className="tag-text"
         type="text"
-        // TODO: Add scrollbar for input overflow
         maxLength={25}
         onChange={handleInputChange}
         value={tagContent ?? ''}
