@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 if ! command -v psql &> /dev/null; then
     read -p "You don't have postgresql installed, do you want to install it? \
@@ -15,9 +15,11 @@ It is required for this App to run correctly [Yy/Nn]" -n 1 -r
     fi
 fi
 
-source "../../.env"
-echo "${DB_PASSWORD}"
-sudo -u postgres psql -c "ALTER USER postgres with encrypted password '${DB_PASSWORD}';"
+scriptDir=$(realpath $(dirname $0))
+serverProjectDir=$(dirname $(dirname "${scriptDir}"))
+cd $serverProjectDir
+source ".env"
+sudo -u postgres -H psql -c "ALTER USER postgres with encrypted password '${DB_PASSWORD}';"
 PATTERN_TO_REPLACE="^local\s\+all\s\+postgres.*"
 REPLACEMENT_STRING="local   all             postgres                                scram-sha-256"
 PSQL_VERSION=$(psql --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
