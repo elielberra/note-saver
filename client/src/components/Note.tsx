@@ -1,7 +1,7 @@
 import NoteButtons from "./NoteButtons";
 import "./Note.css";
 import { NoteT } from "@backend/types";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef } from "react";
 import debounce from "lodash/debounce";
 
 export type NoteProps = {

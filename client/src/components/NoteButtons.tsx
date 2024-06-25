@@ -4,7 +4,6 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tag from "./Tag";
 import "./NoteButtons.css";
-import { NoteProps } from "./Note";
 import AddIcon from "./icons/AddIcon";
 import { NoteT } from "@backend/types";
 
