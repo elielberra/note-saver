@@ -10,7 +10,7 @@ import {
   updateNoteStatus,
   updateTagContent
 } from "./dao";
-import { CreateTagBody, DeleteNoteBody, SetNoteStatusBody, UpdateTagBody } from "./types/types";
+import { CreateTagBody, DelenteEntityBody, SetNoteStatusBody, UpdateTagBody } from "./types/types";
 
 dotenv.config();
 const app = express();
@@ -96,7 +96,7 @@ app.post("/create-tag", async (req: Request<{}, {}, CreateTagBody>, res: Respons
   }
 });
 
-app.delete("/delete-note", async (req: Request<{}, {}, DeleteNoteBody>, res: Response) => {
+app.delete("/delete-note", async (req: Request<{}, {}, DelenteEntityBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteNote(id);
@@ -110,7 +110,7 @@ app.delete("/delete-note", async (req: Request<{}, {}, DeleteNoteBody>, res: Res
   }
 });
 
-app.delete("/delete-tag", async (req: Request<{}, {}, DeleteNoteBody>, res: Response) => {
+app.delete("/delete-tag", async (req: Request<{}, {}, DelenteEntityBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteTag(id);

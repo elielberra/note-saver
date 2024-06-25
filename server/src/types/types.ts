@@ -15,7 +15,7 @@ export interface UpdateTagBody {
   newContent: string;
 }
 
-export interface DeleteNoteBody {
+export interface DelenteEntityBody {
   id: number;
 }
 
