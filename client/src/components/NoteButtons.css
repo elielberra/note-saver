@@ -13,17 +13,17 @@
   margin: 2.5px;
 }
 
-#del-arch-btns {
+#del-status-btns {
   display: flex;
   width: 20%;
 }
 
-.del-arch-btn {
+.del-status-btn {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
 }
 
-.del-arch-btn:hover {
+.del-status-btn:hover {
   cursor: pointer;
 }
 
@@ -31,6 +31,6 @@
   background: red;
 }
 
-#archive-btn {
+#status-btn {
   background: #b2b2b2;
 }

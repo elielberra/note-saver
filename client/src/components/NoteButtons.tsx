@@ -90,18 +90,17 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   return (
     <div className="note-btns">
-      <div id="del-arch-btns">
+      <div id="del-status-btns">
         <Button
           id="delete-btn"
-          className="note-btn del-arch-btn"
+          className="note-btn del-status-btn"
           Icon={DeleteIcon}
           iconProps={{ height: 17, fill: "white" }}
           onClick={deleteNote}
         />
         <Button
-        // TODO: Change id name and classes
-          id="archive-btn"
-          className="note-btn del-arch-btn"
+          id="status-btn"
+          className="note-btn del-status-btn"
           Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
           iconProps={{ height: 17 }}
           onClick={() => changeNoteStatus(!isActive)}
