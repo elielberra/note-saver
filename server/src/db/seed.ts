@@ -4,9 +4,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-async function createDatabase(client: Client) {
-  const createDBQuery = `SELECT 'CREATE DATABASE ${process.env.DB_NAME}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${process.env.DB_NAME}')`;
+async function dropAndCreateDatabase(client: Client) {
+  const dropBDIfExists = `DROP DATABASE IF EXISTS ${process.env.DB_NAME};`
+  const createDBQuery = `CREATE DATABASE ${process.env.DB_NAME};`
   try {
+    await client.query(dropBDIfExists);
     await client.query(createDBQuery);
   } catch (error) {
     console.error("Error running the query", error);
@@ -16,7 +18,6 @@ async function createDatabase(client: Client) {
 }
 
 async function runQueries(client: Client) {
-  const deleteNotesTableQuery = `DROP TABLE IF EXISTS ${process.env.DB_NOTES_TABLE} CASCADE`;
   const createNotesTableQuery = `CREATE TABLE ${process.env.DB_NOTES_TABLE}(
         id SERIAL PRIMARY KEY,
         content VARCHAR(500) NOT NULL,
@@ -39,10 +40,9 @@ async function runQueries(client: Client) {
   )`;
   const inserTagsQuery: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES ($1, $2), ($3, $4)`,
-   values: ["tag1", 1, "tag2", 1]
+    values: ["tag1", 1, "tag2", 1]
   };
   const queries = [
-    deleteNotesTableQuery,
     createNotesTableQuery,
     insertNotesQuery,
     deleteTagsTableQuery,
@@ -64,7 +64,7 @@ async function runQueries(client: Client) {
 async function main() {
   const dbClientWithNoDB = getDBClient(false);
   await connectToDB(dbClientWithNoDB);
-  await createDatabase(dbClientWithNoDB);
+  await dropAndCreateDatabase(dbClientWithNoDB);
   const dbClientWithDB = getDBClient();
   await connectToDB(dbClientWithDB);
   await runQueries(dbClientWithDB);
