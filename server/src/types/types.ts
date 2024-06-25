@@ -10,17 +10,16 @@ export interface NoteT {
   isActive: boolean;
 }
 
-// TODO: Replace Req for Note or Tag
-export interface UpdateReqBody {
+export interface UpdateTagBody {
   id: number;
   newContent: string;
 }
 
-export interface DeleteReqBody {
+export interface DeleteNoteBody {
   id: number;
 }
 
-export interface CreateReqBody {
+export interface CreateTagBody {
   noteId: number;
 }
 

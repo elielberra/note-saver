@@ -10,7 +10,7 @@ import {
   updateNoteStatus,
   updateTagContent
 } from "./dao";
-import { CreateReqBody, DeleteReqBody, SetNoteStatusBody, UpdateReqBody } from "./types/types";
+import { CreateTagBody, DeleteNoteBody, SetNoteStatusBody, UpdateTagBody } from "./types/types";
 
 dotenv.config();
 const app = express();
@@ -34,7 +34,7 @@ app.get("/notes", async (req: Request, res: Response) => {
   res.status(200).send(notes);
 });
 
-app.post("/update-tag-content", async (req: Request<{}, {}, UpdateReqBody>, res: Response) => {
+app.post("/update-tag-content", async (req: Request<{}, {}, UpdateTagBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
   if (newContent === null || newContent === undefined)
@@ -52,7 +52,7 @@ app.post("/update-tag-content", async (req: Request<{}, {}, UpdateReqBody>, res:
   }
 });
 
-app.post("/update-note-content", async (req: Request<{}, {}, UpdateReqBody>, res: Response) => {
+app.post("/update-note-content", async (req: Request<{}, {}, UpdateTagBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter noteId is missing in Request");
   if (!newContent) return res.status(400).send("Query parameter newContent is missing in Request");
@@ -82,7 +82,7 @@ app.post("/create-note", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/create-tag", async (req: Request<{}, {}, CreateReqBody>, res: Response) => {
+app.post("/create-tag", async (req: Request<{}, {}, CreateTagBody>, res: Response) => {
   const { noteId } = req.body;
   try {
     const newTagId = await createTag(noteId);
@@ -96,7 +96,7 @@ app.post("/create-tag", async (req: Request<{}, {}, CreateReqBody>, res: Respons
   }
 });
 
-app.delete("/delete-note", async (req: Request<{}, {}, DeleteReqBody>, res: Response) => {
+app.delete("/delete-note", async (req: Request<{}, {}, DeleteNoteBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteNote(id);
@@ -110,7 +110,7 @@ app.delete("/delete-note", async (req: Request<{}, {}, DeleteReqBody>, res: Resp
   }
 });
 
-app.delete("/delete-tag", async (req: Request<{}, {}, DeleteReqBody>, res: Response) => {
+app.delete("/delete-tag", async (req: Request<{}, {}, DeleteNoteBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteTag(id);
