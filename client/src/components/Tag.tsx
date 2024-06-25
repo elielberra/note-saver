@@ -1,7 +1,7 @@
 import Button from "./Button";
 import CrossIcon from "./icons/CrossIcon";
 import "./Tag.css";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "@backend/types";
 
@@ -13,20 +13,6 @@ type TagProps = {
 
 export default function Tag({ tag, setNotes, noteId }: TagProps) {
   const [tagContent, setTagContent] = useState(tag.tagContent);
-  async function saveTagOnDB(newContent: string) {
-    try {
-      await fetch("/update-tag-content", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id: tag.tagId, newContent })
-      });
-    } catch (error) {
-      console.error("Error while updating tag content:", error);
-    }
-  }
-
   async function deleteTag() {
     // TODO: setNotes logic is repeated, evaluate ways to DRY
     setNotes((prevNotes) => {
@@ -57,8 +43,20 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
     }
   }
 
-  // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
-  const delayedTagSave = useCallback(debounce(saveTagOnDB, 500), []);
+  const saveTagOnDB = useCallback(async (newContent: string) => {
+    try {
+      await fetch("/update-tag-content", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: tag.tagId, newContent })
+      });
+    } catch (error) {
+      console.error("Error while updating tag content:", error);
+    }
+  }, [tag.tagId]);
+  const delayedTagSave = useMemo(() => debounce(saveTagOnDB, 500), [saveTagOnDB]);
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newTagContent = event.target.value || "";

@@ -1,7 +1,7 @@
 import NoteButtons from "./NoteButtons";
 import "./Note.css";
 import { NoteT } from "@backend/types";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
 
 export type NoteProps = {
@@ -10,12 +10,11 @@ export type NoteProps = {
   isShowingActiveNotes: boolean;
 };
 
-export default function Note({ note , setNotes, isShowingActiveNotes }: NoteProps) {
+export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps) {
   const { noteId, noteContent, tags } = note;
   const [noteText, setNoteText] = useState(noteContent);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  async function saveNoteOnDB(newContent: string) {
+  const saveNoteOnDB = useCallback(async (newContent: string) => {
     try {
       await fetch("/update-note-content", {
         method: "POST",
@@ -27,10 +26,8 @@ export default function Note({ note , setNotes, isShowingActiveNotes }: NoteProp
     } catch (error) {
       console.error("Error while updating note content:", error);
     }
-  }
-
-  // TODO: This trows a warning, for better understanding and solution read https://kyleshevlin.com/debounce-and-throttle-callbacks-with-react-hooks/
-  const delayedNoteSave = useCallback(debounce(saveNoteOnDB, 500), []);
+  }, [noteId])
+  const delayedNoteSave = useMemo(() => debounce(saveNoteOnDB, 500), [saveNoteOnDB]);
 
   function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const newContent = event.target.value;
