@@ -1,13 +1,13 @@
 import { QueryConfig, QueryResult } from "pg";
-import { getDBClient } from "../db/utils";
-import { NoteT } from "../types/types";
+import { NoteT, TagT } from "../types/types";
 import dotenv from "dotenv";
+import { runQuery } from "./utils"
 
 dotenv.config();
 
-export async function getNotes(areActive: boolean, filteringText: string | undefined) {
-  const dbClient = getDBClient();
-  const query = `SELECT
+export async function getNotes(areActive: NoteT["isActive"], filteringText: string | undefined) {
+  const query: QueryConfig = {
+    text: `SELECT
                   n.id AS "noteId",
                   n.content AS "noteContent",
                   n.is_active as "isActive",
@@ -23,139 +23,68 @@ export async function getNotes(areActive: boolean, filteringText: string | undef
                   n.is_active = ${areActive}
                   ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ''}
                 GROUP BY
-                  n.id, n.content, n.is_active;`;
-  try {
-    dbClient.connect();
-    const notes: QueryResult<NoteT> = await dbClient.query(query);
-    return notes.rows;
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+                  n.id, n.content, n.is_active;`
+  };
+  const result: QueryResult<NoteT> = await runQuery(query);
+  return result.rows;
 }
 
-export async function updateNoteContent(noteId: number, newContent: string) {
-  const dbClient = getDBClient();
+export async function updateNoteContent(noteId: NoteT["noteId"], newContent: NoteT["noteContent"]) {
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_NOTES_TABLE} SET content = $1 WHERE id = $2`,
     values: [newContent, noteId]
   };
-  try {
-    dbClient.connect();
-    await dbClient.query(query);
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  await runQuery(query);
 }
 
-// TODO: Use a more efficient design to avoid code duplication
-// Pearhaps send the query as dependency injection
-// Set param type from the types of the entities
-export async function updateTagContent(tagId: number, newContent: string) {
-  const dbClient = getDBClient();
+export async function updateTagContent(tagId: TagT["tagId"], newContent: TagT["tagContent"]) {
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_TAGS_TABLE} SET tag = $1 WHERE id = $2`,
     values: [newContent, tagId]
   };
-  try {
-    dbClient.connect();
-    await dbClient.query(query);
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  await runQuery(query);
 }
 
 export async function createNote() {
-  const dbClient = getDBClient();
-  const query = `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`;
-  try {
-    dbClient.connect();
-    const res: QueryResult<{ id: number }> = await dbClient.query(query);
-    const insertedId = res.rows[0].id;
-    return insertedId;
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  const query: QueryConfig = {
+    text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`
+  };
+  const res: QueryResult<{ id: number }> = await runQuery(query);
+  const insertedId = res.rows[0].id;
+  return insertedId;
 }
 
-export async function createTag(noteId: number) {
-  const dbClient = getDBClient();
+export async function createTag(tagId: TagT["tagId"]) {
   const query: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES('', $1) RETURNING id`,
-    values: [noteId]
+    values: [tagId]
   };
-  try {
-    dbClient.connect();
-    const res: QueryResult<{ id: number }> = await dbClient.query(query);
-    const insertedId = res.rows[0].id;
-    return insertedId;
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  const result: QueryResult<{ id: number }> = await runQuery(query);
+  const insertedId = result.rows[0].id;
+  return insertedId;
 }
 
-export async function deleteNote(id: number) {
-  const dbClient = getDBClient();
+export async function deleteNote(id: NoteT["noteId"]) {
   const query: QueryConfig = {
     text: `DELETE FROM ${process.env.DB_NOTES_TABLE} WHERE id = $1`,
     values: [id]
   };
-  try {
-    dbClient.connect();
-    await dbClient.query(query);
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  await runQuery(query);
 }
 
-export async function deleteTag(id: number) {
-  const dbClient = getDBClient();
+export async function deleteTag(id: TagT["tagId"]) {
   const query: QueryConfig = {
     text: `DELETE FROM ${process.env.DB_TAGS_TABLE} WHERE id = $1`,
     values: [id]
   };
-  try {
-    dbClient.connect();
-    await dbClient.query(query);
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  await runQuery(query);
 }
 
-export async function updateNoteStatus(noteId: number, isActive: boolean) {
-  const dbClient = getDBClient();
+export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT["isActive"]) {
   console.debug(`UPDATE ${process.env.DB_NOTES_TABLE} SET is_active = $1 WHERE id = $2`)
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_NOTES_TABLE} SET is_active = $1 WHERE id = $2`,
     values: [isActive, noteId]
   };
-  try {
-    dbClient.connect();
-    await dbClient.query(query);
-  } catch (error) {
-    console.error(`Error executing query: ${query}`);
-    throw error;
-  } finally {
-    dbClient.end();
-  }
+  await runQuery(query);
 }
