@@ -6,7 +6,9 @@ export async function fetchNotes(
   filteringText: string | null = null
 ) {
   try {
-    const response = await fetch(`/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ''}`);
+    const response = await fetch(
+      `/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ""}`
+    );
     if (!response.ok) {
       throw new Error(`Error while fetching the notes. Response Status Code: ${response.status}`);
     }
@@ -14,10 +16,15 @@ export async function fetchNotes(
     setNotes(activeNotes);
   } catch (error) {
     console.error("Error while fetching the notes");
-    if (!isProductionEnv()) console.error(error)
+    if (!isProductionEnv()) console.error(error);
   }
 }
 
 export function isProductionEnv() {
-  return process.env.NODE_ENV === 'production';
+  return process.env.NODE_ENV === "production";
+}
+
+export function handleErrorLogging(error: unknown, message: String) {
+  console.error(message);
+  if (!isProductionEnv() && error instanceof Error) console.error(error);
 }

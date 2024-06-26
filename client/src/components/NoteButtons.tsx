@@ -6,7 +6,7 @@ import Tag from "./Tag";
 import "./NoteButtons.css";
 import AddIcon from "./icons/AddIcon";
 import { NoteT } from "@backend/types";
-import { isProductionEnv } from "../lib/utils";
+import { handleErrorLogging } from "../lib/utils";
 
 export type NoteButtonsProps = {
   note: NoteT;
@@ -27,8 +27,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         body: JSON.stringify({ id: noteId })
       });
     } catch (error) {
-      console.error("Error while deleting a note");
-      if (!isProductionEnv()) console.error(error);
+      handleErrorLogging(error, "Error while deleting a note");
     }
   }
 
@@ -66,8 +65,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         return sortedNewNotes;
       });
     } catch (error) {
-      console.error("Error while creating a new tag");
-      if (!isProductionEnv()) console.error(error);
+      handleErrorLogging(error, "Error while creating a new tag")
     }
   }
 
@@ -85,8 +83,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      console.error("Error while creating a new tag");
-      if (!isProductionEnv()) console.error(error);
+      handleErrorLogging(error, "Error while creating a new tag")
     }
   }
 

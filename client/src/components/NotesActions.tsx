@@ -5,7 +5,7 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "@backend/types";
-import { fetchNotes, isProductionEnv } from "../lib/utils";
+import { fetchNotes, handleErrorLogging } from "../lib/utils";
 import { useState } from "react";
 
 type NoteActionsProps = {
@@ -43,8 +43,7 @@ export default function NoteActions({
         }
       ]);
     } catch (error) {
-      console.error("Error while creating a new note");
-      if (!isProductionEnv()) console.error(error);
+      handleErrorLogging(error, "Error while creating a new note");
     }
   }
 
@@ -54,8 +53,7 @@ export default function NoteActions({
       setIsShowingActiveNotes(notesStatus);
       setSearchText("");
     } catch (error) {
-      console.error("Error while creating a new note");
-      if (!isProductionEnv()) console.error(error);
+      handleErrorLogging(error, "Error while creating a new note");
     }
   }
   return (
