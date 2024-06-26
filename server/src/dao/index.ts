@@ -81,7 +81,6 @@ export async function deleteTag(id: TagT["tagId"]) {
 }
 
 export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT["isActive"]) {
-  console.debug(`UPDATE ${process.env.DB_NOTES_TABLE} SET is_active = $1 WHERE id = $2`)
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_NOTES_TABLE} SET is_active = $1 WHERE id = $2`,
     values: [isActive, noteId]
