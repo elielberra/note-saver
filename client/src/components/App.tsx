@@ -7,10 +7,11 @@ import { fetchNotes } from "../lib/utils";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteT[]>([]);
+  console.debug("notes", notes)
   const [isShowingActiveNotes, setIsShowingActiveNotes] = useState(true);
   useEffect(() => {
     fetchNotes(setNotes, isShowingActiveNotes);
-  }, []);
+  }, [isShowingActiveNotes]);
   return (
     <>
       <Header />
