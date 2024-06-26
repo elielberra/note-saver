@@ -17,15 +17,18 @@ export type NoteButtonsProps = {
 export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: NoteButtonsProps) {
   const { noteId, tags, isActive } = note;
   async function deleteNote() {
-    setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     try {
-      await fetch("/delete-note", {
+      const response = await fetch("/delete-note", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ id: noteId })
       });
+      if (!response.ok) {
+        throw new Error(`Error while deleting a note. Response Status Code: ${response.status}`);
+      }
+      setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
       handleErrorLogging(error, "Error while deleting a note");
     }
@@ -33,7 +36,6 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function addTag() {
     try {
-      // TODO: Review logic of optimistic updates
       const response = await fetch("/create-tag", {
         method: "POST",
         headers: {
@@ -83,7 +85,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new tag")
+      handleErrorLogging(error, "Error while updating the note status")
     }
   }
 
