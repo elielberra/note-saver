@@ -3,6 +3,7 @@ import "./Note.css";
 import { NoteT } from "@backend/types";
 import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
+import { isProductionEnv } from "../lib/utils";
 
 export type NoteProps = {
   note: NoteT;
@@ -24,7 +25,8 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
         body: JSON.stringify({ id: noteId, newContent })
       });
     } catch (error) {
-      console.error("Error while updating note content:", error);
+      console.error("Error while updating note content");
+      if (!isProductionEnv()) console.error(error);
     }
   }, [noteId])
   const delayedNoteSave = useMemo(() => debounce(saveNoteOnDB, 500), [saveNoteOnDB]);

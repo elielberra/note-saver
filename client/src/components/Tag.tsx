@@ -4,6 +4,7 @@ import "./Tag.css";
 import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "@backend/types";
+import { isProductionEnv } from "../lib/utils";
 
 type TagProps = {
   tag: NoteT["tags"][number];
@@ -39,23 +40,28 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         body: JSON.stringify({ id: tag.tagId })
       });
     } catch (error) {
-      console.error("Error while updating note content:", error);
+      console.error("Error while updating note content");
+      if (!isProductionEnv()) console.error(error);
     }
   }
 
-  const saveTagOnDB = useCallback(async (newContent: string) => {
-    try {
-      await fetch("/update-tag-content", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id: tag.tagId, newContent })
-      });
-    } catch (error) {
-      console.error("Error while updating tag content:", error);
-    }
-  }, [tag.tagId]);
+  const saveTagOnDB = useCallback(
+    async (newContent: string) => {
+      try {
+        await fetch("/update-tag-content", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ id: tag.tagId, newContent })
+        });
+      } catch (error) {
+        console.error("Error while updating tag content");
+        if (!isProductionEnv()) console.error(error);
+      }
+    },
+    [tag.tagId]
+  );
   const delayedTagSave = useMemo(() => debounce(saveTagOnDB, 500), [saveTagOnDB]);
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -91,7 +97,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         type="text"
         maxLength={25}
         onChange={handleInputChange}
-        value={tagContent ?? ''}
+        value={tagContent ?? ""}
       />
       <Button
         className="delete-tag-icon"
