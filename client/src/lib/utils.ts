@@ -8,7 +8,7 @@ export async function fetchNotes(
   try {
     const response = await fetch(`/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ''}`);
     if (!response.ok) {
-      throw new Error(`Error while fetching the notes. Request Status Code: ${response.status}`);
+      throw new Error(`Error while fetching the notes. Response Status Code: ${response.status}`);
     }
     const activeNotes: NoteT[] = await response.json();
     setNotes(activeNotes);

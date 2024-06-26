@@ -41,7 +41,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         body: JSON.stringify({ noteId })
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`Error while creating a tag. Response Status Code: ${response.status}`);
       }
       const { newTagId } = await response.json();
       setNotes((prevNotes) => {
@@ -78,7 +78,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         body: JSON.stringify({ noteId, isActive: noteStatus })
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`Error while updating the notes. Response Status Code: ${response.status}`);
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {

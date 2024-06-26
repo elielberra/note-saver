@@ -19,7 +19,4 @@ export default function App() {
     </>
   );
 }
-function getActiveNotes() {
-  throw new Error("Function not implemented.");
-}
 
