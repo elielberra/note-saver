@@ -4,7 +4,7 @@ import "./Tag.css";
 import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "@backend/types";
-import { handleErrorLogging } from "../lib/utils";
+import { getNewSortedNotes, getNoteToBeUpdated, handleErrorLogging } from "../lib/utils";
 
 type TagProps = {
   tag: NoteT["tags"][number];
@@ -26,9 +26,8 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       if (!response.ok) {
         throw new Error(`Error while updating the notes. Response Status Code: ${response.status}`);
       }
-      // TODO: setNotes logic is repeated, evaluate ways to DRY
       setNotes((prevNotes) => {
-        const oldNote = prevNotes.find((note) => note.noteId === noteId);
+        const oldNote = getNoteToBeUpdated(prevNotes, noteId);
         if (!oldNote) {
           throw new Error(`No corresponding note was found for the note id ${noteId}`);
         }
@@ -37,9 +36,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
           ...oldNote,
           tags: filteredTags
         };
-        const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
-        const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
-        return sortedNewNotes;
+        return getNewSortedNotes(prevNotes, noteId, newNote);
       });
     } catch (error) {
       handleErrorLogging(error, "Error while updating note content");

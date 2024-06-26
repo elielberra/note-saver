@@ -6,7 +6,7 @@ import Tag from "./Tag";
 import "./NoteButtons.css";
 import AddIcon from "./icons/AddIcon";
 import { NoteT } from "@backend/types";
-import { handleErrorLogging } from "../lib/utils";
+import { getNewSortedNotes, getNoteToBeUpdated, handleErrorLogging } from "../lib/utils";
 
 export type NoteButtonsProps = {
   note: NoteT;
@@ -48,10 +48,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       }
       const { newTagId } = await response.json();
       setNotes((prevNotes) => {
-        const oldNote = prevNotes.find((note) => note.noteId === noteId);
-        if (!oldNote) {
-          throw new Error(`No corresponding note was found for the note id ${noteId}`);
-        }
+        const oldNote = getNoteToBeUpdated(prevNotes, noteId);
         const newNote: NoteT = {
           ...oldNote,
           tags: [
@@ -62,12 +59,10 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
             }
           ]
         };
-        const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
-        const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
-        return sortedNewNotes;
+        return getNewSortedNotes(prevNotes, noteId, newNote);
       });
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new tag")
+      handleErrorLogging(error, "Error while creating a new tag");
     }
   }
 
@@ -85,7 +80,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      handleErrorLogging(error, "Error while updating the note status")
+      handleErrorLogging(error, "Error while updating the note status");
     }
   }
 
@@ -111,13 +106,15 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         {tags.map((tag) => (
           <Tag key={tag.tagId} tag={tag} setNotes={setNotes} noteId={noteId} />
         ))}
-        {tags.length < 2 && <Button
-          id="add-tag-btn"
-          className="note-btn"
-          Icon={AddIcon}
-          iconProps={{ height: 37.5, addBackgroundCircle: true }}
-          onClick={addTag}
-        />}
+        {tags.length < 2 && (
+          <Button
+            id="add-tag-btn"
+            className="note-btn"
+            Icon={AddIcon}
+            iconProps={{ height: 37.5, addBackgroundCircle: true }}
+            onClick={addTag}
+          />
+        )}
       </div>
     </div>
   );

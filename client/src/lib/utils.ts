@@ -28,3 +28,21 @@ export function handleErrorLogging(error: unknown, message: String) {
   console.error(message);
   if (!isProductionEnv() && error instanceof Error) console.error(error);
 }
+
+export function getNoteToBeUpdated(prevNotes: NoteT[], noteToBeUpdatedId: NoteT["noteId"]) {
+  const oldNote = prevNotes.find((note) => note.noteId === noteToBeUpdatedId);
+  if (!oldNote) {
+    throw new Error(`No corresponding note was found for the note id ${noteToBeUpdatedId}`);
+  }
+  return oldNote;
+}
+
+export function getNewSortedNotes(
+  prevNotes: NoteT[],
+  noteToBeUpdatedId: NoteT["noteId"],
+  newNote: NoteT
+) {
+  const newNotes = [...prevNotes.filter((note) => note.noteId !== noteToBeUpdatedId), newNote];
+  const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
+  return sortedNewNotes;
+}
