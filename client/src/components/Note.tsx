@@ -34,17 +34,9 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
   const delayedNoteSave = useMemo(() => debounce(saveNoteOnDB, 500), [saveNoteOnDB]);
 
   function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    console.log("note content changing")
     const newContent = event.target.value;
     setNoteText(newContent);
-    setNotes((prevNotes) => [
-      ...prevNotes.filter((note) => note.noteId !== noteId),
-      {
-        noteId: noteId,
-        noteContent: newContent,
-        tags: tags,
-        isActive: true
-      }
-    ]);
     delayedNoteSave(event.target.value);
   }
 

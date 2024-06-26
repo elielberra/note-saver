@@ -67,22 +67,6 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newTagContent = event.target.value || "";
     setTagContent(newTagContent);
-    setNotes((prevNotes) => {
-      const oldNote = prevNotes.find((note) => note.noteId === noteId);
-      if (!oldNote) {
-        throw new Error(`No corresponding note was found for the note id ${noteId}`);
-      }
-      const oldTags = oldNote.tags.filter((oldTag) => oldTag.tagId !== tag.tagId);
-      const tagsUnsorted = [...oldTags, { tagId: tag.tagId, tagContent: newTagContent }];
-      const tagsSortedAsc = tagsUnsorted.sort((a, b) => a.tagId - b.tagId);
-      const newNote: NoteT = {
-        ...oldNote,
-        tags: tagsSortedAsc
-      };
-      const newNotes = [...prevNotes.filter((note) => note.noteId !== noteId), newNote];
-      const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
-      return sortedNewNotes;
-    });
     delayedTagSave(newTagContent);
   }
 
