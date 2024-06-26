@@ -111,13 +111,13 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         {tags.map((tag) => (
           <Tag key={tag.tagId} tag={tag} setNotes={setNotes} noteId={noteId} />
         ))}
-        <Button
+        {tags.length < 2 && <Button
           id="add-tag-btn"
           className="note-btn"
           Icon={AddIcon}
           iconProps={{ height: 37.5, addBackgroundCircle: true }}
           onClick={addTag}
-        />
+        />}
       </div>
     </div>
   );
