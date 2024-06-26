@@ -85,7 +85,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       <Button
         className="delete-tag-icon"
         Icon={CrossIcon}
-        iconProps={{ fill: "white", height: 19 }}
+        iconProps={{ fill: "white", height: 30 }}
         onClick={deleteTag}
       />
     </div>

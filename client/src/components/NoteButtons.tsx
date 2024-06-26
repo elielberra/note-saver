@@ -96,14 +96,14 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
           id="delete-btn"
           className="note-btn del-status-btn"
           Icon={DeleteIcon}
-          iconProps={{ height: 17, fill: "white" }}
+          iconProps={{ height: 27, fill: "white" }}
           onClick={deleteNote}
         />
         <Button
           id="status-btn"
           className="note-btn del-status-btn"
           Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
-          iconProps={{ height: 17 }}
+          iconProps={{ height: 27 }}
           onClick={() => changeNoteStatus(!isActive)}
         />
       </div>
@@ -115,7 +115,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
           id="add-tag-btn"
           className="note-btn"
           Icon={AddIcon}
-          iconProps={{ height: 22, addBackgroundCircle: true }}
+          iconProps={{ height: 37.5, addBackgroundCircle: true }}
           onClick={addTag}
         />
       </div>

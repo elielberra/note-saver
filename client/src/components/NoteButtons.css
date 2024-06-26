@@ -1,11 +1,13 @@
 .note-btns {
   width: 100%;
+  height: 50px;
   display: flex;
-  align-items: end;
+  align-items: center;
+  justify-content: center;
 }
 
 .note-btn {
-  height: 30px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,4 +35,14 @@
 
 #status-btn {
   background: #b2b2b2;
+}
+
+#add-tag-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+#add-tag-btn .btn-icon:hover {
+  cursor: pointer;
 }

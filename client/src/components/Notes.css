@@ -4,4 +4,7 @@
   margin: auto;
   padding: 20px 0;
   border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
 }

@@ -25,7 +25,8 @@
   margin-inline: 4px;
   border: 0;
   text-align: center;
-  width: 80px
+  width: 140px;
+  font-size: 20px;
 }
 
 .tag-text:focus {
@@ -40,20 +41,10 @@
   background: transparent;
   border: 0;
   padding: 0;
+  margin-right: 5px;
 }
 
 .tag .btn-icon {
   background: red;
   border-radius: 50%;
 }
-
-#add-tag-btn {
-  border: 0;
-  background: transparent;
-  padding: 0;
-}
-
-#add-tag-btn .btn-icon:hover {
-  cursor: pointer;
-}
-
