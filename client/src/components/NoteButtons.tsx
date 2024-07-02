@@ -3,10 +3,12 @@ import ArchivedIcon from "./icons/ArchivedIcon";
 import UnarchivedIcon from "./icons/UnarchivedIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import Tag from "./Tag";
+import DeleteNoteModal from "./DeleteNoteModal";
 import "./NoteButtons.css";
 import AddIcon from "./icons/AddIcon";
 import { NoteT } from "@backend/types";
 import { getNewSortedNotes, getNoteToBeUpdated, handleErrorLogging } from "../lib/utils";
+import { useState } from "react";
 
 export type NoteButtonsProps = {
   note: NoteT;
@@ -16,6 +18,7 @@ export type NoteButtonsProps = {
 
 export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: NoteButtonsProps) {
   const { noteId, tags, isActive } = note;
+  const [isDeleteNoteModalOpen, setIsDeleteNoteModalOpen] = useState(false);
   async function deleteNote() {
     try {
       const response = await fetch("/delete-note", {
@@ -84,6 +87,14 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     }
   }
 
+  function handleOpenDeleteNoteModal() {
+    setIsDeleteNoteModalOpen(true);
+  }
+
+  function handleCloseDeleteNoteModal() {
+    setIsDeleteNoteModalOpen(false);
+  }
+
   return (
     <div className="note-btns">
       <div id="del-status-btns">
@@ -92,7 +103,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
           className="note-btn del-status-btn"
           Icon={DeleteIcon}
           iconProps={{ height: 27, fill: "white" }}
-          onClick={deleteNote}
+          onClick={handleOpenDeleteNoteModal}
         />
         <Button
           id="status-btn"
@@ -115,6 +126,11 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
             onClick={addTag}
           />
         )}
+        <DeleteNoteModal
+          isOpen={isDeleteNoteModalOpen}
+          handleCloseDeleteNoteModal={handleCloseDeleteNoteModal}
+          deleteNote={deleteNote}
+        />
       </div>
     </div>
   );
