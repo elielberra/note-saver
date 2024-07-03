@@ -18,9 +18,10 @@ async function dropAndCreateDatabase(client: Client) {
 }
 
 async function runQueries(client: Client) {
+  // content character numbers must match maxLength on textarea of Note.tsx
   const createNotesTableQuery = `CREATE TABLE ${process.env.DB_NOTES_TABLE}(
         id SERIAL PRIMARY KEY,
-        content VARCHAR(500) NOT NULL,
+        content VARCHAR(2500) NOT NULL,
         is_active BOOLEAN NOT NULL
     )`;
   // Issue not solved https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/69248
