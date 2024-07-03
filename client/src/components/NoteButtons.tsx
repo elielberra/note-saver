@@ -30,7 +30,10 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         body: JSON.stringify({ id: noteId })
       });
       if (!response.ok) {
-        throw new Error(`Error while deleting a note. Response Status Code: ${response.status}`);
+        const responseBody = await response.text();
+        throw new Error(
+          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+        );
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
@@ -48,7 +51,10 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         body: JSON.stringify({ noteId })
       });
       if (!response.ok) {
-        throw new Error(`Error while creating a tag. Response Status Code: ${response.status}`);
+        const responseBody = await response.text();
+        throw new Error(
+          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+        );
       }
       const { newTagId } = await response.json();
       setNotes((prevNotes) => {
@@ -80,7 +86,10 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         body: JSON.stringify({ noteId, isActive: noteStatus })
       });
       if (!response.ok) {
-        throw new Error(`Error while updating the notes. Response Status Code: ${response.status}`);
+        const responseBody = await response.text();
+        throw new Error(
+          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+        );
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {

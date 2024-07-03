@@ -18,13 +18,19 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
   const saveNoteOnDB = useCallback(
     async (newContent: string) => {
       try {
-        await fetch("/update-note-content", {
+        const response = await fetch("/update-note-content", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ id: noteId, newContent })
         });
+        if (!response.ok) {
+          const responseBody = await response.text();
+          throw new Error(
+            `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+          );
+        }
       } catch (error) {
         handleErrorLogging(error, "Error while updating note content");
       }
@@ -34,7 +40,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
   const delayedNoteSave = useMemo(() => debounce(saveNoteOnDB, 500), [saveNoteOnDB]);
 
   function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    console.log("note content changing")
+    console.log("note content changing");
     const newContent = event.target.value;
     setNoteText(newContent);
     delayedNoteSave(event.target.value);

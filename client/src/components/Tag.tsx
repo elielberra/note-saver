@@ -24,7 +24,10 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         body: JSON.stringify({ id: tag.tagId })
       });
       if (!response.ok) {
-        throw new Error(`Error while updating the notes. Response Status Code: ${response.status}`);
+        const responseBody = await response.text();
+        throw new Error(
+          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+        );
       }
       setNotes((prevNotes) => {
         const oldNote = getNoteToBeUpdated(prevNotes, noteId);
@@ -46,13 +49,19 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
   const saveTagOnDB = useCallback(
     async (newContent: string) => {
       try {
-        await fetch("/update-tag-content", {
+        const response = await fetch("/update-tag-content", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ id: tag.tagId, newContent })
         });
+        if (!response.ok) {
+          const responseBody = await response.text();
+          throw new Error(
+            `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+          );
+        }
       } catch (error) {
         handleErrorLogging(error, "Error while updating tag content");
       }

@@ -30,7 +30,10 @@ export default function NoteActions({
         }
       });
       if (!response.ok) {
-        throw new Error(`Error while adding a note. Response Status Code: ${response.status}`);
+        const responseBody = await response.text();
+        throw new Error(
+          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+        );
       }
       const { newNoteId } = await response.json();
       setNotes((prevNotes) => [
