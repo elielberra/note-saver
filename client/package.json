@@ -20,7 +20,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "icons:create": "npx @svgr/cli src/assets"
+    "icons:create": "npx @svgr/cli src/assets",
+    "prettify": "npx prettier . --write"
   },
   "eslintConfig": {
     "extends": [

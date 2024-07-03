@@ -7,7 +7,8 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "build": "npx tsc",
-    "seed": "ts-node src/db/seed.ts"
+    "seed": "ts-node src/db/seed.ts",
+    "prettify": "npx prettier . --write"
   },
   "author": "Eliel Berra",
   "license": "ISC",
