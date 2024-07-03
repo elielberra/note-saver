@@ -28,7 +28,7 @@ router.get("/notes", async (req: Request, res: Response) => {
   res.status(200).send(notes);
 });
 
-router.post("/update-tag-content", async (req: Request<{}, {}, UpdateTagBody>, res: Response) => {
+router.post("/update-tag-content", async (req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
   if (newContent === null || newContent === undefined)
@@ -46,7 +46,7 @@ router.post("/update-tag-content", async (req: Request<{}, {}, UpdateTagBody>, r
   }
 });
 
-router.post("/update-note-content", async (req: Request<{}, {}, UpdateTagBody>, res: Response) => {
+router.post("/update-note-content", async (req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>, res: Response) => {
   const { id, newContent } = req.body;
   if (!id) return res.status(400).send("Query parameter noteId is missing in Request");
   if (!newContent) return res.status(400).send("Query parameter newContent is missing in Request");
@@ -76,7 +76,7 @@ router.post("/create-note", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/create-tag", async (req: Request<{}, {}, CreateTagBody>, res: Response) => {
+router.post("/create-tag", async (req: Request<Record<string, never>, Record<string, never>, CreateTagBody>, res: Response) => {
   const { noteId } = req.body;
   try {
     const newTagId = await createTag(noteId);
@@ -90,7 +90,7 @@ router.post("/create-tag", async (req: Request<{}, {}, CreateTagBody>, res: Resp
   }
 });
 
-router.delete("/delete-note", async (req: Request<{}, {}, DelenteEntityBody>, res: Response) => {
+router.delete("/delete-note", async (req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteNote(id);
@@ -104,7 +104,7 @@ router.delete("/delete-note", async (req: Request<{}, {}, DelenteEntityBody>, re
   }
 });
 
-router.delete("/delete-tag", async (req: Request<{}, {}, DelenteEntityBody>, res: Response) => {
+router.delete("/delete-tag", async (req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>, res: Response) => {
   const { id } = req.body;
   try {
     await deleteTag(id);
@@ -118,7 +118,7 @@ router.delete("/delete-tag", async (req: Request<{}, {}, DelenteEntityBody>, res
   }
 });
 
-router.post("/set-note-status", async (req: Request<{}, {}, SetNoteStatusBody>, res: Response) => {
+router.post("/set-note-status", async (req: Request<Record<string, never>, Record<string, never>, SetNoteStatusBody>, res: Response) => {
   const { noteId, isActive } = req.body;
   try {
     await updateNoteStatus(noteId, isActive);
