@@ -54,7 +54,7 @@ export default function NoteActions({
 
   async function getNotesAccordingToStatus(notesStatus: boolean) {
     try {
-      fetchNotes(setNotes, notesStatus);
+      await fetchNotes(setNotes, notesStatus);
       setIsShowingActiveNotes(notesStatus);
       setSearchText("");
     } catch (error) {

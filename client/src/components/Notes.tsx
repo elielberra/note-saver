@@ -1,5 +1,6 @@
 import { NoteT } from "@backend/types";
 import Note from "./Note";
+import LoadingSpinner from "./LoadingSpinner";
 import "./Notes.css";
 import FallbackText from "./FallbackText";
 
@@ -8,14 +9,23 @@ type NotesProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   isShowingActiveNotes: boolean;
   searchText: string;
+  isFetchingNotes: boolean;
 };
 
-export default function Notes({ notes, setNotes, isShowingActiveNotes, searchText }: NotesProps) {
+export default function Notes({
+  notes,
+  setNotes,
+  isShowingActiveNotes,
+  searchText,
+  isFetchingNotes
+}: NotesProps) {
+  if (isFetchingNotes) {
+    return <LoadingSpinner />;
+  }
   if (notes.length === 0) {
-    if (searchText !== ""){
+    if (searchText !== "") {
       return <FallbackText text="There are no notes with that tag" />;
-    }
-    else if (isShowingActiveNotes) {
+    } else if (isShowingActiveNotes) {
       return <FallbackText text="You have no notes. Create a new one" />;
     } else {
       return <FallbackText text="There are no archived notes" />;

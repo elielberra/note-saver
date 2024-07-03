@@ -7,10 +7,16 @@ import { fetchNotes } from "../lib/utils";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteT[]>([]);
+  const [isFetchingNotes, setIsFecthingNotes] = useState(false);
   const [isShowingActiveNotes, setIsShowingActiveNotes] = useState(true);
   const [searchText, setSearchText] = useState("");
   useEffect(() => {
-    fetchNotes(setNotes, isShowingActiveNotes);
+    async function getNotes() {
+      setIsFecthingNotes(true);
+      await fetchNotes(setNotes, isShowingActiveNotes);
+      setIsFecthingNotes(false);
+    }
+    getNotes();
   }, [isShowingActiveNotes]);
   return (
     <>
@@ -22,7 +28,13 @@ export default function App() {
         searchText={searchText}
         setSearchText={setSearchText}
       />
-      <Notes notes={notes} setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes} searchText={searchText} />
+      <Notes
+        notes={notes}
+        setNotes={setNotes}
+        isShowingActiveNotes={isShowingActiveNotes}
+        searchText={searchText}
+        isFetchingNotes={isFetchingNotes}
+      />
     </>
   );
 }

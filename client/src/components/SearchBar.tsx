@@ -21,12 +21,12 @@ export default function SearchBar({
     const filteringText = event.target.value;
     setSearchText(filteringText);
     if (!filteringText) fetchNotes(setNotes, isShowingActiveNotes);
-    fetchNotes(setNotes, isShowingActiveNotes, filteringText);
+    await fetchNotes(setNotes, isShowingActiveNotes, filteringText);
   }
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    fetchNotes(setNotes, isShowingActiveNotes, searchText);
+    await fetchNotes(setNotes, isShowingActiveNotes, searchText);
   };
 
   return (
