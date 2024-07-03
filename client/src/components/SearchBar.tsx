@@ -9,11 +9,14 @@ type SearchBarProps = {
   isShowingActiveNotes: boolean;
   searchText: string;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
-  
 };
 
-export default function SearchBar({ setNotes, isShowingActiveNotes, searchText, setSearchText }: SearchBarProps) {
-
+export default function SearchBar({
+  setNotes,
+  isShowingActiveNotes,
+  searchText,
+  setSearchText
+}: SearchBarProps) {
   async function filterNotes(event: React.ChangeEvent<HTMLInputElement>) {
     const filteringText = event.target.value;
     setSearchText(filteringText);

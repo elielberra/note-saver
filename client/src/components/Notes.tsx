@@ -12,9 +12,9 @@ type NotesProps = {
 export default function Notes({ notes, setNotes, isShowingActiveNotes }: NotesProps) {
   if (notes.length === 0) {
     if (isShowingActiveNotes) {
-      return <FallbackText text="There are no notes, create a new one"/>
+      return <FallbackText text="There are no notes, create a new one" />;
     } else {
-      return <FallbackText text="There are no archived notes"/>
+      return <FallbackText text="There are no archived notes" />;
     }
   }
   return (

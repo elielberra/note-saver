@@ -3,7 +3,7 @@ module.exports = {
   outDir: "./src/components/icons",
   typescript: true,
   svgProps: {
-    height: "{props.height || '100%'}",
+    height: "{props.height || '100%'}"
   },
   jsxRuntime: "automatic",
   index: false,

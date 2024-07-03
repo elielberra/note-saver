@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import './Modal.css'
-
+import "./Modal.css";
 
 type ModalProps = {
   isOpen: boolean;

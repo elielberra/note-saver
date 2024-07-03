@@ -3,7 +3,7 @@ import "./Button.css";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   Icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-  iconProps?: React.SVGProps<SVGSVGElement>  & { addBackgroundCircle?: boolean };
+  iconProps?: React.SVGProps<SVGSVGElement> & { addBackgroundCircle?: boolean };
 }
 
 export default function Button({ text, Icon, iconProps, ...buttonProps }: ButtonProps) {

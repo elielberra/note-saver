@@ -1,7 +1,7 @@
 import { QueryConfig, QueryResult } from "pg";
 import { NoteT, TagT } from "../types/types";
 import dotenv from "dotenv";
-import { runQuery } from "./utils"
+import { runQuery } from "./utils";
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ export async function getNotes(areActive: NoteT["isActive"], filteringText: stri
                   tags t ON n.id = t.note_id
                 WHERE
                   n.is_active = ${areActive}
-                  ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ''}
+                  ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ""}
                 GROUP BY
                   n.id, n.content, n.is_active;`
   };

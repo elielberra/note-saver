@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function dropAndCreateDatabase(client: Client) {
-  const dropBDIfExists = `DROP DATABASE IF EXISTS ${process.env.DB_NAME};`
-  const createDBQuery = `CREATE DATABASE ${process.env.DB_NAME};`
+  const dropBDIfExists = `DROP DATABASE IF EXISTS ${process.env.DB_NAME};`;
+  const createDBQuery = `CREATE DATABASE ${process.env.DB_NAME};`;
   try {
     await client.query(dropBDIfExists);
     await client.query(createDBQuery);

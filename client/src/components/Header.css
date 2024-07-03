@@ -1,5 +1,5 @@
 #header {
-  background: #FFA500;
+  background: #ffa500;
   width: 100%;
   height: 60px;
   border-bottom-left-radius: 40px;
@@ -13,7 +13,7 @@
   margin-left: 50px;
   display: flex;
   flex-direction: row;
-	align-items: center;
+  align-items: center;
   font-family: "Bellota Text";
   font-weight: bold;
   color: #161f3c;

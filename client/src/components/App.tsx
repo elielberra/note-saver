@@ -14,9 +14,12 @@ export default function App() {
   return (
     <>
       <Header />
-      <NoteActions setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes} setIsShowingActiveNotes={setIsShowingActiveNotes} />
-      <Notes notes={notes} setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes}/>
+      <NoteActions
+        setNotes={setNotes}
+        isShowingActiveNotes={isShowingActiveNotes}
+        setIsShowingActiveNotes={setIsShowingActiveNotes}
+      />
+      <Notes notes={notes} setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes} />
     </>
   );
 }
-

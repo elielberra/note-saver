@@ -27,4 +27,3 @@ export interface SetNoteStatusBody {
   noteId: number;
   isActive: boolean;
 }
-

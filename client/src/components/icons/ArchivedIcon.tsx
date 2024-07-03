@@ -6,7 +6,6 @@ export default function ArchivedIcon(props: SVGProps<SVGSVGElement>) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       height={props.height || "100%"}
-      
       fill="#161F3C"
       {...props}
     >

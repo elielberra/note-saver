@@ -1,11 +1,11 @@
 #fallback-text-section {
-    display: flex;
+  display: flex;
 }
 
 #fallback-text-section #text {
-    background: #FFA500;
-    border-radius: 10px;
-    padding: 30px;
-    font-size: 25px;
-    margin: auto;
+  background: #ffa500;
+  border-radius: 10px;
+  padding: 30px;
+  font-size: 25px;
+  margin: auto;
 }
