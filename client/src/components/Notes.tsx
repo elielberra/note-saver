@@ -7,12 +7,16 @@ type NotesProps = {
   notes: NoteT[];
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   isShowingActiveNotes: boolean;
+  searchText: string;
 };
 
-export default function Notes({ notes, setNotes, isShowingActiveNotes }: NotesProps) {
+export default function Notes({ notes, setNotes, isShowingActiveNotes, searchText }: NotesProps) {
   if (notes.length === 0) {
-    if (isShowingActiveNotes) {
-      return <FallbackText text="There are no notes, create a new one" />;
+    if (searchText !== ""){
+      return <FallbackText text="There are no notes with that tag" />;
+    }
+    else if (isShowingActiveNotes) {
+      return <FallbackText text="You have no notes. Create a new one" />;
     } else {
       return <FallbackText text="There are no archived notes" />;
     }

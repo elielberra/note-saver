@@ -8,6 +8,7 @@ import { fetchNotes } from "../lib/utils";
 export default function App() {
   const [notes, setNotes] = useState<NoteT[]>([]);
   const [isShowingActiveNotes, setIsShowingActiveNotes] = useState(true);
+  const [searchText, setSearchText] = useState("");
   useEffect(() => {
     fetchNotes(setNotes, isShowingActiveNotes);
   }, [isShowingActiveNotes]);
@@ -18,8 +19,10 @@ export default function App() {
         setNotes={setNotes}
         isShowingActiveNotes={isShowingActiveNotes}
         setIsShowingActiveNotes={setIsShowingActiveNotes}
+        searchText={searchText}
+        setSearchText={setSearchText}
       />
-      <Notes notes={notes} setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes} />
+      <Notes notes={notes} setNotes={setNotes} isShowingActiveNotes={isShowingActiveNotes} searchText={searchText} />
     </>
   );
 }

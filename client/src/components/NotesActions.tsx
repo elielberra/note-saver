@@ -6,19 +6,21 @@ import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "@backend/types";
 import { fetchNotes, handleErrorLogging } from "../lib/utils";
-import { useState } from "react";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
   isShowingActiveNotes: boolean;
   setIsShowingActiveNotes: React.Dispatch<React.SetStateAction<boolean>>;
+  searchText: string;
+  setSearchText: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function NoteActions({
   setNotes,
   isShowingActiveNotes,
-  setIsShowingActiveNotes
+  setIsShowingActiveNotes,
+  searchText,
+  setSearchText
 }: NoteActionsProps) {
-  const [searchText, setSearchText] = useState("");
   const iconProps = { height: 20, fill: "#D9D9D9" };
 
   async function addNote() {
