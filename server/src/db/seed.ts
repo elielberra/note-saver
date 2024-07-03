@@ -34,9 +34,10 @@ async function runQueries(client: Client) {
     values: ["The nth note", true]
   };
   const deleteTagsTableQuery = `DROP TABLE IF EXISTS ${process.env.DB_TAGS_TABLE} CASCADE`;
+  // tag character numbers must match maxLength on textarea of Note.tsx
   const createTagsTableQuery = `CREATE TABLE ${process.env.DB_TAGS_TABLE}(
     id SERIAL PRIMARY KEY,
-    tag VARCHAR(25) NOT NULL,
+    tag VARCHAR(20) NOT NULL,
     note_id INTEGER NOT NULL REFERENCES ${process.env.DB_NOTES_TABLE} (id) ON DELETE CASCADE
   )`;
   const inserTagsQuery: QueryConfig = {

@@ -75,7 +75,8 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       <input
         className="tag-text"
         type="text"
-        maxLength={25}
+        // maxLength must match the value of tag max chars on seed.ts
+        maxLength={20}
         onChange={handleInputChange}
         value={tagContent ?? ""}
       />
