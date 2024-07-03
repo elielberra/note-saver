@@ -19,6 +19,7 @@ export type NoteButtonsProps = {
 export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: NoteButtonsProps) {
   const { noteId, tags, isActive } = note;
   const [isDeleteNoteModalOpen, setIsDeleteNoteModalOpen] = useState(false);
+  
   async function deleteNote() {
     try {
       const response = await fetch("/delete-note", {

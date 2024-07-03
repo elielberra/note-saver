@@ -1,0 +1,8 @@
+.modal::backdrop {
+  background: hsl(0 0% 0% / 50%);
+}
+
+.modal {
+  border-radius: 10px;
+  border: 5px solid #161f3c;
+}
