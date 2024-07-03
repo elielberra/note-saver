@@ -12,7 +12,7 @@ export type NoteProps = {
 };
 
 export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps) {
-  const { noteId, noteContent, tags } = note;
+  const { noteId, noteContent } = note;
   const [noteText, setNoteText] = useState(noteContent);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const saveNoteOnDB = useCallback(

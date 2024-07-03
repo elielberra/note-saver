@@ -27,7 +27,7 @@ export function isProductionEnv() {
   return process.env.NODE_ENV === "production";
 }
 
-export function handleErrorLogging(error: unknown, message: String) {
+export function handleErrorLogging(error: unknown, message: string) {
   console.error(message);
   if (!isProductionEnv() && error instanceof Error) console.error(error);
 }
