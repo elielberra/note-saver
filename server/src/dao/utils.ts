@@ -8,7 +8,7 @@ export async function runQuery(query: QueryConfig) {
         const result = await dbClient.query(query);
         return result;
     } catch (error) {
-        console.error(`Error executing query: ${query}`);
+        console.error(`Error executing query: ${JSON.stringify(query, null, 2)}`);
         throw error;
     } finally {
         dbClient.end();
