@@ -1,8 +1,8 @@
 #search-bar {
   background: #161f3c;
   width: 30%;
+  min-width: 400px;
   height: 70px;
-  margin: auto;
   border-radius: 15px;
   display: flex;
   justify-content: center;

@@ -4,6 +4,7 @@
   display: flex;
   align-items: center;
   position: relative;
+  justify-content: space-between;
 }
 
 .note-actions-btn {
@@ -13,7 +14,6 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  position: absolute;
   font-family: inherit;
   font-weight: bold;
   font-size: 22px;
@@ -21,6 +21,7 @@
   color: #d9d9d9;
   border-radius: 15px;
   border: 0;
+  margin: 0 10px;
 }
 
 .note-actions-btn:hover {
@@ -28,14 +29,24 @@
   background: rgb(39, 57, 117);
 }
 
-#toggle-notes-show {
-  left: 20px;
-}
-
-#add-note {
-  right: 20px;
-}
-
 .note-actions-btn .btn-text {
   margin-right: 10px;
+}
+
+#note-btns {
+  display: flex;
+  flex-direction: row;
+}
+
+#note-actions:nth-child(2) {
+  margin-left: auto;
+}
+
+@media (max-width: 1400px) {
+  #note-actions {
+    flex-direction: column;
+  }
+  #note-btns {
+    margin-top: 10px;
+  }
 }

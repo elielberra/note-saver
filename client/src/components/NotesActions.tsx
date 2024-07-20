@@ -63,30 +63,30 @@ export default function NoteActions({
   }
   return (
     <div id="note-actions">
-      <Button
-        text={isShowingActiveNotes ? "Archived" : "Active"}
-        className="note-actions-btn"
-        id="toggle-notes-show"
-        Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
-        iconProps={iconProps}
-        onClick={() => getNotesAccordingToStatus(!isShowingActiveNotes)}
-      />
       <SearchBar
         setNotes={setNotes}
         isShowingActiveNotes={isShowingActiveNotes}
         searchText={searchText}
         setSearchText={setSearchText}
       />
-      {isShowingActiveNotes && (
+      <div id="note-btns">
         <Button
-          text="Add"
+          text={isShowingActiveNotes ? "Archived" : "Active"}
           className="note-actions-btn"
-          id="add-note"
-          Icon={AddIcon}
+          Icon={isShowingActiveNotes ? ArchivedIcon : UnarchivedIcon}
           iconProps={iconProps}
-          onClick={addNote}
+          onClick={() => getNotesAccordingToStatus(!isShowingActiveNotes)}
         />
-      )}
+        {isShowingActiveNotes && (
+          <Button
+            text="Add"
+            className="note-actions-btn"
+            Icon={AddIcon}
+            iconProps={iconProps}
+            onClick={addNote}
+          />
+        )}
+      </div>
     </div>
   );
 }
