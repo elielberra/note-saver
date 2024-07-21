@@ -4,7 +4,7 @@ import ArchivedIcon from "./icons/ArchivedIcon";
 import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import { fetchNotes, handleErrorLogging } from "../lib/utils";
 
 type NoteActionsProps = {
@@ -25,7 +25,7 @@ export default function NoteActions({
 
   async function addNote() {
     try {
-      const response = await fetch("/create-note", {
+      const response = await fetch("http://localhost:3333/create-note", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

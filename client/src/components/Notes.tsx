@@ -1,4 +1,4 @@
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import Note from "./Note";
 import LoadingSpinner from "./LoadingSpinner";
 import "./Notes.css";

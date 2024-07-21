@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "./Header";
 import NoteActions from "./NotesActions";
 import Notes from "./Notes";
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import { fetchNotes } from "../lib/utils";
 
 export default function App() {

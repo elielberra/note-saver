@@ -6,7 +6,7 @@ import Tag from "./Tag";
 import DeleteNoteModal from "./DeleteNoteModal";
 import "./NoteButtons.css";
 import AddIcon from "./icons/AddIcon";
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import { getNewSortedNotes, getNoteToBeUpdated, handleErrorLogging } from "../lib/utils";
 import { useState } from "react";
 
@@ -22,7 +22,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function deleteNote() {
     try {
-      const response = await fetch("/delete-note", {
+      const response = await fetch("http://localhost:3333/delete-note", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
@@ -43,7 +43,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function addTag() {
     try {
-      const response = await fetch("/create-tag", {
+      const response = await fetch("http://localhost:3333/create-tag", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -78,7 +78,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function changeNoteStatus(noteStatus: boolean) {
     try {
-      const response = await fetch("/set-note-status", {
+      const response = await fetch("http://localhost:3333/set-note-status", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

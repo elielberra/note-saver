@@ -3,7 +3,7 @@ import CrossIcon from "./icons/CrossIcon";
 import "./Tag.css";
 import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import { getNewSortedNotes, getNoteToBeUpdated, handleErrorLogging } from "../lib/utils";
 
 type TagProps = {
@@ -16,7 +16,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
   const [tagContent, setTagContent] = useState(tag.tagContent);
   async function deleteTag() {
     try {
-      const response = await fetch("/delete-tag", {
+      const response = await fetch("http://localhost:3333/delete-tag", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
@@ -49,7 +49,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
   const saveTagOnDB = useCallback(
     async (newContent: string) => {
       try {
-        const response = await fetch("/update-tag-content", {
+        const response = await fetch("http://localhost:3333/update-tag-content", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

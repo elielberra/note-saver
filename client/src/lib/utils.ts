@@ -1,4 +1,4 @@
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 
 export async function fetchNotes(
   setNotes: (value: React.SetStateAction<NoteT[]>) => void,
@@ -7,7 +7,7 @@ export async function fetchNotes(
 ) {
   try {
     const response = await fetch(
-      `/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ""}`
+      `http://localhost:3333/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ""}`
     );
     if (!response.ok) {
       const responseBody = await response.text();

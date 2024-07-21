@@ -1,6 +1,6 @@
 import NoteButtons from "./NoteButtons";
 import "./Note.css";
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
 import { handleErrorLogging } from "../lib/utils";
@@ -18,7 +18,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
   const saveNoteOnDB = useCallback(
     async (newContent: string) => {
       try {
-        const response = await fetch("/update-note-content", {
+        const response = await fetch("http://localhost:3333/update-note-content", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -40,7 +40,6 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
   const delayedNoteSave = useMemo(() => debounce(saveNoteOnDB, 500), [saveNoteOnDB]);
 
   function handleNoteContentChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    console.log("note content changing");
     const newContent = event.target.value;
     setNoteText(newContent);
     delayedNoteSave(event.target.value);

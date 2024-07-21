@@ -1,6 +1,6 @@
 import "./SearchBar.css";
 import MaginfyingGlassIcon from "../components/icons/MagnifyingGlassIcon";
-import { NoteT } from "@backend/types";
+import { NoteT } from "../types/types";
 import { FormEventHandler } from "react";
 import { fetchNotes } from "../lib/utils";
 
