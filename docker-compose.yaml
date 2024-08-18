@@ -7,8 +7,8 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
 
   server:
     build: ./server
@@ -18,9 +18,6 @@ services:
     volumes:
       - ./server/src:/app/src
       - /app/node_modules
-      # Why do the named volumes below won't work?
-      # - /app/package.json
-      # - /app/package-lock.json
     ports:
       - 3333:3333
     depends_on:
@@ -32,8 +29,6 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-      # - /app/package.json
-      # - /app/package-lock.json
     ports:
       - 3000:3000
     depends_on:
@@ -46,4 +41,4 @@ networks:
   default:
     ipam:
       config:
-        - subnet: 192.168.222.0/24
+        - subnet: 192.168.223.0/24
