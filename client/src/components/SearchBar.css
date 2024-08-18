@@ -61,3 +61,16 @@
 #magnifying-glass-icon {
   width: 30px;
 }
+
+@media (max-width: 1400px) {
+  #search-bar {
+    height: 50px;
+  }
+}
+
+@media (max-width: 450px) {
+  #search-bar { 
+    width: 95%;
+    min-width: 0;
+  }
+}

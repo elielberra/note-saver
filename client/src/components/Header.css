@@ -23,3 +23,9 @@
 #note-icon {
   fill: #161f3c;
 }
+
+@media (max-width: 500px) {
+  #title {
+    margin: auto;
+  }
+}

@@ -48,5 +48,17 @@
   }
   #note-btns {
     margin-top: 10px;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .note-actions-btn {
+    height: 35px;
+  }
+}
+
+@media (max-width: 450px) {
+  #note-btns {
+    width: 95%;
   }
 }

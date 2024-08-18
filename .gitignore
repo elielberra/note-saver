@@ -2,3 +2,4 @@
 */.env
 server/dist
 TODOs
+ec2/*
