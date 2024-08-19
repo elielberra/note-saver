@@ -44,6 +44,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
           required
           onChange={(e) => setUsername(e.target.value)}
           value={username}
+          maxLength={30}
         />
         <br />
         <label htmlFor="password">Password:</label>
@@ -54,6 +55,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
           required
           onChange={(e) => setPassword(e.target.value)}
           value={password}
+          maxLength={30}
         />
         <br />
         <Button type="submit" text={btnText} id="submit-btn" />

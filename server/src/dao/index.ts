@@ -1,5 +1,6 @@
 import { QueryConfig, QueryResult } from "pg";
-import { NoteT, TagT } from "../types/types";
+import { genSalt, hash } from "bcrypt";
+import { NoteT, TagT, UserT } from "../types/types";
 import dotenv from "dotenv";
 import { runQuery } from "./utils";
 
@@ -49,8 +50,8 @@ export async function createNote() {
   const query: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`
   };
-  const res: QueryResult<{ id: number }> = await runQuery(query);
-  const insertedId = res.rows[0].id;
+  const result: QueryResult<{ id: number }> = await runQuery(query);
+  const insertedId = result.rows[0].id;
   return insertedId;
 }
 
@@ -86,4 +87,34 @@ export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT[
     values: [isActive, noteId]
   };
   await runQuery(query);
+}
+
+async function getUserByName(username: UserT["username"]) {
+  const query: QueryConfig = {
+    text: `SELECT * FROM ${process.env.DB_USERS_TABLE}`
+  };
+  const result: QueryResult<NoteT> = await runQuery(query);
+  console.debug("result get users", result);
+  return result.rows;
+}
+
+export async function hashPassword(password: UserT["password"]) {
+  const salt = await genSalt(10);
+  const hashedPassword = await hash(password, salt);
+  return hashedPassword;
+}
+
+export async function registerUser(username:  UserT["username"], password:  UserT["password"]) {
+  // const user = await getUserByName(username);
+  // if (user) {
+
+  // }
+  const hashedPassword = await hashPassword(password);
+  const query: QueryConfig = {
+    text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES($1, $2) RETURNING id`,
+    values: [username, hashedPassword]
+  };
+  const result: QueryResult<{ id: number }> = await runQuery(query);
+  const insertedId = result.rows[0].id;
+  return insertedId;
 }

@@ -1,6 +1,7 @@
 import { Client, QueryConfig } from "pg";
 import { getDBClient, connectToDB } from "./utils";
 import dotenv from "dotenv";
+import { hashPassword } from "../dao";
 
 dotenv.config();
 
@@ -18,6 +19,17 @@ async function dropAndCreateDatabase(client: Client) {
 }
 
 async function runQueries(client: Client) {
+  // username and password character numbers must match maxLength on textarea of AuthForm.tsx
+  const createUsersTableQuery = `CREATE TABLE ${process.env.DB_USERS_TABLE}(
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(30) NOT NULL UNIQUE,
+        password VARCHAR(60) NOT NULL
+    )`;
+  const adminHashedPassword = await hashPassword(process.env.ADMIN_PASSWORD || "admin");
+  const insertAdminUserQuery = {
+    text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES ($1, $2)`,
+    values: ["admin", adminHashedPassword]
+  };
   // content character numbers must match maxLength on textarea of Note.tsx
   const createNotesTableQuery = `CREATE TABLE ${process.env.DB_NOTES_TABLE}(
         id SERIAL PRIMARY KEY,
@@ -33,7 +45,6 @@ async function runQueries(client: Client) {
     text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES ($1, $2)`,
     values: ["The nth note", true]
   };
-  const deleteTagsTableQuery = `DROP TABLE IF EXISTS ${process.env.DB_TAGS_TABLE} CASCADE`;
   // tag character numbers must match maxLength on textarea of Note.tsx
   const createTagsTableQuery = `CREATE TABLE ${process.env.DB_TAGS_TABLE}(
     id SERIAL PRIMARY KEY,
@@ -45,9 +56,10 @@ async function runQueries(client: Client) {
     values: ["tag1", 1, "tag2", 1]
   };
   const queries = [
+    createUsersTableQuery,
+    insertAdminUserQuery,
     createNotesTableQuery,
     insertNotesQuery,
-    deleteTagsTableQuery,
     createTagsTableQuery,
     inserTagsQuery
   ];

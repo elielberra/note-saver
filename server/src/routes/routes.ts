@@ -5,6 +5,7 @@ import {
   deleteNote,
   deleteTag,
   getNotes,
+  registerUser,
   updateNoteContent,
   updateNoteStatus,
   updateTagContent
@@ -176,9 +177,7 @@ router.post(
   async (req: Request<Record<string, never>, Record<string, never>, SignInBody>, res: Response) => {
     const { username, password } = req.body;
     try {
-      // await updateNoteStatus(noteId, isActive);
-      // res.sendStatus(200);
-      console.debug("INSIDE signup route");
+      await registerUser(username, password);
       res.sendStatus(200);
     } catch (error) {
       if (error instanceof Error) {

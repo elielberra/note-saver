@@ -1,3 +1,9 @@
+export interface UserT {
+  userId: number;
+  username: string;
+  password: string;
+}
+
 export interface TagT {
   tagId: number;
   tagContent: string;
@@ -28,7 +34,4 @@ export interface SetNoteStatusBody {
   isActive: boolean;
 }
 
-export interface SignInBody {
-  username: string;
-  password: string;
-}
+export type SignInBody = Omit<UserT, "userId">;
