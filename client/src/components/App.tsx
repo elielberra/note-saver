@@ -1,40 +1,15 @@
-import { useState, useEffect } from "react";
-import Header from "./Header";
-import NoteActions from "./NotesActions";
-import Notes from "./Notes";
-import { NoteT } from "../types/types";
-import { fetchNotes } from "../lib/utils";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainPage from "./MainPage";
+import RegisterPage from './RegisterPage';
 
 export default function App() {
-  const [notes, setNotes] = useState<NoteT[]>([]);
-  const [isFetchingNotes, setIsFecthingNotes] = useState(false);
-  const [isShowingActiveNotes, setIsShowingActiveNotes] = useState(true);
-  const [searchText, setSearchText] = useState("");
-  useEffect(() => {
-    async function getNotes() {
-      setIsFecthingNotes(true);
-      await fetchNotes(setNotes, isShowingActiveNotes);
-      setIsFecthingNotes(false);
-    }
-    getNotes();
-  }, [isShowingActiveNotes]);
+  console.log("HIIII my friend");
   return (
-    <>
-      <Header />
-      <NoteActions
-        setNotes={setNotes}
-        isShowingActiveNotes={isShowingActiveNotes}
-        setIsShowingActiveNotes={setIsShowingActiveNotes}
-        searchText={searchText}
-        setSearchText={setSearchText}
-      />
-      <Notes
-        notes={notes}
-        setNotes={setNotes}
-        isShowingActiveNotes={isShowingActiveNotes}
-        searchText={searchText}
-        isFetchingNotes={isFetchingNotes}
-      />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage/>} />
+        <Route path="register" element={<RegisterPage/>} />
+      </Routes>
+    </Router>
   );
 }
