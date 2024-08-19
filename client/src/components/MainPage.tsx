@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Header from "./Header";
 import NoteActions from "./NotesActions";
 import Notes from "./Notes";
 import { NoteT } from "../types/types";
@@ -20,7 +19,6 @@ export default function MainPage() {
   }, [isShowingActiveNotes]);
   return (
     <>
-      <Header />
       <NoteActions
         setNotes={setNotes}
         isShowingActiveNotes={isShowingActiveNotes}
