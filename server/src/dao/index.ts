@@ -89,12 +89,12 @@ export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT[
   await runQuery(query);
 }
 
-async function getUserByName(username: UserT["username"]) {
+export async function getUserByName(username: UserT["username"]) {
   const query: QueryConfig = {
-    text: `SELECT * FROM ${process.env.DB_USERS_TABLE}`
+    text: `SELECT * FROM ${process.env.DB_USERS_TABLE} WHERE username = $1`,
+    values: [username]
   };
-  const result: QueryResult<NoteT> = await runQuery(query);
-  console.debug("result get users", result);
+  const result: QueryResult<UserT> = await runQuery(query);
   return result.rows;
 }
 
@@ -104,17 +104,11 @@ export async function hashPassword(password: UserT["password"]) {
   return hashedPassword;
 }
 
-export async function registerUser(username:  UserT["username"], password:  UserT["password"]) {
-  // const user = await getUserByName(username);
-  // if (user) {
-
-  // }
-  const hashedPassword = await hashPassword(password);
+export async function getUserById(id: UserT["userId"]) {
   const query: QueryConfig = {
-    text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES($1, $2) RETURNING id`,
-    values: [username, hashedPassword]
+    text: `SELECT * FROM ${process.env.DB_USERS_TABLE} WHERE id = $1`,
+    values: [id]
   };
-  const result: QueryResult<{ id: number }> = await runQuery(query);
-  const insertedId = result.rows[0].id;
-  return insertedId;
+  const result: QueryResult<UserT> = await runQuery(query);
+  return result.rows;
 }

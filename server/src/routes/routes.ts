@@ -5,7 +5,7 @@ import {
   deleteNote,
   deleteTag,
   getNotes,
-  registerUser,
+  // registerUser,
   updateNoteContent,
   updateNoteStatus,
   updateTagContent
@@ -17,6 +17,7 @@ import {
   SignInBody,
   UpdateTagBody
 } from "../types/types";
+import passport from "passport";
 
 const router = express.Router();
 
@@ -174,19 +175,27 @@ router.post(
 
 router.post(
   "/signup",
-  async (req: Request<Record<string, never>, Record<string, never>, SignInBody>, res: Response) => {
-    const { username, password } = req.body;
-    try {
-      await registerUser(username, password);
-      res.sendStatus(200);
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
-    }
-  }
+  passport.authenticate("local-signup", {
+    successRedirect: "/",
+    failureRedirect: "/signup"
+  })
 );
+
+// router.post(
+//   "/signup",
+//   async (req: Request<Record<string, never>, Record<string, never>, SignInBody>, res: Response) => {
+//     const { username, password } = req.body;
+//     try {
+//       await registerUser(username, password);
+//       res.sendStatus(200);
+//     } catch (error) {
+//       if (error instanceof Error) {
+//         res.status(500).send(error.message);
+//       } else {
+//         res.status(500).send(error);
+//       }
+//     }
+//   }
+// );
 
 export default router;
