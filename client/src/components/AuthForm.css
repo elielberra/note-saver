@@ -28,13 +28,18 @@ label {
 input {
   background: #d9d9d9;
   height: 100%;
-  width: 150px;
+  width: 160px;
   border-radius: 15px;
   font-family: "Bellota Text";
   font-weight: bold;
-  font-size: 22px;
+  font-size: 20px;
   border: 2px solid #161f3c;
   padding: 0 20px;
+}
+
+input:focus-within {
+  border-radius: 15px;
+  outline: 3px solid #bdbdbd;
 }
 
 #submit-btn {
@@ -51,9 +56,14 @@ input {
   color: #d9d9d9;
   border-radius: 15px;
   border: 0;
-  margin-left: 212px;
+  margin-left: 210px;
   margin-top: 10px;
   padding: 20px;
+}
+
+#submit-btn:hover {
+  cursor: pointer;
+  background: rgb(39, 57, 117);
 }
 
 

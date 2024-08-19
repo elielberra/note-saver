@@ -3,14 +3,15 @@ import "./AuthForm.css";
 
 type AuthFormProps = {
   header: string;
+  action: string;
   btnText: string;
 }
 
-export default function AuthForm({header, btnText}: AuthFormProps) {
+export default function AuthForm({header, action, btnText}: AuthFormProps) {
   return (
     <div id="auth-section">
       <h2>{header}</h2>
-      <form action="/register" method="post">
+      <form action={`/${action}`} method="post">
         <label htmlFor="username">Username:</label>
         <input type="text" name="username"required />
         <br />
