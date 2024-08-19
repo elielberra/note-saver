@@ -27,3 +27,8 @@ export interface SetNoteStatusBody {
   noteId: number;
   isActive: boolean;
 }
+
+export interface SignInBody {
+  username: string;
+  password: string;
+}
