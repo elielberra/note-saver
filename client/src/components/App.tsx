@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainPage from "./MainPage";
-import RegisterPage from "./SignUpPage";
 import Layout from "./Layout";
+import MainPage from "./MainPage";
+import SignInPage from "./SignInPage";
+import SignUpPage from "./SignUpPage";
 
 export default function App() {
   return (
@@ -9,7 +10,8 @@ export default function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="register" element={<RegisterPage />} />
+          <Route path="signin" element={<SignInPage />} />
+          <Route path="signup" element={<SignUpPage />} />
         </Routes>
       </Layout>
     </Router>
