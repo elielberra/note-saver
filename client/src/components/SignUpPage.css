@@ -1,0 +1,47 @@
+#sign-up-section {
+  width: 350px;
+  background: #ffa500;
+  margin: auto;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+h2 {
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 33px;
+}
+
+label {
+  font-size: 22px;
+}
+
+input {
+  background: #d9d9d9;
+  height: 100%;
+  width: 150px;
+  border-radius: 15px;
+  font-family: "Bellota Text";
+  font-weight: bold;
+  font-size: 22px;
+  border: 0px;
+  padding: 0 20px;
+}
+
+#submit-btn {
+  width: 90px;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 22px;
+  background: #161f3c;
+  color: #d9d9d9;
+  border-radius: 15px;
+  border: 0;
+  margin: 0 10px;
+}

@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./MainPage";
-import RegisterPage from "./RegisterPage";
+import RegisterPage from "./SignUpPage";
 import Layout from "./Layout";
 
 export default function App() {
-  console.log("HIIII my friend");
   return (
     <Router>
       <Layout>
