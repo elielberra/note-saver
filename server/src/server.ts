@@ -16,10 +16,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
 app.use(
   session({
-    secret: "ecommercesecret", // Add through .env file
+    secret: process.env.SESSION_SECRET || "session-secret",
     resave: false,
     saveUninitialized: false
   })
