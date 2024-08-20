@@ -1,7 +1,7 @@
 import { Client, QueryConfig } from "pg";
 import { getDBClient, connectToDB } from "./utils";
 import dotenv from "dotenv";
-import { hashPassword } from "../dao";
+import { hashPassword } from "../dao/utils";
 
 dotenv.config();
 

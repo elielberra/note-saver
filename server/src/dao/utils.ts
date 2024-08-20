@@ -1,5 +1,7 @@
+import { genSalt, hash } from "bcrypt";
 import { getDBClient } from "../db/utils";
 import { QueryConfig } from "pg";
+import { UserT } from "../types/types";
 
 export async function runQuery(query: QueryConfig) {
   const dbClient = getDBClient();
@@ -13,4 +15,10 @@ export async function runQuery(query: QueryConfig) {
   } finally {
     dbClient.end();
   }
+}
+
+export async function hashPassword(password: UserT["password"]) {
+  const salt = await genSalt(10);
+  const hashedPassword = await hash(password, salt);
+  return hashedPassword;
 }

@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import {
   createNote,
   createTag,
@@ -15,7 +15,9 @@ import {
   DelenteEntityBody,
   SetNoteStatusBody,
   SignInBody,
-  UpdateTagBody
+  SignUpPassportReq,
+  UpdateTagBody,
+  UserT
 } from "../types/types";
 import passport from "passport";
 
@@ -175,27 +177,27 @@ router.post(
 
 router.post(
   "/signup",
-  passport.authenticate("local-signup", {
-    successRedirect: "/",
-    failureRedirect: "/signup"
-  })
+  (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate(
+      "local-signup",
+      (error: any, user: UserT | false, info: { message: string }) => {
+        console.debug("error", error)
+        if (error) {
+          return next(error);
+        }
+        console.debug("user", user)
+        if (!user) {
+          return res.status(400).json({ message: info.message });
+        }
+        req.logIn(user, (loginErr: any) => {
+          if (loginErr) {
+            return next(loginErr);
+          }
+          return res.status(201).json({ userId: user.userId, username: user.username });
+        });
+      }
+    )(req as Request, res as Response, next as NextFunction);
+  }
 );
-
-// router.post(
-//   "/signup",
-//   async (req: Request<Record<string, never>, Record<string, never>, SignInBody>, res: Response) => {
-//     const { username, password } = req.body;
-//     try {
-//       await registerUser(username, password);
-//       res.sendStatus(200);
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         res.status(500).send(error.message);
-//       } else {
-//         res.status(500).send(error);
-//       }
-//     }
-//   }
-// );
 
 export default router;

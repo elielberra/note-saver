@@ -1,8 +1,8 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { getUserById, getUserByName, hashPassword } from "../dao";
+import { getUserById, getUserByName } from "../dao";
 import { QueryConfig, QueryResult } from "pg";
-import { runQuery } from "../dao/utils";
+import { hashPassword, runQuery } from "../dao/utils";
 import { UserT } from "../types/types";
 
 async function checkIfUserIsAlreadyRegistered(username: UserT["username"]) {
@@ -17,7 +17,7 @@ export function initializePassport() {
     new LocalStrategy({ usernameField: "username" }, async (username, password, done) => {
       try {
         if (await checkIfUserIsAlreadyRegistered(username))
-          return done(null, false, { message: "User already exists" });
+          return done("User already exists" , false);
         const hashedPassword = await hashPassword(password);
         const query: QueryConfig = {
           text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES($1, $2) RETURNING id`,

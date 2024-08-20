@@ -1,5 +1,4 @@
 import { QueryConfig, QueryResult } from "pg";
-import { genSalt, hash } from "bcrypt";
 import { NoteT, TagT, UserT } from "../types/types";
 import dotenv from "dotenv";
 import { runQuery } from "./utils";
@@ -96,12 +95,6 @@ export async function getUserByName(username: UserT["username"]) {
   };
   const result: QueryResult<UserT> = await runQuery(query);
   return result.rows;
-}
-
-export async function hashPassword(password: UserT["password"]) {
-  const salt = await genSalt(10);
-  const hashedPassword = await hash(password, salt);
-  return hashedPassword;
 }
 
 export async function getUserById(id: UserT["userId"]) {
