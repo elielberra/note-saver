@@ -15,7 +15,6 @@ import {
   DelenteEntityBody,
   SetNoteStatusBody,
   SignInBody,
-  SignUpPassportReq,
   UpdateTagBody,
   UserT
 } from "../types/types";

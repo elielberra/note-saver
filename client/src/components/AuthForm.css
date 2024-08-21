@@ -18,14 +18,14 @@ h2 {
   margin-bottom: 15px;
 }
 
-label {
+.auth-label {
   font-size: 22px;
   width: 110px;
   display: inline-block;
   margin: 5px 0;
 }
 
-input {
+.auth-input {
   background: #d9d9d9;
   height: 100%;
   width: 160px;

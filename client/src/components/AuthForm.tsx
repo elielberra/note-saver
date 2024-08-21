@@ -37,7 +37,9 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
     <div id="auth-section">
       <h2>{header}</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="username" className="auth-label">
+          Username:
+        </label>
         <input
           type="text"
           name="username"
@@ -45,9 +47,12 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
           onChange={(e) => setUsername(e.target.value)}
           value={username}
           maxLength={30}
+          className="auth-input"
         />
         <br />
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password" className="auth-label">
+          Password:
+        </label>
         <input
           type="password"
           id="password"
@@ -56,6 +61,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           maxLength={30}
+          className="auth-input"
         />
         <br />
         <Button type="submit" text={btnText} id="submit-btn" />
