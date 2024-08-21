@@ -18,6 +18,12 @@ h2 {
   margin-bottom: 15px;
 }
 
+#error-txt {
+  color: rgb(255, 0, 0);
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .auth-label {
   font-size: 22px;
   width: 110px;

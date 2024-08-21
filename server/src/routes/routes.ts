@@ -14,7 +14,6 @@ import {
   CreateTagBody,
   DelenteEntityBody,
   SetNoteStatusBody,
-  SignInBody,
   UpdateTagBody,
   UserT
 } from "../types/types";
@@ -174,29 +173,26 @@ router.post(
   }
 );
 
-router.post(
-  "/signup",
-  (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate(
-      "local-signup",
-      (error: any, user: UserT | false, info: { message: string }) => {
-        console.debug("error", error)
-        if (error) {
-          return next(error);
-        }
-        console.debug("user", user)
-        if (!user) {
-          return res.status(400).json({ message: info.message });
-        }
-        req.logIn(user, (loginErr: any) => {
-          if (loginErr) {
-            return next(loginErr);
-          }
-          return res.status(201).json({ userId: user.userId, username: user.username });
-        });
+router.post("/signup", (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate(
+    "local-signup",
+    (error: any, user: UserT | false, info: { message: string }) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({ message: "Internal Server error while attempting to register a user" });
       }
-    )(req as Request, res as Response, next as NextFunction);
-  }
-);
+      if (!user) {
+        return res.status(409).json(info);
+      }
+      req.logIn(user, (loginErr: any) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        return res.status(201).json({ userId: user.userId, username: user.username });
+      });
+    }
+  )(req as Request, res as Response, next as NextFunction);
+});
 
 export default router;

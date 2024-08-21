@@ -9,3 +9,14 @@ export interface NoteT {
   tags: TagT[];
   isActive: boolean;
 }
+
+interface MessageResponse extends Response {
+  message: string;
+}
+
+interface UserResponse extends Response {
+  userId: number;
+  username: string;
+}
+
+export type ResigterUserResponse = MessageResponse | UserResponse;

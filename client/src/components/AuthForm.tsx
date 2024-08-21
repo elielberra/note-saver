@@ -1,7 +1,9 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { handleErrorLogging } from "../lib/utils";
+import { ResigterUserResponse } from "../types/types";
 import Button from "./Button";
 import "./AuthForm.css";
-import { useState } from "react";
-import { handleErrorLogging } from "../lib/utils";
 
 type AuthFormProps = {
   header: string;
@@ -12,6 +14,8 @@ type AuthFormProps = {
 export default function AuthForm({ header, action, btnText }: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -21,13 +25,20 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
+        credentials: 'include' // evaluate if it is really needed. 
       });
-      if (!response.ok) {
-        const responseBody = await response.text();
+      const responseBody: ResigterUserResponse = await response.json();
+      if (response.status === 409 && "message" in responseBody) {
+        setError(responseBody.message);
+      } else if (!response.ok) {
         throw new Error(
           `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
         );
+      } else {
+        error && setError(null);
+        console.log("responseBody", responseBody);
+        navigate("/");
       }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");
@@ -37,6 +48,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
     <div id="auth-section">
       <h2>{header}</h2>
       <form onSubmit={handleSubmit}>
+        {error && <p id="error-txt">{error}</p>}
         <label htmlFor="username" className="auth-label">
           Username:
         </label>
