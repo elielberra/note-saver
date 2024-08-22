@@ -51,17 +51,24 @@ async function runQueries(client: Client) {
     tag VARCHAR(20) NOT NULL,
     note_id INTEGER NOT NULL REFERENCES ${process.env.DB_NOTES_TABLE} (id) ON DELETE CASCADE
   )`;
-  const inserTagsQuery: QueryConfig = {
+  const insertTagsQuery: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES ($1, $2), ($3, $4)`,
     values: ["tag1", 1, "tag2", 1]
   };
+  const insertSessionsTableQuery = `CREATE TABLE ${process.env.DB_SESSIONS_TABLE} (
+    sid VARCHAR NOT NULL,
+    sess JSON NOT NULL,
+    expire TIMESTAMP NOT NULL,
+    PRIMARY KEY (sid)
+);`;
   const queries = [
     createUsersTableQuery,
     insertAdminUserQuery,
     createNotesTableQuery,
     insertNotesQuery,
     createTagsTableQuery,
-    inserTagsQuery
+    insertTagsQuery,
+    insertSessionsTableQuery
   ];
   try {
     for (const query of queries) {

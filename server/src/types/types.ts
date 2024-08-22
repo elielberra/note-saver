@@ -35,3 +35,11 @@ export interface SetNoteStatusBody {
 }
 
 export type SignInBody = Omit<UserT, "userId">;
+
+export interface ClientObject {
+  user: string;
+  password: string;
+  host: string;
+  port: number;
+  database: string | undefined;
+}
