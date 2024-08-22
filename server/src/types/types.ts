@@ -43,3 +43,8 @@ export interface ClientObject {
   port: number;
   database: string | undefined;
 }
+
+export interface AuthResponseBody {
+  isAuthenticated: boolean;
+  message?: string;
+}

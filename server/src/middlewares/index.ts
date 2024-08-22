@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
+import { AuthResponseBody } from "../types/types";
 
-export function isAuthenticated(req: Request, res: Response, next: NextFunction): void {
+export function isAuthenticated(req: Request, res: Response<AuthResponseBody>, next: NextFunction): void {
   console.log('Request Headers:', req.headers);
   if (req.isAuthenticated()) {
     return next();

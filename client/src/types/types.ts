@@ -20,3 +20,8 @@ interface UserResponse extends Response {
 }
 
 export type ResigterUserResponse = MessageResponse | UserResponse;
+
+export interface IsUserAuthenticatedResponse {
+  isAuthenticated: boolean;
+  message?: string;
+}

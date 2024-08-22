@@ -1,4 +1,4 @@
-import { NoteT } from "../types/types";
+import { IsUserAuthenticatedResponse, NoteT } from "../types/types";
 
 export async function fetchNotes(
   setNotes: (value: React.SetStateAction<NoteT[]>) => void,
@@ -11,7 +11,6 @@ export async function fetchNotes(
         filteringText ? `&filteringText=${filteringText}` : ""
       }`,
       {
-        method: "GET",
         credentials: "include"
       }
     );
@@ -54,4 +53,25 @@ export function getNewSortedNotes(
   const newNotes = [...prevNotes.filter((note) => note.noteId !== noteToBeUpdatedId), newNote];
   const sortedNewNotes = newNotes.sort((a, b) => a.noteId - b.noteId);
   return sortedNewNotes;
+}
+
+export async function validateIfUserIsAuthenticated() {
+  try {
+    const response = await fetch("http://localhost:3333/isauthenticated", {
+      credentials: "include"
+    });
+    if (!response.ok && response.status !== 401) {
+      const responseBody = await response.text();
+      throw new Error(
+        `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
+      );
+    }
+    const responseBody: IsUserAuthenticatedResponse = await response.json();
+    const issUserAuthenticated = responseBody.isAuthenticated;
+    return issUserAuthenticated;
+  } catch (error) {
+    console.error("Error while checking user authentication status");
+    if (!isProductionEnv()) console.error(error);
+    return false;
+  }
 }
