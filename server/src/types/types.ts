@@ -48,3 +48,9 @@ export interface AuthResponseBody {
   isAuthenticated: boolean;
   message?: string;
 }
+
+declare global {
+  namespace Express {
+    interface User extends UserT {}
+  }
+}

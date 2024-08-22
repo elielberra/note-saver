@@ -9,7 +9,8 @@ CREATE TABLE users(
 CREATE TABLE notes (
     id SERIAL PRIMARY KEY,
     content VARCHAR(2500) NOT NULL,
-    is_active BOOLEAN NOT NULL
+    is_active BOOLEAN NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
 );
 
  CREATE TABLE tags (

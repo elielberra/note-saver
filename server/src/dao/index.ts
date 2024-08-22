@@ -5,7 +5,7 @@ import { runQuery } from "./utils";
 
 dotenv.config();
 
-export async function getNotes(areActive: NoteT["isActive"], filteringText: string | undefined) {
+export async function getNotes(userId: UserT["userId"], areActive: NoteT["isActive"], filteringText: string | undefined) {
   const query: QueryConfig = {
     text: `SELECT
                   n.id AS "noteId",
@@ -20,7 +20,8 @@ export async function getNotes(areActive: NoteT["isActive"], filteringText: stri
                 LEFT JOIN
                   tags t ON n.id = t.note_id
                 WHERE
-                  n.is_active = ${areActive}
+                  n.user_id = ${userId}
+                  AND n.is_active = ${areActive}
                   ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ""}
                 GROUP BY
                   n.id, n.content, n.is_active;`
@@ -99,7 +100,7 @@ export async function getUserByName(username: UserT["username"]) {
 
 export async function getUserById(id: UserT["userId"]) {
   const query: QueryConfig = {
-    text: `SELECT * FROM ${process.env.DB_USERS_TABLE} WHERE id = $1`,
+    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE id = $1`,
     values: [id]
   };
   const result: QueryResult<UserT> = await runQuery(query);

@@ -42,11 +42,8 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
           credentials: "include",
           mode: "cors"
         });
-
-        console.log("responseBody", responseBody);
         navigate("/");
-        const resData = await response.json();
-        console.log("resData", resData);
+        // const resData = await response.json();
 
       }
     } catch (error) {

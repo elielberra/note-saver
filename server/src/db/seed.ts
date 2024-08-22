@@ -34,7 +34,8 @@ async function runQueries(client: Client) {
   const createNotesTableQuery = `CREATE TABLE ${process.env.DB_NOTES_TABLE}(
         id SERIAL PRIMARY KEY,
         content VARCHAR(2500) NOT NULL,
-        is_active BOOLEAN NOT NULL
+        is_active BOOLEAN NOT NULL,
+        user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
     )`;
   // Issue not solved https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/69248
   // PR not working https://github.com/DefinitelyTyped/DefinitelyTyped/pull/69053/files
@@ -42,8 +43,8 @@ async function runQueries(client: Client) {
   // I think that the distributive conditional of the `QueryConfigValues` type is not being correctly handled. I have added what I think is the solution and a potential pull request on the typescript playground I am leaving at the end. Please let me know if something was not clear enough. Thanks!
   // https://tsplay.dev/WY1y3W
   const insertNotesQuery: QueryConfig = {
-    text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES ($1, $2)`,
-    values: ["The nth note", true]
+    text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active, user_id) VALUES ($1, $2, $3)`,
+    values: ["The nth note", true, 1]
   };
   // tag character numbers must match maxLength on textarea of Note.tsx
   const createTagsTableQuery = `CREATE TABLE ${process.env.DB_TAGS_TABLE}(

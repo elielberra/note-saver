@@ -26,10 +26,15 @@ router.get("/", (req: Request, res: Response) => {
   res.status(200).send("Note Keeper server");
 });
 
+// TODO: Add query params types
 router.get("/notes", isAuthenticated, async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ isAuthenticated: false, message: "Unauthorized: No user in session"});
+  }
+  const userId = req.user.userId;
   const areActive = req.query.areActive === "true";
   const filteringText = req.query.filteringText as string | undefined;
-  const notes = await getNotes(areActive, filteringText);
+  const notes = await getNotes(userId, areActive, filteringText);
   res.status(200).send(notes);
 });
 
