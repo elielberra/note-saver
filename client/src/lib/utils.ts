@@ -7,7 +7,13 @@ export async function fetchNotes(
 ) {
   try {
     const response = await fetch(
-      `http://localhost:3333/notes?areActive=${notesStatus}${filteringText ? `&filteringText=${filteringText}` : ""}`
+      `http://localhost:3333/notes?areActive=${notesStatus}${
+        filteringText ? `&filteringText=${filteringText}` : ""
+      }`,
+      {
+        method: "GET",
+        credentials: "include"
+      }
     );
     if (!response.ok) {
       const responseBody = await response.text();

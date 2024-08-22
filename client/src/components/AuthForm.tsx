@@ -26,7 +26,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ username, password }),
-        credentials: 'include' // evaluate if it is really needed. 
+        credentials: "include" // evaluate if it is really needed.
       });
       const responseBody: ResigterUserResponse = await response.json();
       if (response.status === 409 && "message" in responseBody) {
@@ -37,8 +37,17 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         );
       } else {
         error && setError(null);
+        const response = await fetch(`http://localhost:3333/isauthenticated`, {
+          method: "GET",
+          credentials: "include",
+          mode: "cors"
+        });
+
         console.log("responseBody", responseBody);
         navigate("/");
+        const resData = await response.json();
+        console.log("resData", resData);
+
       }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");

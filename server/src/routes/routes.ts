@@ -18,6 +18,7 @@ import {
   UserT
 } from "../types/types";
 import passport from "passport";
+import { isAuthenticated } from "../middlewares";
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.get("/", (req: Request, res: Response) => {
   res.status(200).send("Note Keeper server");
 });
 
-router.get("/notes", async (req: Request, res: Response) => {
+router.get("/notes", isAuthenticated, async (req: Request, res: Response) => {
   const areActive = req.query.areActive === "true";
   const filteringText = req.query.filteringText as string | undefined;
   const notes = await getNotes(areActive, filteringText);
@@ -194,5 +195,13 @@ router.post("/signup", (req: Request, res: Response, next: NextFunction) => {
     }
   )(req as Request, res as Response, next as NextFunction);
 });
+
+router.get("/isauthenticated", isAuthenticated,  async (
+  _: Request,
+  res: Response
+) => {
+  res.status(200).json({isAuthenticated: true})
+  }
+)
 
 export default router;
