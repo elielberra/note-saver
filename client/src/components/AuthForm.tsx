@@ -22,6 +22,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
     try {
       const response = await fetch(`http://localhost:3333/${action}`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -39,14 +40,14 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         );
       } else {
         error && setError(null);
-        // const response = await fetch(`http://localhost:3333/isauthenticated`, {
-        //   method: "GET",
-        //   credentials: "include",
-        //   mode: "cors"
-        // });
-        // navigate("/");
-        // const resData = await response.json();
-        // console.debug(resData);
+        const response = await fetch(`http://localhost:3333/isauthenticated`, {
+          method: "GET",
+          credentials: "include",
+          mode: "cors"
+        });
+        navigate("/");
+        const resData = await response.json();
+        console.debug(resData);
       }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");
