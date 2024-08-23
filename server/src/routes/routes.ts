@@ -5,7 +5,6 @@ import {
   deleteNote,
   deleteTag,
   getNotes,
-  // registerUser,
   updateNoteContent,
   updateNoteStatus,
   updateTagContent

@@ -55,14 +55,14 @@ declare global {
   }
 }
 
-export const ALREADY_REGISTERED_USER = "AlreadyRegisteredUser" as const;
-
-export type AuthErrors = null | Error | typeof ALREADY_REGISTERED_USER;
-
 export interface AuthPostBody {
   username: string;
   password: string;
 }
+
+export const ALREADY_REGISTERED_USER = "AlreadyRegisteredUser" as const;
+
+export type AuthErrors = null | Error | typeof ALREADY_REGISTERED_USER;
 
 declare module "passport-local" {
   interface VerifyFunction {
@@ -73,3 +73,7 @@ declare module "passport-local" {
     ): void;
   }
 }
+
+// declare module "passport" {
+//   type AuthenticateCallback = (error: AuthErrors, user?: UserT | false) => void;
+// }
