@@ -25,12 +25,14 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, password }),
-        credentials: "include" // evaluate if it is really needed.
+        body: JSON.stringify({ username, password })
       });
+      console.log("response", response);
       const responseBody: ResigterUserResponse = await response.json();
-      if (response.status === 409 && "message" in responseBody) {
-        setError(responseBody.message);
+      if (response.status === 400 || response.status === 409) {
+        setError(
+          "message" in responseBody ? responseBody.message : "Unspecified error registering user"
+        );
       } else if (!response.ok) {
         throw new Error(
           `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
@@ -44,7 +46,6 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         });
         navigate("/");
         // const resData = await response.json();
-
       }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");

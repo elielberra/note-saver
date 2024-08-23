@@ -3,7 +3,7 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import { getUserById, getUserByName } from "../dao";
 import { QueryConfig, QueryResult } from "pg";
 import { hashPassword, runQuery } from "../dao/utils";
-import { UserT } from "../types/types";
+import { AuthErrors, DoneWithErrorsT, UserT } from "../types/types";
 
 async function checkIfUserIsAlreadyRegistered(username: UserT["username"]) {
   const userRows = await getUserByName(username);
@@ -14,27 +14,32 @@ async function checkIfUserIsAlreadyRegistered(username: UserT["username"]) {
 export function initializePassport() {
   passport.use(
     "local-signup",
-    new LocalStrategy({ usernameField: "username" }, async (username, password, done) => {
-      try {
-        if (await checkIfUserIsAlreadyRegistered(username))
-          return done(false, false, { message: `User ${username} is already registered` });
-        const hashedPassword = await hashPassword(password);
-        const query: QueryConfig = {
-          text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES($1, $2) RETURNING id`,
-          values: [username, hashedPassword]
-        };
-        const result: QueryResult<{ id: number }> = await runQuery(query);
-        const insertedId = result.rows[0].id;
-        const newUser: UserT = {
-          userId: insertedId,
-          username,
-          password: hashedPassword
-        };
-        return done(null, newUser);
-      } catch (error) {
-        return done(error);
+    new LocalStrategy(
+      { usernameField: "username" },
+      async (username, password, done) => {
+        try {
+          if (await checkIfUserIsAlreadyRegistered(username))
+            return done("AlreadyRegisteredUser", false);
+          const hashedPassword = await hashPassword(password);
+          const query: QueryConfig = {
+            text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES($1, $2) RETURNING id`,
+            values: [username, hashedPassword]
+          };
+          const result: QueryResult<{ id: number }> = await runQuery(query);
+          const insertedId = result.rows[0].id;
+          const newUser: UserT = {
+            userId: insertedId,
+            username,
+            password: hashedPassword
+          };
+          return done(null, newUser);
+        } catch (error) {
+          if (error instanceof Error) {
+            return done(error);
+          }
+        }
       }
-    })
+    )
   );
   passport.serializeUser((user, done) => {
     done(null, (user as UserT).userId);

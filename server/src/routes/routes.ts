@@ -11,6 +11,9 @@ import {
   updateTagContent
 } from "../dao";
 import {
+  ALREADY_REGISTERED_USER,
+  AuthErrors,
+  AuthPostBody,
   CreateTagBody,
   DelenteEntityBody,
   SetNoteStatusBody,
@@ -29,7 +32,9 @@ router.get("/", (req: Request, res: Response) => {
 // TODO: Add query params types
 router.get("/notes", isAuthenticated, async (req: Request, res: Response) => {
   if (!req.user) {
-    return res.status(401).json({ isAuthenticated: false, message: "Unauthorized: No user in session"});
+    return res
+      .status(401)
+      .json({ isAuthenticated: false, message: "Unauthorized: No user in session" });
   }
   const userId = req.user.userId;
   const areActive = req.query.areActive === "true";
@@ -179,34 +184,39 @@ router.post(
   }
 );
 
-router.post("/signup", (req: Request, res: Response, next: NextFunction) => {
-  passport.authenticate(
-    "local-signup",
-    (error: any, user: UserT | false, info: { message: string }) => {
-      if (error) {
-        return res
-          .status(500)
-          .json({ message: "Internal Server error while attempting to register a user" });
-      }
-      if (!user) {
-        return res.status(409).json(info);
-      }
-      req.logIn(user, (loginErr: any) => {
-        if (loginErr) {
-          return next(loginErr);
+router.post(
+  "/signup",
+  (
+    req: Request<Record<string, never>, Record<string, never>, AuthPostBody>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    passport.authenticate(
+      "local-signup",
+      (error: AuthErrors, user: UserT | false) => {
+        const { password } = req.body;
+        if (!password) {
+          return res.status(400).json({ message: "No password was entered" });
+        } else if (error === ALREADY_REGISTERED_USER) {
+          return res.status(409).json({ message: "User already registered" });
+        } else if (error || !user) {
+          return res
+            .status(500)
+            .json({ message: "Internal Server error while attempting to register a user" });
         }
-        return res.status(201).json({ userId: user.userId, username: user.username });
-      });
-    }
-  )(req as Request, res as Response, next as NextFunction);
-});
-
-router.get("/isauthenticated", isAuthenticated,  async (
-  _: Request,
-  res: Response
-) => {
-  res.status(200).json({isAuthenticated: true})
+        req.logIn(user, (loginErr: any) => {
+          if (loginErr) {
+            return next(loginErr);
+          }
+          return res.status(201).json({ userId: user.userId, username: user.username });
+        });
+      }
+    )(req as Request, res as Response, next as NextFunction);
   }
-)
+);
+
+router.get("/isauthenticated", isAuthenticated, async (_: Request, res: Response) => {
+  res.status(200).json({ isAuthenticated: true });
+});
 
 export default router;
