@@ -15,12 +15,14 @@ import {
   AuthPostBody,
   CreateTagBody,
   DelenteEntityBody,
+  PASSWORD_NOT_VALID,
   SetNoteStatusBody,
   UpdateTagBody,
+  USER_NOT_FOUND,
   UserT
 } from "../types/types";
 import passport from "passport";
-import { isAuthenticated } from "../middlewares";
+import { hasUsernameAndPassword, isAuthenticated } from "../middlewares";
 
 const router = express.Router();
 
@@ -185,32 +187,51 @@ router.post(
 
 router.post(
   "/signup",
+  hasUsernameAndPassword,
+  (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate("local-signup", (error: AuthErrors, user: UserT | false) => {
+      if (error === ALREADY_REGISTERED_USER) {
+        return res.status(409).json({ message: "User already registered" });
+      } else if (error || !user) {
+        return res
+          .status(500)
+          .json({ message: "Internal Server error while attempting to register a user" });
+      }
+      req.logIn(user, (loginErr: any) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        return res.status(201).json({ userId: user.userId, username: user.username });
+      });
+    })(req as Request, res as Response, next as NextFunction);
+  }
+);
+
+router.post(
+  "/signin",
+  hasUsernameAndPassword,
   (
     req: Request<Record<string, never>, Record<string, never>, AuthPostBody>,
     res: Response,
     next: NextFunction
   ) => {
-    passport.authenticate(
-      "local-signup",
-      (error: AuthErrors, user: UserT | false) => {
-        const { password } = req.body;
-        if (!password) {
-          return res.status(400).json({ message: "No password was entered" });
-        } else if (error === ALREADY_REGISTERED_USER) {
-          return res.status(409).json({ message: "User already registered" });
-        } else if (error || !user) {
-          return res
-            .status(500)
-            .json({ message: "Internal Server error while attempting to register a user" });
-        }
-        req.logIn(user, (loginErr: any) => {
-          if (loginErr) {
-            return next(loginErr);
-          }
-          return res.status(201).json({ userId: user.userId, username: user.username });
-        });
+    passport.authenticate("local-signin", async (error: AuthErrors, user: UserT | false) => {
+      console.debug("error", error);
+      if (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID) {
+        return res.status(401).json({ message: "Wrong credentials" });
+      } else if (error || !user) {
+        return res
+          .status(500)
+          .json({ message: "Internal Server error while attempting to register a user" });
       }
-    )(req as Request, res as Response, next as NextFunction);
+      console.debug("user", user);
+      req.logIn(user, (loginErr: any) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        return res.status(200).json({ userId: user.userId, username: user.username });
+      });
+    })(req as Request, res as Response, next as NextFunction);
   }
 );
 

@@ -89,20 +89,23 @@ export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT[
   await runQuery(query);
 }
 
-export async function getUserByName(username: UserT["username"]) {
-  const query: QueryConfig = {
-    text: `SELECT * FROM ${process.env.DB_USERS_TABLE} WHERE username = $1`,
-    values: [username]
-  };
-  const result: QueryResult<UserT> = await runQuery(query);
-  return result.rows;
-}
-
+// Unify into getUserByField
 export async function getUserById(id: UserT["userId"]) {
   const query: QueryConfig = {
     text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE id = $1`,
     values: [id]
   };
   const result: QueryResult<UserT> = await runQuery(query);
-  return result.rows;
+  if (result.rows) return result.rows[0]
+  return null;
+}
+
+export async function getUserByUsermame(username: UserT["username"]) {
+  const query: QueryConfig = {
+    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE username = $1`,
+    values: [username]
+  };
+  const result: QueryResult<UserT> = await runQuery(query);
+  if (result.rows) return result.rows[0]
+  return null;
 }

@@ -29,7 +29,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
       });
       console.log("response", response);
       const responseBody: ResigterUserResponse = await response.json();
-      if (response.status === 400 || response.status === 409) {
+      if (response.status === 400 || response.status === 401 || response.status === 409) {
         setError(
           "message" in responseBody ? responseBody.message : "Unspecified error registering user"
         );
@@ -39,13 +39,14 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         );
       } else {
         error && setError(null);
-        const response = await fetch(`http://localhost:3333/isauthenticated`, {
-          method: "GET",
-          credentials: "include",
-          mode: "cors"
-        });
-        navigate("/");
+        // const response = await fetch(`http://localhost:3333/isauthenticated`, {
+        //   method: "GET",
+        //   credentials: "include",
+        //   mode: "cors"
+        // });
+        // navigate("/");
         // const resData = await response.json();
+        // console.debug(resData);
       }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");

@@ -60,9 +60,12 @@ export interface AuthPostBody {
   password: string;
 }
 
+// TODO: Evalute creating an array and iterating over it on AuthErrors
 export const ALREADY_REGISTERED_USER = "AlreadyRegisteredUser" as const;
+export const USER_NOT_FOUND = "UserNotFound" as const;
+export const PASSWORD_NOT_VALID = "PasswordNotValid" as const;
 
-export type AuthErrors = null | Error | typeof ALREADY_REGISTERED_USER;
+export type AuthErrors = null | Error | typeof ALREADY_REGISTERED_USER | typeof USER_NOT_FOUND | typeof PASSWORD_NOT_VALID;
 
 declare module "passport-local" {
   interface VerifyFunction {
@@ -73,7 +76,3 @@ declare module "passport-local" {
     ): void;
   }
 }
-
-// declare module "passport" {
-//   type AuthenticateCallback = (error: AuthErrors, user?: UserT | false) => void;
-// }
