@@ -1,4 +1,4 @@
-\connect note_keeper;
+\connect note_saver;
 
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,

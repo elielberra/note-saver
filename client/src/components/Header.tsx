@@ -6,7 +6,7 @@ export default function Header() {
     <div id="header">
       <div id="title">
         <NoteIcon height={40} />
-        <h1>NoteKeeper</h1>
+        <h1>NoteSaver</h1>
       </div>
     </div>
   );

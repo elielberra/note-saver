@@ -27,7 +27,7 @@ import { hasUsernameAndPassword, isAuthenticated } from "../middlewares";
 const router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
-  res.status(200).send("Note Keeper server");
+  res.status(200).send("NoteSaver server");
 });
 
 // TODO: Add query params types

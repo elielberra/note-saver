@@ -5,6 +5,6 @@ To generate the React icon component from an svg un npx @svgr/cli -- client/src/
 ```
 docker exec -it db bash
 psql -U postgres
-\c note_keeper
+\c note_saver
 \dt
 ```
