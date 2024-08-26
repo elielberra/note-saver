@@ -48,3 +48,12 @@
   background: red;
   border-radius: 50%;
 }
+
+@media (max-width: 1650px) {
+  .tag-text  {
+    width: 100%;
+  }
+  .tag.note-btn {
+    width: 40%;
+  }
+}
