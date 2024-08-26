@@ -3,3 +3,7 @@
 server/dist
 TODOs
 ec2/*
+*.key
+*.pem
+*.pfx
+*.crt
