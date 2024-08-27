@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { handleErrorLogging } from "../lib/utils";
-import { ResigterUserResponse } from "../types/types";
+import {
+  AuthenticateUserResponse,
+  SuccessfulAuthResponse,
+  UnsuccessfulAuthResponse
+} from "../types/types";
 import Button from "./Button";
 import "./AuthForm.css";
+import { useUserContext } from "./UserContext";
 
 type AuthFormProps = {
   header: string;
@@ -11,11 +15,23 @@ type AuthFormProps = {
   btnText: string;
 };
 
+function isSuccessfulResponse(
+  response: AuthenticateUserResponse
+): response is SuccessfulAuthResponse {
+  return (response as SuccessfulAuthResponse).username !== undefined;
+}
+
+function isUnsuccessfulResponse(
+  response: AuthenticateUserResponse
+): response is UnsuccessfulAuthResponse {
+  return (response as UnsuccessfulAuthResponse).message !== undefined;
+}
+
 export default function AuthForm({ header, action, btnText }: AuthFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const { login } = useUserContext();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,18 +44,16 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         },
         body: JSON.stringify({ username, password })
       });
-      const responseBody: ResigterUserResponse = await response.json();
+      const responseBody: AuthenticateUserResponse = await response.json();
       if (response.status === 400 || response.status === 401 || response.status === 409) {
-        setError(
-          "message" in responseBody ? responseBody.message : "Unspecified error registering user"
-        );
+        isUnsuccessfulResponse(responseBody) && setError(responseBody.message);
       } else if (!response.ok) {
         throw new Error(
           `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
         );
       } else {
         error && setError(null);
-        navigate("/");
+        isSuccessfulResponse(responseBody) && login(responseBody.username);
       }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");

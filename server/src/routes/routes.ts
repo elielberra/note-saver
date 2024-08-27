@@ -15,8 +15,11 @@ import {
   AuthPostBody,
   CreateTagBody,
   DelenteEntityBody,
+  IsAuthenticatedResponse,
   PASSWORD_NOT_VALID,
   SetNoteStatusBody,
+  SuccessfulAuthResponse,
+  UnsuccessfulAuthResponse,
   UpdateTagBody,
   USER_NOT_FOUND,
   UserT
@@ -185,23 +188,26 @@ router.post(
   }
 );
 
+// TODO: Use function for DRY
 router.post(
   "/signup",
   hasUsernameAndPassword,
   (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate("local-signup", (error: AuthErrors, user: UserT | false) => {
       if (error === ALREADY_REGISTERED_USER) {
-        return res.status(409).json({ message: "User already registered" });
-      } else if (error || !user) {
         return res
-          .status(500)
-          .json({ message: "Internal Server error while attempting to register a user" });
+          .status(409)
+          .json({ message: "User already registered" } as UnsuccessfulAuthResponse);
+      } else if (error || !user) {
+        return res.status(500).json({
+          message: "Internal Server error while attempting to register a user"
+        } as UnsuccessfulAuthResponse);
       }
       req.logIn(user, (loginErr: any) => {
         if (loginErr) {
           return next(loginErr);
         }
-        return res.status(201).json({ userId: user.userId, username: user.username });
+        return res.status(200).json({ username: user.username } as SuccessfulAuthResponse);
       });
     })(req as Request, res as Response, next as NextFunction);
   }
@@ -216,27 +222,29 @@ router.post(
     next: NextFunction
   ) => {
     passport.authenticate("local-signin", async (error: AuthErrors, user: UserT | false) => {
-      console.debug("error", error);
       if (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID) {
-        return res.status(401).json({ message: "Wrong credentials" });
+        return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);
       } else if (error || !user) {
         return res
           .status(500)
-          .json({ message: "Internal Server error while attempting to register a user" });
+          .json({
+            message: "Internal Server error while attempting to signin a user"
+          } as UnsuccessfulAuthResponse);
       }
-      console.debug("user", user);
       req.logIn(user, (loginErr: any) => {
         if (loginErr) {
           return next(loginErr);
         }
-        return res.status(200).json({ userId: user.userId, username: user.username });
+        return res.status(200).json({ username: user.username } as SuccessfulAuthResponse);
       });
     })(req as Request, res as Response, next as NextFunction);
   }
 );
 
-router.get("/isauthenticated", isAuthenticated, async (_: Request, res: Response) => {
-  res.status(200).json({ isAuthenticated: true });
+router.get("/isauthenticated", isAuthenticated, async (req: Request, res: Response) => {
+  res
+    .status(200)
+    .json({ isAuthenticated: true, username: req.user!.username } as IsAuthenticatedResponse);
 });
 
 export default router;

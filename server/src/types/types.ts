@@ -65,7 +65,12 @@ export const ALREADY_REGISTERED_USER = "AlreadyRegisteredUser" as const;
 export const USER_NOT_FOUND = "UserNotFound" as const;
 export const PASSWORD_NOT_VALID = "PasswordNotValid" as const;
 
-export type AuthErrors = null | Error | typeof ALREADY_REGISTERED_USER | typeof USER_NOT_FOUND | typeof PASSWORD_NOT_VALID;
+export type AuthErrors =
+  | null
+  | Error
+  | typeof ALREADY_REGISTERED_USER
+  | typeof USER_NOT_FOUND
+  | typeof PASSWORD_NOT_VALID;
 
 declare module "passport-local" {
   interface VerifyFunction {
@@ -76,3 +81,21 @@ declare module "passport-local" {
     ): void;
   }
 }
+
+export interface SuccessfulAuthResponse {
+  username: UserT["username"];
+}
+
+export interface UnsuccessfulAuthResponse {
+  message: string;
+}
+
+export type IsAuthenticatedResponse =
+  | {
+      isAuthenticated: true;
+      username: string;
+    } 
+  | {
+      isAuthenticated: false;
+      username?: never;
+    };

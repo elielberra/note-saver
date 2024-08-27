@@ -24,6 +24,10 @@
   fill: #161f3c;
 }
 
+/* #user-salutation {
+  margin-left: 10px;
+} */
+
 @media (max-width: 500px) {
   #title {
     margin: auto;

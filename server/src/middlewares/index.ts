@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthPostBody, AuthResponseBody } from "../types/types";
+import { AuthPostBody, AuthResponseBody, IsAuthenticatedResponse } from "../types/types";
 
 export function isAuthenticated(
   req: Request,
@@ -9,7 +9,7 @@ export function isAuthenticated(
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.status(401).json({ isAuthenticated: false, message: "Unauthorized" });
+    res.status(401).json({ isAuthenticated: false } as IsAuthenticatedResponse);
   }
 }
 

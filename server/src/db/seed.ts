@@ -1,3 +1,5 @@
+// TODO: Delete this class, it will be implemented on the init.sql file
+
 import { Client, QueryConfig } from "pg";
 import { getDBClient, connectToDB } from "./utils";
 import dotenv from "dotenv";
@@ -43,20 +45,20 @@ async function runQueries(client: Client) {
     text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES ($1, $2), ($3, $4)`,
     values: ["tag1", 1, "tag2", 1]
   };
-  const insertSessionsTableQuery = `CREATE TABLE ${process.env.DB_SESSIONS_TABLE} (
+  const createSessionsTableQuery = `CREATE TABLE ${process.env.DB_SESSIONS_TABLE} (
     sid VARCHAR NOT NULL,
     sess JSON NOT NULL,
     expire TIMESTAMP NOT NULL,
     PRIMARY KEY (sid)
 );`;
   const queries = [
-    createUsersTableQuery,
+    // createUsersTableQuery,
     insertAdminUserQuery,
-    createNotesTableQuery,
+    // createNotesTableQuery,
     insertNotesQuery,
-    createTagsTableQuery,
+    // createTagsTableQuery,
     insertTagsQuery,
-    insertSessionsTableQuery
+    // createSessionsTableQuery
   ];
   try {
     for (const query of queries) {

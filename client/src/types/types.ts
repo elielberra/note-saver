@@ -10,18 +10,25 @@ export interface NoteT {
   isActive: boolean;
 }
 
-interface MessageResponse extends Response {
-  message: string;
-}
-
-interface UserResponse extends Response {
-  userId: number;
+export interface UserT {
   username: string;
 }
 
-export type ResigterUserResponse = MessageResponse | UserResponse;
+export interface SuccessfulAuthResponse extends Response, UserT {}
 
-export interface IsUserAuthenticatedResponse {
-  isAuthenticated: boolean;
-  message?: string;
+export interface UnsuccessfulAuthResponse extends Response {
+  message: string;
 }
+
+export type AuthenticateUserResponse = SuccessfulAuthResponse | UnsuccessfulAuthResponse;
+
+// TODO: Define as two separate types
+export type IsAuthenticatedResponse =
+  | {
+      isAuthenticated: true;
+      username: string;
+    }
+  | {
+      isAuthenticated: false;
+      username?: never;
+    };
