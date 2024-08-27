@@ -35,6 +35,8 @@
 
 #search-input:focus {
   outline: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 #search-input::placeholder {
@@ -69,7 +71,7 @@
 }
 
 @media (max-width: 450px) {
-  #search-bar { 
+  #search-bar {
     width: 95%;
     min-width: 0;
   }

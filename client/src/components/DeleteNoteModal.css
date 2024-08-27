@@ -1,3 +1,7 @@
+#confirm-delete-text {
+  font-size: 25px;
+}
+
 #yes-no-btns {
   display: flex;
   flex-direction: row;
@@ -5,16 +9,16 @@
 }
 
 .modal-btn {
-  width: 50px;
-  height: 20px;
+  width: 70px;
+  height: 40px;
   font-family: inherit;
   font-weight: bold;
-  font-size: 15px;
   background: #161f3c;
   color: #d9d9d9;
   border-radius: 15px;
   border: 0;
   margin: 0 20px;
+  font-size: 25px;
 }
 
 .modal-btn:hover {

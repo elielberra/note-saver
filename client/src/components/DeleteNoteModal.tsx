@@ -16,7 +16,7 @@ export default function DeleteNoteModal({
 }: DeleteNoteModalProps) {
   return createPortal(
     <Modal isOpen={isOpen} onClose={handleCloseDeleteNoteModal}>
-      <p>Are you sure that you want to delete this note?</p>
+      <p id="confirm-delete-text">Are you sure that you want to delete this note?</p>
       <div id="yes-no-btns">
         <Button className="modal-btn" id="no-btn" onClick={handleCloseDeleteNoteModal} text="No" />
         <Button className="modal-btn" id="yes-btn" onClick={deleteNote} text="Yes" />
