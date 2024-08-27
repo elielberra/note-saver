@@ -19,7 +19,6 @@ export function hasUsernameAndPassword(
   next: NextFunction
 ): void {
   const { username, password } = req.body;
-  console.debug("req.body", req.body);
   if (!username || !password) {
     res.status(400).json({
       message: `${username ? "" : "Enter a username. "}${password ? "" : "Enter a password"}`

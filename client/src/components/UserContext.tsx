@@ -1,6 +1,6 @@
 import { createContext, useState, ReactNode, useContext, useEffect } from "react";
 import { UserT } from "../types/types";
-import { validateAndGetUserIfAuthenticated } from "../lib/utils";
+import { handleErrorLogging, validateAndGetUserIfAuthenticated } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
 
 type UserContextT = {
@@ -23,10 +23,25 @@ export function UserProvider({ children }: { children: ReactNode }) {
     setUsername(username);
     navigate("/");
   }
-  function logout() {
-    setIsLoggedIn(false);
-    setUsername(null);
-    navigate("/signin");
+  async function logout() {
+    try {
+      const response = await fetch("http://localhost:3333/signout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      if (response.ok) {
+        setIsLoggedIn(false);
+        setUsername(null);
+        navigate("/signin");
+      } else {
+        throw new Error(`Status code: ${response.status} - Server error: ${response.statusText}`);
+      }
+    } catch (error) {
+      handleErrorLogging(error, "Error while logging out");
+    }
   }
   useEffect(() => {
     async function checkAuthStatus() {

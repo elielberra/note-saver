@@ -25,10 +25,12 @@ export interface DelenteEntityBody {
   id: number;
 }
 
+// TODO: use Omit on NoteT
 export interface CreateTagBody {
   noteId: number;
 }
 
+// TODO: use Omit on NoteT
 export interface SetNoteStatusBody {
   noteId: number;
   isActive: boolean;
@@ -90,6 +92,7 @@ export interface UnsuccessfulAuthResponse {
   message: string;
 }
 
+// TODO: Define as two separate types
 export type IsAuthenticatedResponse =
   | {
       isAuthenticated: true;

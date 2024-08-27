@@ -225,11 +225,9 @@ router.post(
       if (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID) {
         return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);
       } else if (error || !user) {
-        return res
-          .status(500)
-          .json({
-            message: "Internal Server error while attempting to signin a user"
-          } as UnsuccessfulAuthResponse);
+        return res.status(500).json({
+          message: "Internal Server error while attempting to signin a user"
+        } as UnsuccessfulAuthResponse);
       }
       req.logIn(user, (loginErr: any) => {
         if (loginErr) {
@@ -240,6 +238,13 @@ router.post(
     })(req as Request, res as Response, next as NextFunction);
   }
 );
+
+router.post("/signout", (req: Request, res: Response, next: NextFunction) => {
+  req.logout((error) => {
+    if (error) return next(error);
+    res.sendStatus(200);
+  });
+});
 
 router.get("/isauthenticated", isAuthenticated, async (req: Request, res: Response) => {
   res
