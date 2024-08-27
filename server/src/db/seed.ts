@@ -5,19 +5,6 @@ import { hashPassword } from "../dao/utils";
 
 dotenv.config();
 
-async function dropAndCreateDatabase(client: Client) {
-  const dropBDIfExists = `DROP DATABASE IF EXISTS ${process.env.DB_NAME};`;
-  const createDBQuery = `CREATE DATABASE ${process.env.DB_NAME};`;
-  try {
-    await client.query(dropBDIfExists);
-    await client.query(createDBQuery);
-  } catch (error) {
-    console.error("Error running the query", error);
-  } finally {
-    await client.end();
-  }
-}
-
 async function runQueries(client: Client) {
   // username and password character numbers must match maxLength on textarea of AuthForm.tsx
   const createUsersTableQuery = `CREATE TABLE ${process.env.DB_USERS_TABLE}(
@@ -84,9 +71,6 @@ async function runQueries(client: Client) {
 }
 
 async function main() {
-  const dbClientWithNoDB = getDBClient(false);
-  await connectToDB(dbClientWithNoDB);
-  await dropAndCreateDatabase(dbClientWithNoDB);
   const dbClientWithDB = getDBClient();
   await connectToDB(dbClientWithDB);
   await runQueries(dbClientWithDB);

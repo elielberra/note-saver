@@ -1,3 +1,5 @@
+CREATE DATABASE note_saver;
+
 \connect note_saver;
 
 CREATE TABLE users(
