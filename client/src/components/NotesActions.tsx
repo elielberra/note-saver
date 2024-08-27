@@ -27,6 +27,7 @@ export default function NoteActions({
     try {
       const response = await fetch("http://localhost:3333/create-note", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         }

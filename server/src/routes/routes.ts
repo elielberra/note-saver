@@ -95,9 +95,10 @@ router.post(
   }
 );
 
-router.post("/create-note", async (req: Request, res: Response) => {
+router.post("/create-note", isAuthenticated, async (req: Request, res: Response) => {
   try {
-    const newNoteId = await createNote();
+    const userId = req.user!.userId;
+    const newNoteId = await createNote(userId);
     res.status(201).json({ newNoteId });
   } catch (error) {
     if (error instanceof Error) {

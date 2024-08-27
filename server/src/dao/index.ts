@@ -5,7 +5,11 @@ import { runQuery } from "./utils";
 
 dotenv.config();
 
-export async function getNotes(userId: UserT["userId"], areActive: NoteT["isActive"], filteringText: string | undefined) {
+export async function getNotes(
+  userId: UserT["userId"],
+  areActive: NoteT["isActive"],
+  filteringText: string | undefined
+) {
   const query: QueryConfig = {
     text: `SELECT
                   n.id AS "noteId",
@@ -46,9 +50,10 @@ export async function updateTagContent(tagId: TagT["tagId"], newContent: TagT["t
   await runQuery(query);
 }
 
-export async function createNote() {
+export async function createNote(userId: UserT["userId"]) {
   const query: QueryConfig = {
-    text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active) VALUES('', true) RETURNING id`
+    text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active, user_id) VALUES('', true, $1) RETURNING id`,
+    values: [userId]
   };
   const result: QueryResult<{ id: number }> = await runQuery(query);
   const insertedId = result.rows[0].id;
@@ -96,7 +101,7 @@ export async function getUserById(id: UserT["userId"]) {
     values: [id]
   };
   const result: QueryResult<UserT> = await runQuery(query);
-  if (result.rows) return result.rows[0]
+  if (result.rows) return result.rows[0];
   return null;
 }
 
@@ -106,6 +111,6 @@ export async function getUserByUsermame(username: UserT["username"]) {
     values: [username]
   };
   const result: QueryResult<UserT> = await runQuery(query);
-  if (result.rows) return result.rows[0]
+  if (result.rows) return result.rows[0];
   return null;
 }
