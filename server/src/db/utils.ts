@@ -4,19 +4,18 @@ import { ClientObject } from "../types/types";
 
 dotenv.config();
 
-function getDBObjectInfo(): ClientObject {
+function getDBObjectInfo(isUsingDatabase: boolean = true): ClientObject {
   return {
     user: process.env.DB_USER!,
     password: process.env.DB_PASSWORD!,
     host: process.env.DB_HOST!,
     port: parseInt(process.env.DB_PORT!),
-    database: process.env.DB_NAME!
+    database: isUsingDatabase ? process.env.DB_NAME! : undefined
   };
 }
 
-// TODO: database will be seeded from init.sql file, delete isUsingDatabase param
-export function getDBClient(): Client {
-  return new Client(getDBObjectInfo());
+export function getDBClient(isUsingDatabase: boolean = true): Client {
+  return new Client(getDBObjectInfo(isUsingDatabase));
 }
 
 export function getDBPool() {

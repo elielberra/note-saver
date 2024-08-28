@@ -7,6 +7,19 @@ import { hashPassword } from "../dao/utils";
 
 dotenv.config();
 
+async function dropAndCreateDatabase(client: Client) {
+  const dropBDIfExists = `DROP DATABASE IF EXISTS ${process.env.DB_NAME};`;
+  const createDBQuery = `CREATE DATABASE ${process.env.DB_NAME};`;
+  try {
+    await client.query(dropBDIfExists);
+    await client.query(createDBQuery);
+  } catch (error) {
+    console.error("Error running the query", error);
+  } finally {
+    await client.end();
+  }
+}
+
 async function runQueries(client: Client) {
   // username and password character numbers must match maxLength on textarea of AuthForm.tsx
   const createUsersTableQuery = `CREATE TABLE ${process.env.DB_USERS_TABLE}(
@@ -26,11 +39,7 @@ async function runQueries(client: Client) {
         is_active BOOLEAN NOT NULL,
         user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
     )`;
-  // Issue not solved https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/69248
-  // PR not working https://github.com/DefinitelyTyped/DefinitelyTyped/pull/69053/files
-  // I am using @types/pg for the postgresql driver of node. I am trying to set the types of a query using the type `QueryConfig`, but it doesn't allow me to correctly set the types of the values of the query, leaving all of them with the default type `any`. I want to have a more strict control over the types of the query, indicating if they are a string, a number, an array, etc.
-  // I think that the distributive conditional of the `QueryConfigValues` type is not being correctly handled. I have added what I think is the solution and a potential pull request on the typescript playground I am leaving at the end. Please let me know if something was not clear enough. Thanks!
-  // https://tsplay.dev/WY1y3W
+  // Issue https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/70402 pending response
   const insertNotesQuery: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active, user_id) VALUES ($1, $2, $3)`,
     values: ["The nth note", true, 1]
@@ -52,13 +61,13 @@ async function runQueries(client: Client) {
     PRIMARY KEY (sid)
 );`;
   const queries = [
-    // createUsersTableQuery,
+    createUsersTableQuery,
     insertAdminUserQuery,
-    // createNotesTableQuery,
+    createNotesTableQuery,
     insertNotesQuery,
-    // createTagsTableQuery,
+    createTagsTableQuery,
     insertTagsQuery,
-    // createSessionsTableQuery
+    createSessionsTableQuery
   ];
   try {
     for (const query of queries) {
@@ -73,6 +82,9 @@ async function runQueries(client: Client) {
 }
 
 async function main() {
+  const dbClientWithNoDB = getDBClient(false);
+  await connectToDB(dbClientWithNoDB);
+  await dropAndCreateDatabase(dbClientWithNoDB);
   const dbClientWithDB = getDBClient();
   await connectToDB(dbClientWithDB);
   await runQueries(dbClientWithDB);
