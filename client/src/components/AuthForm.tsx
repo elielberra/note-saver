@@ -11,7 +11,7 @@ import { useUserContext } from "./UserContext";
 
 type AuthFormProps = {
   header: string;
-  action: string;
+  action: "signin" | "signup";
   btnText: string;
 };
 
@@ -93,6 +93,11 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         <br />
         <Button type="submit" text={btnText} id="submit-btn" />
       </form>
+      {action === "signin" && (
+        <p id="go-to-signup">
+          Are you not registered? Go to <a href="/signup">Sign Up</a>
+        </p>
+      )}
     </div>
   );
 }

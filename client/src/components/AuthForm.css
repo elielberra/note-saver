@@ -72,6 +72,10 @@ input:focus-within {
   background: rgb(39, 57, 117);
 }
 
+#go-to-signup {
+  font-size: 20px;
+}
+
 
 @media (max-width: 500px) {
   #auth-section {
