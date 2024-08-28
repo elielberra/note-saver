@@ -20,6 +20,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
       try {
         const response = await fetch("http://localhost:3333/update-note-content", {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json"
           },

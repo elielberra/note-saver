@@ -51,6 +51,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       try {
         const response = await fetch("http://localhost:3333/update-tag-content", {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json"
           },

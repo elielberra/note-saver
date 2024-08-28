@@ -24,6 +24,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     try {
       const response = await fetch("http://localhost:3333/delete-note", {
         method: "DELETE",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -45,6 +46,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     try {
       const response = await fetch("http://localhost:3333/create-tag", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -80,6 +82,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     try {
       const response = await fetch("http://localhost:3333/set-note-status", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },

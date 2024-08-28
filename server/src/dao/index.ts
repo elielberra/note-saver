@@ -12,32 +12,32 @@ export async function getNotes(
 ) {
   const query: QueryConfig = {
     text: `SELECT
-                  n.id AS "noteId",
-                  n.content AS "noteContent",
-                  n.is_active as "isActive",
-                  CASE
-                    WHEN COUNT(t.id) > 0 THEN jsonb_agg(jsonb_build_object('tagId', t.id, 'tagContent', t.tag) ORDER BY t.id)
-                    ELSE '[]'::jsonb
-                  END AS tags
-                FROM
-                  ${process.env.DB_NOTES_TABLE} n
-                LEFT JOIN
-                  tags t ON n.id = t.note_id
-                WHERE
-                  n.user_id = ${userId}
-                  AND n.is_active = ${areActive}
-                  ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ""}
-                GROUP BY
-                  n.id, n.content, n.is_active;`
+            n.id AS "noteId",
+            n.content AS "noteContent",
+            n.is_active as "isActive",
+            CASE
+              WHEN COUNT(t.id) > 0 THEN jsonb_agg(jsonb_build_object('tagId', t.id, 'tagContent', t.tag) ORDER BY t.id)
+              ELSE '[]'::jsonb
+            END AS tags
+          FROM
+            ${process.env.DB_NOTES_TABLE} n
+          LEFT JOIN
+            tags t ON n.id = t.note_id
+          WHERE
+            n.user_id = ${userId}
+            AND n.is_active = ${areActive}
+            ${filteringText ? `AND t.tag LIKE '%${filteringText}%'` : ""}
+          GROUP BY
+            n.id, n.content, n.is_active;`
   };
   const result: QueryResult<NoteT> = await runQuery(query);
   return result.rows;
 }
 
-export async function updateNoteContent(noteId: NoteT["noteId"], newContent: NoteT["noteContent"]) {
+export async function updateNoteContent(userId: UserT["userId"], noteId: NoteT["noteId"], newContent: NoteT["noteContent"]) {
   const query: QueryConfig = {
-    text: `UPDATE ${process.env.DB_NOTES_TABLE} SET content = $1 WHERE id = $2`,
-    values: [newContent, noteId]
+    text: `UPDATE ${process.env.DB_NOTES_TABLE} SET content = $1 WHERE id = $2 and user_id = $3`,
+    values: [newContent, noteId, userId]
   };
   await runQuery(query);
 }
@@ -70,10 +70,10 @@ export async function createTag(tagId: TagT["tagId"]) {
   return insertedId;
 }
 
-export async function deleteNote(id: NoteT["noteId"]) {
+export async function deleteNote(noteId: NoteT["noteId"], userId: UserT["userId"]) {
   const query: QueryConfig = {
-    text: `DELETE FROM ${process.env.DB_NOTES_TABLE} WHERE id = $1`,
-    values: [id]
+    text: `DELETE FROM ${process.env.DB_NOTES_TABLE} WHERE id = $1 and user_id = $2`,
+    values: [noteId, userId]
   };
   await runQuery(query);
 }
@@ -111,6 +111,23 @@ export async function getUserByUsermame(username: UserT["username"]) {
     values: [username]
   };
   const result: QueryResult<UserT> = await runQuery(query);
+  if (result.rows) return result.rows[0];
+  return null;
+}
+
+export async function getUserIdFromTagId(tagId: TagT["tagId"]) {
+  const query: QueryConfig = {
+    text: `SELECT 
+            notes.user_id AS "verifiedUserIdFromTag"
+          FROM                                 
+            tags
+          JOIN 
+            notes ON tags.note_id = notes.id
+          WHERE
+            tags.id = $1;`,
+    values: [tagId]
+  };
+  const result: QueryResult<{verifiedUserIdFromTag: number}> = await runQuery(query);
   if (result.rows) return result.rows[0];
   return null;
 }

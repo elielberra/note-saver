@@ -25,7 +25,11 @@ import {
   UserT
 } from "../types/types";
 import passport from "passport";
-import { hasUsernameAndPassword, isAuthenticated } from "../middlewares";
+import {
+  hasUsernameAndPassword,
+  isAuthenticated,
+  tagIdCorrespondsToSessionUserId
+} from "../middlewares";
 
 const router = express.Router();
 
@@ -35,12 +39,7 @@ router.get("/", (req: Request, res: Response) => {
 
 // TODO: Add query params types
 router.get("/notes", isAuthenticated, async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res
-      .status(401)
-      .json({ isAuthenticated: false, message: "Unauthorized: No user in session" });
-  }
-  const userId = req.user.userId;
+  const userId = req.user!.userId;
   const areActive = req.query.areActive === "true";
   const filteringText = req.query.filteringText as string | undefined;
   const notes = await getNotes(userId, areActive, filteringText);
@@ -49,6 +48,8 @@ router.get("/notes", isAuthenticated, async (req: Request, res: Response) => {
 
 router.post(
   "/update-tag-content",
+  isAuthenticated,
+  tagIdCorrespondsToSessionUserId,
   async (
     req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>,
     res: Response
@@ -73,17 +74,20 @@ router.post(
 
 router.post(
   "/update-note-content",
+  isAuthenticated,
   async (
     req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>,
     res: Response
   ) => {
-    const { id, newContent } = req.body;
-    if (!id) return res.status(400).send("Query parameter noteId is missing in Request");
+    const { id: noteId, newContent } = req.body;
+    if (!noteId) return res.status(400).send("Query parameter noteId is missing in Request");
     if (!newContent)
       return res.status(400).send("Query parameter newContent is missing in Request");
-    if (Number.isNaN(id)) return res.status(400).send("Query parameter noteId has to be a number");
+    if (Number.isNaN(noteId))
+      return res.status(400).send("Query parameter noteId has to be a number");
+    const userId = req.user!.userId;
     try {
-      await updateNoteContent(id, newContent);
+      await updateNoteContent(userId, noteId, newContent);
       res.sendStatus(204);
     } catch (error) {
       if (error instanceof Error) {
@@ -135,9 +139,10 @@ router.delete(
     req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>,
     res: Response
   ) => {
-    const { id } = req.body;
+    const { id: noteId } = req.body;
+    const userId = req.user!.userId;
     try {
-      await deleteNote(id);
+      await deleteNote(noteId, userId);
       res.sendStatus(204);
     } catch (error) {
       if (error instanceof Error) {
