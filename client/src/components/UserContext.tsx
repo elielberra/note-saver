@@ -47,6 +47,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     async function checkAuthStatus() {
       const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated();
       if (isAuthenticated) {
+        // TODO: Handle login dependency array
         login(username);
       }
     }

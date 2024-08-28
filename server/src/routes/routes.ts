@@ -28,6 +28,7 @@ import passport from "passport";
 import {
   hasUsernameAndPassword,
   isAuthenticated,
+  noteIdCorrespondsToSessionUserId,
   tagIdCorrespondsToSessionUserId
 } from "../middlewares";
 
@@ -54,15 +55,17 @@ router.post(
     req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>,
     res: Response
   ) => {
-    const { id, newContent } = req.body;
-    if (!id) return res.status(400).send("Query parameter tagId is missing in Request");
+    const { id: tagId, newContent } = req.body;
+    if (!tagId) return res.status(400).send("Query parameter tagId is missing in Request");
     if (newContent === null || newContent === undefined)
       return res.status(400).send("Query parameter newContent is missing in Request");
-    if (Number.isNaN(id)) return res.status(400).send("Query parameter noteId has to be a number");
+    if (Number.isNaN(tagId))
+      return res.status(400).send("Query parameter noteId has to be a number");
     try {
-      await updateTagContent(id, newContent);
+      await updateTagContent(tagId, newContent);
       res.sendStatus(204);
     } catch (error) {
+      // TODO: Create sendError message for DRY
       if (error instanceof Error) {
         res.status(500).send(error.message);
       } else {
@@ -115,11 +118,13 @@ router.post("/create-note", isAuthenticated, async (req: Request, res: Response)
 
 router.post(
   "/create-tag",
+  isAuthenticated,
+  noteIdCorrespondsToSessionUserId,
   async (
     req: Request<Record<string, never>, Record<string, never>, CreateTagBody>,
     res: Response
   ) => {
-    const { noteId } = req.body;
+    const { id: noteId } = req.body;
     try {
       const newTagId = await createTag(noteId);
       res.status(201).json({ newTagId });
@@ -135,6 +140,7 @@ router.post(
 
 router.delete(
   "/delete-note",
+  isAuthenticated,
   async (
     req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>,
     res: Response
@@ -156,13 +162,15 @@ router.delete(
 
 router.delete(
   "/delete-tag",
+  isAuthenticated,
+  tagIdCorrespondsToSessionUserId,
   async (
     req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>,
     res: Response
   ) => {
-    const { id } = req.body;
+    const { id: tagId } = req.body;
     try {
-      await deleteTag(id);
+      await deleteTag(tagId);
       res.sendStatus(204);
     } catch (error) {
       if (error instanceof Error) {
@@ -176,11 +184,12 @@ router.delete(
 
 router.post(
   "/set-note-status",
+  noteIdCorrespondsToSessionUserId,
   async (
     req: Request<Record<string, never>, Record<string, never>, SetNoteStatusBody>,
     res: Response
   ) => {
-    const { noteId, isActive } = req.body;
+    const { id: noteId, isActive } = req.body;
     try {
       await updateNoteStatus(noteId, isActive);
       res.sendStatus(204);

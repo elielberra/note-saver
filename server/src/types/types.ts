@@ -25,14 +25,14 @@ export interface DelenteEntityBody {
   id: number;
 }
 
-// TODO: use Omit on NoteT
+// TODO: use Pick on NoteT
 export interface CreateTagBody {
-  noteId: number;
+  id: NoteT["noteId"];
 }
 
-// TODO: use Omit on NoteT
+// TODO: use Pick on NoteT
 export interface SetNoteStatusBody {
-  noteId: number;
+  id: NoteT["noteId"];
   isActive: boolean;
 }
 

@@ -50,7 +50,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ noteId })
+        body: JSON.stringify({ id: noteId })
       });
       if (!response.ok) {
         const responseBody = await response.text();
@@ -86,7 +86,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ noteId, isActive: noteStatus })
+        body: JSON.stringify({ id: noteId, isActive: noteStatus })
       });
       if (!response.ok) {
         const responseBody = await response.text();

@@ -18,6 +18,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
     try {
       const response = await fetch("http://localhost:3333/delete-tag", {
         method: "DELETE",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },

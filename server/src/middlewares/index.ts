@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthPostBody, AuthResponseBody, IsAuthenticatedResponse } from "../types/types";
-import { getUserIdFromTagId } from "../dao";
+import { getUserIdFromNoteId, getUserIdFromTagId } from "../dao";
 
 export function isAuthenticated(req: Request, res: Response<AuthResponseBody>, next: NextFunction) {
   if (req.isAuthenticated()) {
@@ -24,7 +24,11 @@ export function hasUsernameAndPassword(
   next();
 }
 
-export async function tagIdCorrespondsToSessionUserId(req: Request, res: Response, next: NextFunction) {
+export async function tagIdCorrespondsToSessionUserId(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const userIdFromSession = req.user!.userId;
   const { id: tagId } = req.body;
   const result = await getUserIdFromTagId(tagId);
@@ -37,6 +41,27 @@ export async function tagIdCorrespondsToSessionUserId(req: Request, res: Respons
     res
       .status(401)
       .send("The tag that is being modified does not belong the user of the current session");
+  }
+  next();
+}
+
+export async function noteIdCorrespondsToSessionUserId(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const userIdFromSession = req.user!.userId;
+  const { id: noteId } = req.body;
+  const result = await getUserIdFromNoteId(noteId);
+  if (!result) {
+    res.status(404).send("Note id not found");
+    return;
+  }
+  const { verifiedUserIdFromNote } = result;
+  if (verifiedUserIdFromNote !== userIdFromSession) {
+    res
+      .status(401)
+      .send("The note that is being modified does not belong the user of the current session");
   }
   next();
 }

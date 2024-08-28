@@ -118,16 +118,28 @@ export async function getUserByUsermame(username: UserT["username"]) {
 export async function getUserIdFromTagId(tagId: TagT["tagId"]) {
   const query: QueryConfig = {
     text: `SELECT 
-            notes.user_id AS "verifiedUserIdFromTag"
+            ${process.env.DB_NOTES_TABLE}.user_id AS "verifiedUserIdFromTag"
           FROM                                 
-            tags
+            ${process.env.DB_TAGS_TABLE}
           JOIN 
-            notes ON tags.note_id = notes.id
+            ${process.env.DB_NOTES_TABLE} ON tags.note_id = ${process.env.DB_NOTES_TABLE}.id
           WHERE
-            tags.id = $1;`,
+            ${process.env.DB_TAGS_TABLE}.id = $1;`,
     values: [tagId]
   };
   const result: QueryResult<{verifiedUserIdFromTag: number}> = await runQuery(query);
   if (result.rows) return result.rows[0];
   return null;
 }
+
+export async function getUserIdFromNoteId(noteId: NoteT["noteId"]) {
+  const query: QueryConfig = {
+    text: `SELECT user_id AS "verifiedUserIdFromNote" FROM ${process.env.DB_NOTES_TABLE} WHERE id = $1`,
+    values: [noteId]
+  };
+  const result: QueryResult<{verifiedUserIdFromNote: number}> = await runQuery(query);
+  if (result.rows) return result.rows[0];
+  return null;
+}
+
+
