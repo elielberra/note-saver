@@ -1,5 +1,5 @@
 import { QueryConfig, QueryResult } from "pg";
-import { NoteT, TagT, UserT } from "../types/types";
+import { FieldsT, FieldValue, NoteT, TagT, UserT } from "../types/types";
 import dotenv from "dotenv";
 import { runQuery } from "./utils";
 
@@ -34,7 +34,11 @@ export async function getNotes(
   return result.rows;
 }
 
-export async function updateNoteContent(userId: UserT["userId"], noteId: NoteT["noteId"], newContent: NoteT["noteContent"]) {
+export async function updateNoteContent(
+  userId: UserT["userId"],
+  noteId: NoteT["noteId"],
+  newContent: NoteT["noteContent"]
+) {
   const query: QueryConfig = {
     text: `UPDATE ${process.env.DB_NOTES_TABLE} SET content = $1 WHERE id = $2 and user_id = $3`,
     values: [newContent, noteId, userId]
@@ -94,21 +98,10 @@ export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT[
   await runQuery(query);
 }
 
-// Unify into getUserByField
-export async function getUserById(id: UserT["userId"]) {
+export async function getUserByField(fieldname: FieldsT, fieldValue: FieldValue) {
   const query: QueryConfig = {
-    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE id = $1`,
-    values: [id]
-  };
-  const result: QueryResult<UserT> = await runQuery(query);
-  if (result.rows) return result.rows[0];
-  return null;
-}
-
-export async function getUserByUsermame(username: UserT["username"]) {
-  const query: QueryConfig = {
-    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE username = $1`,
-    values: [username]
+    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE ${fieldname} = $1`,
+    values: [fieldValue]
   };
   const result: QueryResult<UserT> = await runQuery(query);
   if (result.rows) return result.rows[0];
@@ -127,7 +120,7 @@ export async function getUserIdFromTagId(tagId: TagT["tagId"]) {
             ${process.env.DB_TAGS_TABLE}.id = $1;`,
     values: [tagId]
   };
-  const result: QueryResult<{verifiedUserIdFromTag: number}> = await runQuery(query);
+  const result: QueryResult<{ verifiedUserIdFromTag: number }> = await runQuery(query);
   if (result.rows) return result.rows[0];
   return null;
 }
@@ -137,9 +130,17 @@ export async function getUserIdFromNoteId(noteId: NoteT["noteId"]) {
     text: `SELECT user_id AS "verifiedUserIdFromNote" FROM ${process.env.DB_NOTES_TABLE} WHERE id = $1`,
     values: [noteId]
   };
-  const result: QueryResult<{verifiedUserIdFromNote: number}> = await runQuery(query);
+  const result: QueryResult<{ verifiedUserIdFromNote: number }> = await runQuery(query);
   if (result.rows) return result.rows[0];
   return null;
 }
 
-
+export async function createUser(username: UserT["username"], hashedPassword: string) {
+  const query: QueryConfig = {
+    text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES($1, $2) RETURNING id`,
+    values: [username, hashedPassword]
+  };
+  const result: QueryResult<{ id: number }> = await runQuery(query);
+  const insertedId = result.rows[0].id;
+  return insertedId;
+}

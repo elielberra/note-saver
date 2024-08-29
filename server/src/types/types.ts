@@ -99,3 +99,7 @@ interface IsAuthenticatedUnsuccessfulResponse {
 export type IsAuthenticatedResponse =
   | IsAuthenticatedSuccessfulResponse
   | IsAuthenticatedUnsuccessfulResponse;
+
+export type FieldsT = "id" | "username";
+
+export type FieldValue = number | string;

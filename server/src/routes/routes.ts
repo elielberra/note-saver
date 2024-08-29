@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import {
   createNote,
   createTag,
@@ -10,18 +10,13 @@ import {
   updateTagContent
 } from "../dao";
 import {
-  ALREADY_REGISTERED_USER,
   AuthErrors,
   AuthPostBody,
   GetNotesQueryParams,
   IsAuthenticatedResponse,
-  PASSWORD_NOT_VALID,
   RequestBodyWithId,
   SetNoteStatusBody,
-  SuccessfulAuthResponse,
-  UnsuccessfulAuthResponse,
   UpdateEntityBody,
-  USER_NOT_FOUND,
   UserT
 } from "../types/types";
 import passport from "passport";
@@ -34,10 +29,11 @@ import {
   validateUpdateEntityRequestBody
 } from "../middlewares";
 import { handleErrorResponse } from "./utils";
+import { authenticationCallback } from "../passport/passportConfig";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (_: Request, res: Response) => {
   res.status(200).send("NoteSaver server");
 });
 
@@ -177,56 +173,29 @@ router.post(
   }
 );
 
-// TODO: Use function for DRY
-router.post(
-  "/signup",
-  hasUsernameAndPassword,
-  (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate("local-signup", (error: AuthErrors, user: UserT | false) => {
-      if (error === ALREADY_REGISTERED_USER) {
-        return res
-          .status(409)
-          .json({ message: "User already registered" } as UnsuccessfulAuthResponse);
-      } else if (error || !user) {
-        return res.status(500).json({
-          message: "Internal Server error while attempting to register a user"
-        } as UnsuccessfulAuthResponse);
-      }
-      req.logIn(user, (loginErr: any) => {
-        if (loginErr) {
-          return next(loginErr);
-        }
-        return res.status(200).json({ username: user.username } as SuccessfulAuthResponse);
-      });
-    })(req as Request, res as Response, next as NextFunction);
-  }
-);
+router.post("/signup", hasUsernameAndPassword, (req: Request, res: Response) => {
+  passport.authenticate("local-signup", (error: AuthErrors, user: UserT | false) =>
+    authenticationCallback(error, user, req, res, "signup")
+  )(req as Request, res as Response);
+});
 
 router.post(
   "/signin",
   hasUsernameAndPassword,
-  (req: Request<{}, {}, AuthPostBody>, res: Response, next: NextFunction) => {
-    passport.authenticate("local-signin", async (error: AuthErrors, user: UserT | false) => {
-      if (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID) {
-        return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);
-      } else if (error || !user) {
-        return res.status(500).json({
-          message: "Internal Server error while attempting to signin a user"
-        } as UnsuccessfulAuthResponse);
-      }
-      req.logIn(user, (loginErr: any) => {
-        if (loginErr) {
-          return next(loginErr);
-        }
-        return res.status(200).json({ username: user.username } as SuccessfulAuthResponse);
-      });
-    })(req as Request, res as Response, next as NextFunction);
+  (req: Request<{}, {}, AuthPostBody>, res: Response) => {
+    passport.authenticate("local-signin", (error: AuthErrors, user: UserT | false) =>
+      authenticationCallback(error, user, req, res, "signin")
+    )(req as Request, res as Response);
   }
 );
 
-router.post("/signout", (req: Request, res: Response, next: NextFunction) => {
+router.post("/signout", (req: Request, res: Response) => {
   req.logout((error) => {
-    if (error) return next(error);
+    if (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal server error while attempting to login a user" });
+    }
     res.sendStatus(200);
   });
 });
