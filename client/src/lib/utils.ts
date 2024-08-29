@@ -1,4 +1,9 @@
-import { IsAuthenticatedResponse, NoteT } from "../types/types";
+import {
+  IsAuthenticatedResponse,
+  IsAuthenticatedSuccessfulResponse,
+  IsAuthenticatedUnsuccessfulResponse,
+  NoteT
+} from "../types/types";
 
 export async function fetchNotes(
   setNotes: (value: React.SetStateAction<NoteT[]>) => void,
@@ -69,10 +74,11 @@ export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticat
     });
     if (!response.ok && response.status !== 401) {
       handleErrorInResponse(response);
+      return { isAuthenticated: false };
     } else if (response.status === 401) {
-      return { isAuthenticated: false } as IsAuthenticatedResponse;
+      return (await response.json()) as IsAuthenticatedUnsuccessfulResponse;
     }
-    return (await response.json()) as IsAuthenticatedResponse;
+    return (await response.json()) as IsAuthenticatedSuccessfulResponse;
   } catch (error) {
     console.error("Error while checking user authentication status");
     if (!isProductionEnv()) console.error(error);
