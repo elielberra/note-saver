@@ -22,13 +22,16 @@ export interface UnsuccessfulAuthResponse extends Response {
 
 export type AuthenticateUserResponse = SuccessfulAuthResponse | UnsuccessfulAuthResponse;
 
-// TODO: Define as two separate types
+interface IsAuthenticatedSuccessfulResponse {
+  isAuthenticated: true;
+  username: string;
+}
+
+interface IsAuthenticatedUnsuccessfulResponse {
+  isAuthenticated: false;
+  username?: never;
+}
+
 export type IsAuthenticatedResponse =
-  | {
-      isAuthenticated: true;
-      username: string;
-    }
-  | {
-      isAuthenticated: false;
-      username?: never;
-    };
+  | IsAuthenticatedSuccessfulResponse
+  | IsAuthenticatedUnsuccessfulResponse;

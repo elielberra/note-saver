@@ -16,24 +16,22 @@ export interface NoteT {
   isActive: boolean;
 }
 
-export interface UpdateTagBody {
-  id: number;
-  newContent: string;
+export interface GetNotesQueryParams {
+  areActive?: "true" | "false";
+  filteringText?: string | undefined;
 }
 
-export interface DelenteEntityBody {
-  id: number;
+export interface UpdateEntityBody {
+  id?: number | string;
+  newContent?: string;
 }
 
-// TODO: use Pick on NoteT
-export interface CreateTagBody {
-  id: NoteT["noteId"];
+export interface RequestBodyWithId {
+  id?: number | string;
 }
 
-// TODO: use Pick on NoteT
-export interface SetNoteStatusBody {
-  id: NoteT["noteId"];
-  isActive: boolean;
+export interface SetNoteStatusBody extends RequestBodyWithId {
+  isActive?: boolean;
 }
 
 export type SignInBody = Omit<UserT, "userId">;
@@ -62,17 +60,13 @@ export interface AuthPostBody {
   password: string;
 }
 
-// TODO: Evalute creating an array and iterating over it on AuthErrors
 export const ALREADY_REGISTERED_USER = "AlreadyRegisteredUser" as const;
 export const USER_NOT_FOUND = "UserNotFound" as const;
 export const PASSWORD_NOT_VALID = "PasswordNotValid" as const;
 
-export type AuthErrors =
-  | null
-  | Error
-  | typeof ALREADY_REGISTERED_USER
-  | typeof USER_NOT_FOUND
-  | typeof PASSWORD_NOT_VALID;
+const authErrors = [ALREADY_REGISTERED_USER, USER_NOT_FOUND, PASSWORD_NOT_VALID];
+
+export type AuthErrors = null | Error | (typeof authErrors)[number];
 
 declare module "passport-local" {
   interface VerifyFunction {
@@ -92,13 +86,16 @@ export interface UnsuccessfulAuthResponse {
   message: string;
 }
 
-// TODO: Define as two separate types
+interface IsAuthenticatedSuccessfulResponse {
+  isAuthenticated: true;
+  username: string;
+}
+
+interface IsAuthenticatedUnsuccessfulResponse {
+  isAuthenticated: false;
+  username?: never;
+}
+
 export type IsAuthenticatedResponse =
-  | {
-      isAuthenticated: true;
-      username: string;
-    } 
-  | {
-      isAuthenticated: false;
-      username?: never;
-    };
+  | IsAuthenticatedSuccessfulResponse
+  | IsAuthenticatedUnsuccessfulResponse;
