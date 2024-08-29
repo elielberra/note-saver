@@ -82,7 +82,7 @@ export function authenticationCallback(
   if (authAction === "signup" && error === ALREADY_REGISTERED_USER) {
     return res.status(409).json({ message: "User already registered" } as UnsuccessfulAuthResponse);
   } else if (
-    authAction === "signup" &&
+    authAction === "signin" &&
     (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID)
   ) {
     return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);
