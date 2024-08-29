@@ -51,7 +51,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
       <textarea
         className="note-content"
         value={noteText}
-        // maxLength must match the value of content max chars on seed.ts
+        // maxLength must match the value of content max chars on init.sql
         maxLength={2500}
         onChange={handleNoteContentChange}
         ref={textareaRef}
