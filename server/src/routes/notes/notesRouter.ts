@@ -90,11 +90,14 @@ notesRouter.delete(
 
 notesRouter.post(
   "/set-note-status",
+  isAuthenticated,
   noteIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
   async (req: Request<{}, {}, SetNoteStatusBody>, res: Response) => {
     const isActive = req.body.isActive;
-    if (!isActive) return res.status(400).send("Field isActive has to be included in the body");
+    console.log("isActive", isActive)
+    console.log("req.body", req.body)
+    if (!isActive && isActive !== false) return res.status(400).send("Field isActive has to be included in the body");
     if (typeof isActive !== "boolean")
       return res.status(400).send("Field isActive has to be a boolean");
 

@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import authenticationRouter from "./authentication/authenticationRouter";
-import notesRouter from "./notes/notes.Router";
+import notesRouter from "./notes/notesRouter";
 import tagsRouter from "./tags/tagsRouter";
 
 const router = express.Router();

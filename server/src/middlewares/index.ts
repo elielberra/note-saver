@@ -45,7 +45,7 @@ export async function tagIdCorrespondsToSessionUserId(
   const { verifiedUserIdFromTag } = result;
   if (verifiedUserIdFromTag !== userIdFromSession) {
     res
-      .status(401)
+      .status(403)
       .send("The tag that is being modified does not belong the user of the current session");
   }
   next();
@@ -66,7 +66,7 @@ export async function noteIdCorrespondsToSessionUserId(
   const { verifiedUserIdFromNote } = result;
   if (verifiedUserIdFromNote !== userIdFromSession) {
     res
-      .status(401)
+      .status(403)
       .send("The note that is being modified does not belong the user of the current session");
   }
   next();
