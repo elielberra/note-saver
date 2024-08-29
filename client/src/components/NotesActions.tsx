@@ -34,6 +34,7 @@ export default function NoteActions({
       });
       if (!response.ok) {
         handleErrorInResponse(response);
+        return;
       }
       const { newNoteId } = await response.json();
       setNotes((prevNotes) => [

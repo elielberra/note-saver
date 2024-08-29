@@ -1,6 +1,10 @@
 import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from "react";
 import { UserT } from "../types/types";
-import { handleErrorLogging, validateAndGetUserIfAuthenticated } from "../lib/utils";
+import {
+  handleErrorInResponse,
+  handleErrorLogging,
+  validateAndGetUserIfAuthenticated
+} from "../lib/utils";
 import { useNavigate } from "react-router-dom";
 
 type UserContextT = {
@@ -35,13 +39,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
           "Content-Type": "application/json"
         }
       });
-      if (response.ok) {
-        setIsLoggedIn(false);
-        setUsername(null);
-        navigate("/signin");
-      } else {
-        throw new Error(`Status code: ${response.status} - Server error: ${response.statusText}`);
+      if (!response.ok) {
+        handleErrorInResponse(response);
+        return;
       }
+      setIsLoggedIn(false);
+      setUsername(null);
+      navigate("/signin");
     } catch (error) {
       handleErrorLogging(error, "Error while logging out");
     }

@@ -15,10 +15,8 @@ export async function fetchNotes(
       }
     );
     if (!response.ok) {
-      const responseBody = await response.text();
-      throw new Error(
-        `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
-      );
+      handleErrorInResponse(response);
+      return;
     }
     const activeNotes: NoteT[] = await response.json();
     setNotes(activeNotes);
@@ -71,8 +69,9 @@ export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticat
     });
     if (!response.ok && response.status !== 401) {
       handleErrorInResponse(response);
-    } else if (response.status === 401)
+    } else if (response.status === 401) {
       return { isAuthenticated: false } as IsAuthenticatedResponse;
+    }
     return (await response.json()) as IsAuthenticatedResponse;
   } catch (error) {
     console.error("Error while checking user authentication status");

@@ -3,7 +3,7 @@ import "./Note.css";
 import { NoteT } from "../types/types";
 import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
-import { handleErrorLogging } from "../lib/utils";
+import { handleErrorInResponse, handleErrorLogging } from "../lib/utils";
 
 export type NoteProps = {
   note: NoteT;
@@ -27,10 +27,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
           body: JSON.stringify({ id: noteId, newContent })
         });
         if (!response.ok) {
-          const responseBody = await response.text();
-          throw new Error(
-            `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
-          );
+          handleErrorInResponse(response);
         }
       } catch (error) {
         handleErrorLogging(error, "Error while updating note content");

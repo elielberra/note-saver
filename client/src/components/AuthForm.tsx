@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { handleErrorLogging } from "../lib/utils";
+import { handleErrorInResponse, handleErrorLogging } from "../lib/utils";
 import {
   AuthenticateUserResponse,
   SuccessfulAuthResponse,
@@ -48,13 +48,11 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
       if (response.status === 400 || response.status === 401 || response.status === 409) {
         isUnsuccessfulResponse(responseBody) && setError(responseBody.message);
       } else if (!response.ok) {
-        throw new Error(
-          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
-        );
-      } else {
-        error && setError(null);
-        isSuccessfulResponse(responseBody) && login(responseBody.username);
+        handleErrorInResponse(response);
+        return;
       }
+      error && setError(null);
+      isSuccessfulResponse(responseBody) && login(responseBody.username);
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");
     }

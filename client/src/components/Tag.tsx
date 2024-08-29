@@ -26,6 +26,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       });
       if (!response.ok) {
         handleErrorInResponse(response);
+        return;
       }
       setNotes((prevNotes) => {
         const oldNote = getNoteToBeUpdated(prevNotes, noteId);
@@ -56,10 +57,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
           body: JSON.stringify({ id: tag.tagId, newContent })
         });
         if (!response.ok) {
-          const responseBody = await response.text();
-          throw new Error(
-            `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
-          );
+          handleErrorInResponse(response);
         }
       } catch (error) {
         handleErrorLogging(error, "Error while updating tag content");

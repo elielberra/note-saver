@@ -7,7 +7,12 @@ import DeleteNoteModal from "./DeleteNoteModal";
 import "./NoteButtons.css";
 import AddIcon from "./icons/AddIcon";
 import { NoteT } from "../types/types";
-import { getNewSortedNotes, getNoteToBeUpdated, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import {
+  getNewSortedNotes,
+  getNoteToBeUpdated,
+  handleErrorInResponse,
+  handleErrorLogging
+} from "../lib/utils";
 import { useState } from "react";
 
 export type NoteButtonsProps = {
@@ -32,6 +37,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       });
       if (!response.ok) {
         handleErrorInResponse(response);
+        return;
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
@@ -51,6 +57,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       });
       if (!response.ok) {
         handleErrorInResponse(response);
+        return;
       }
       const { newTagId } = await response.json();
       setNotes((prevNotes) => {
@@ -84,6 +91,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       });
       if (!response.ok) {
         handleErrorInResponse(response);
+        return;
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
