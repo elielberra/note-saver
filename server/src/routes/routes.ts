@@ -13,14 +13,14 @@ import {
   ALREADY_REGISTERED_USER,
   AuthErrors,
   AuthPostBody,
-  CreateTagBody,
-  DelenteEntityBody,
+  GetNotesQueryParams,
   IsAuthenticatedResponse,
   PASSWORD_NOT_VALID,
+  RequestBodyWithId,
   SetNoteStatusBody,
   SuccessfulAuthResponse,
   UnsuccessfulAuthResponse,
-  UpdateTagBody,
+  UpdateEntityBody,
   USER_NOT_FOUND,
   UserT
 } from "../types/types";
@@ -29,8 +29,11 @@ import {
   hasUsernameAndPassword,
   isAuthenticated,
   noteIdCorrespondsToSessionUserId,
-  tagIdCorrespondsToSessionUserId
+  tagIdCorrespondsToSessionUserId,
+  validateIdInRequestBody,
+  validateUpdateEntityRequestBody
 } from "../middlewares";
+import { handleErrorResponse } from "./utils";
 
 const router = express.Router();
 
@@ -38,39 +41,41 @@ router.get("/", (req: Request, res: Response) => {
   res.status(200).send("NoteSaver server");
 });
 
-// TODO: Add query params types
-router.get("/notes", isAuthenticated, async (req: Request, res: Response) => {
-  const userId = req.user!.userId;
-  const areActive = req.query.areActive === "true";
-  const filteringText = req.query.filteringText as string | undefined;
-  const notes = await getNotes(userId, areActive, filteringText);
-  res.status(200).send(notes);
-});
+router.get(
+  "/notes",
+  isAuthenticated,
+  async (req: Request<{}, {}, {}, GetNotesQueryParams>, res: Response) => {
+    if (
+      !req.query.areActive ||
+      (req.query.areActive !== "true" && req.query.areActive !== "false")
+    ) {
+      res.status(400).send("Query param areActive must be included with the value true or false");
+    }
+    const userId = req.user!.userId;
+    const areActive = req.query.areActive === "true";
+    const filteringText = req.query.filteringText;
+    try {
+      const notes = await getNotes(userId, areActive, filteringText);
+      res.status(200).json(notes);
+    } catch (error) {
+      handleErrorResponse(error, res);
+    }
+  }
+);
 
 router.post(
   "/update-tag-content",
   isAuthenticated,
+  validateUpdateEntityRequestBody,
   tagIdCorrespondsToSessionUserId,
-  async (
-    req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>,
-    res: Response
-  ) => {
-    const { id: tagId, newContent } = req.body;
-    if (!tagId) return res.status(400).send("Query parameter tagId is missing in Request");
-    if (newContent === null || newContent === undefined)
-      return res.status(400).send("Query parameter newContent is missing in Request");
-    if (Number.isNaN(tagId))
-      return res.status(400).send("Query parameter noteId has to be a number");
+  async (req: Request<{}, {}, UpdateEntityBody>, res: Response) => {
+    const tagId = req.body.id as number;
+    const newContent = req.body.newContent!;
     try {
       await updateTagContent(tagId, newContent);
       res.sendStatus(204);
     } catch (error) {
-      // TODO: Create sendError message for DRY
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
+      handleErrorResponse(error, res);
     }
   }
 );
@@ -78,26 +83,16 @@ router.post(
 router.post(
   "/update-note-content",
   isAuthenticated,
-  async (
-    req: Request<Record<string, never>, Record<string, never>, UpdateTagBody>,
-    res: Response
-  ) => {
-    const { id: noteId, newContent } = req.body;
-    if (!noteId) return res.status(400).send("Query parameter noteId is missing in Request");
-    if (!newContent)
-      return res.status(400).send("Query parameter newContent is missing in Request");
-    if (Number.isNaN(noteId))
-      return res.status(400).send("Query parameter noteId has to be a number");
+  validateUpdateEntityRequestBody,
+  async (req: Request<{}, {}, UpdateEntityBody>, res: Response) => {
     const userId = req.user!.userId;
+    const noteId = req.body.id as number;
+    const newContent = req.body.newContent!;
     try {
       await updateNoteContent(userId, noteId, newContent);
       res.sendStatus(204);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
+      handleErrorResponse(error, res);
     }
   }
 );
@@ -108,11 +103,7 @@ router.post("/create-note", isAuthenticated, async (req: Request, res: Response)
     const newNoteId = await createNote(userId);
     res.status(201).json({ newNoteId });
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).send(error.message);
-    } else {
-      res.status(500).send(error);
-    }
+    handleErrorResponse(error, res);
   }
 });
 
@@ -120,20 +111,15 @@ router.post(
   "/create-tag",
   isAuthenticated,
   noteIdCorrespondsToSessionUserId,
-  async (
-    req: Request<Record<string, never>, Record<string, never>, CreateTagBody>,
-    res: Response
-  ) => {
-    const { id: noteId } = req.body;
+  validateIdInRequestBody,
+  async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
+    const noteId = req.body.id as number;
+    if (!noteId) return res.status(400).send("Field id is missing in Request body");
     try {
       const newTagId = await createTag(noteId);
       res.status(201).json({ newTagId });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
+      handleErrorResponse(error, res);
     }
   }
 );
@@ -141,21 +127,16 @@ router.post(
 router.delete(
   "/delete-note",
   isAuthenticated,
-  async (
-    req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>,
-    res: Response
-  ) => {
-    const { id: noteId } = req.body;
+  validateIdInRequestBody,
+  async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
+    const noteId = req.body.id as number;
+    if (!noteId) return res.status(400).send("Field noteId is missing in Request body");
     const userId = req.user!.userId;
     try {
       await deleteNote(noteId, userId);
       res.sendStatus(204);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
+      handleErrorResponse(error, res);
     }
   }
 );
@@ -164,20 +145,14 @@ router.delete(
   "/delete-tag",
   isAuthenticated,
   tagIdCorrespondsToSessionUserId,
-  async (
-    req: Request<Record<string, never>, Record<string, never>, DelenteEntityBody>,
-    res: Response
-  ) => {
-    const { id: tagId } = req.body;
+  validateIdInRequestBody,
+  async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
+    const tagId = req.body.id as number;
     try {
       await deleteTag(tagId);
       res.sendStatus(204);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
+      handleErrorResponse(error, res);
     }
   }
 );
@@ -185,20 +160,19 @@ router.delete(
 router.post(
   "/set-note-status",
   noteIdCorrespondsToSessionUserId,
-  async (
-    req: Request<Record<string, never>, Record<string, never>, SetNoteStatusBody>,
-    res: Response
-  ) => {
-    const { id: noteId, isActive } = req.body;
+  validateIdInRequestBody,
+  async (req: Request<{}, {}, SetNoteStatusBody>, res: Response) => {
+    const isActive = req.body.isActive;
+    if (!isActive) return res.status(400).send("Field isActive has to be included in the body");
+    if (typeof isActive !== "boolean")
+      return res.status(400).send("Field isActive has to be a boolean");
+
+    const noteId = req.body.id as number;
     try {
       await updateNoteStatus(noteId, isActive);
       res.sendStatus(204);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(500).send(error);
-      }
+      handleErrorResponse(error, res);
     }
   }
 );
@@ -231,11 +205,7 @@ router.post(
 router.post(
   "/signin",
   hasUsernameAndPassword,
-  (
-    req: Request<Record<string, never>, Record<string, never>, AuthPostBody>,
-    res: Response,
-    next: NextFunction
-  ) => {
+  (req: Request<{}, {}, AuthPostBody>, res: Response, next: NextFunction) => {
     passport.authenticate("local-signin", async (error: AuthErrors, user: UserT | false) => {
       if (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID) {
         return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);

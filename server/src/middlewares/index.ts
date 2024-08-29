@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthPostBody, AuthResponseBody, IsAuthenticatedResponse } from "../types/types";
+import {
+  AuthPostBody,
+  AuthResponseBody,
+  IsAuthenticatedResponse,
+  RequestBodyWithId,
+  UpdateEntityBody
+} from "../types/types";
 import { getUserIdFromNoteId, getUserIdFromTagId } from "../dao";
 
 export function isAuthenticated(req: Request, res: Response<AuthResponseBody>, next: NextFunction) {
@@ -63,5 +69,28 @@ export async function noteIdCorrespondsToSessionUserId(
       .status(401)
       .send("The note that is being modified does not belong the user of the current session");
   }
+  next();
+}
+
+export function validateUpdateEntityRequestBody(
+  req: Request<{}, {}, UpdateEntityBody>,
+  res: Response,
+  next: NextFunction
+) {
+  const { id, newContent } = req.body;
+  if (!id) return res.status(400).send("Field id is missing in Request body");
+  if (!newContent) return res.status(400).send("Field newContent is missing in Request body");
+  if (Number.isNaN(id)) return res.status(400).send("Field id has to be a number");
+  next();
+}
+
+export function validateIdInRequestBody(
+  req: Request<{}, {}, RequestBodyWithId>,
+  res: Response,
+  next: NextFunction
+) {
+  const { id } = req.body;
+  if (!id) return res.status(400).send("Field id is missing in Request body");
+  if (Number.isNaN(id)) return res.status(400).send("Field id has to be a number");
   next();
 }
