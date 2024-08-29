@@ -55,16 +55,22 @@ export function getNewSortedNotes(
   return sortedNewNotes;
 }
 
+export async function handleErrorInResponse(responseWithError: Response) {
+  const responseWithErrorBody = await responseWithError.text();
+  console.log(
+    `- Response body: ${responseWithErrorBody}\n` +
+      `- Status code: ${responseWithError.status}\n` +
+      `- Server error: ${responseWithError.statusText}\n`
+  );
+}
+
 export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticatedResponse> {
   try {
     const response = await fetch("http://localhost:3333/isauthenticated", {
       credentials: "include"
     });
     if (!response.ok && response.status !== 401) {
-      const responseBody = await response.text();
-      throw new Error(
-        `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
-      );
+      handleErrorInResponse(response);
     } else if (response.status === 401)
       return { isAuthenticated: false } as IsAuthenticatedResponse;
     return (await response.json()) as IsAuthenticatedResponse;

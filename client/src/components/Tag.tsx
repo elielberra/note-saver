@@ -4,7 +4,7 @@ import "./Tag.css";
 import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "../types/types";
-import { getNewSortedNotes, getNoteToBeUpdated, handleErrorLogging } from "../lib/utils";
+import { getNewSortedNotes, getNoteToBeUpdated, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
 
 type TagProps = {
   tag: NoteT["tags"][number];
@@ -25,10 +25,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         body: JSON.stringify({ id: tag.tagId })
       });
       if (!response.ok) {
-        const responseBody = await response.text();
-        throw new Error(
-          `Response body: ${responseBody} - Status code: ${response.status} - Server error: ${response.statusText}`
-        );
+        handleErrorInResponse(response);
       }
       setNotes((prevNotes) => {
         const oldNote = getNoteToBeUpdated(prevNotes, noteId);
