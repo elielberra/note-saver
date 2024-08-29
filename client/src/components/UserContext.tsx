@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useContext, useEffect } from "react";
+import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from "react";
 import { UserT } from "../types/types";
 import { handleErrorLogging, validateAndGetUserIfAuthenticated } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -18,12 +18,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [username, setUsername] = useState<UserContextT["username"]>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<UserContextT["isLoggedIn"]>(false);
   const navigate = useNavigate();
-  function login(username: UserContextT["username"]) {
-    setIsLoggedIn(true);
-    setUsername(username);
-    navigate("/");
-  }
-  async function logout() {
+  const login = useCallback(
+    (username: UserContextT["username"]) => {
+      setIsLoggedIn(true);
+      setUsername(username);
+      navigate("/");
+    },
+    [navigate]
+  );
+  const logout = useCallback(async () => {
     try {
       const response = await fetch("http://localhost:3333/signout", {
         method: "POST",
@@ -42,18 +45,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       handleErrorLogging(error, "Error while logging out");
     }
-  }
+  }, [navigate]);
   useEffect(() => {
     async function checkAuthStatus() {
       const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated();
       if (isAuthenticated) {
-        // TODO: Handle login dependency array
         login(username);
       }
     }
     checkAuthStatus();
     setIsFetchingAuthStatus(false);
-  }, []);
+  }, [login]);
   return (
     <UserContext.Provider value={{ isFetchingAuthStatus, isLoggedIn, username, login, logout }}>
       {children}
