@@ -1,11 +1,20 @@
+# Dependencies libraries
 */node_modules
+
+# Environment variables with sensitive data
 */.env
+
+# Build outputs
 server/dist
-TODOs
-ec2/*
+client/dist
+
+# SSL Certificate files
 *.key
 *.pem
 *.pfx
 *.crt
 *.csr
 *.cnf
+
+# EC2 instance data
+/ec2
