@@ -6,8 +6,7 @@ COPY package.json /app
 
 RUN npm install
 
-# COPY server.key /app
-# COPY server.crt /app
+COPY ./ssl-certs /app/ssl-certs
 
 EXPOSE 3333
 

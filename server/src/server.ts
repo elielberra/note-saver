@@ -4,8 +4,9 @@ import cors, { CorsOptions } from "cors";
 import passport from "passport";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
-// import https from "https";
-// import fs from "fs";
+import https from "https";
+import fs from "fs";
+import path from "path";
 import { initializePassport } from "./passport/passportConfig";
 import router from "./routes/routes";
 import { getDBPool } from "./db/utils";
@@ -50,19 +51,16 @@ app.use("/", router);
 
 const port = process.env.BACKEND_PORT!;
 
-// // Load the certificate and private key
-// const privateKey = fs.readFileSync("server.key", "utf8");
-// const certificate = fs.readFileSync("server.crt", "utf8");
-// // Create the HTTPS server
-// const httpsServer = https.createServer(
-//   { key: privateKey, cert: certificate, passphrase: "____" },
-//   app
-// );
-// // Start the server
-// httpsServer.listen(port, () => {
-//   console.log(`HTTPS server listening on port ${port}`);
-// });
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+const privateKey = fs.readFileSync(path.join(__dirname, "..", "ssl-certs", "cert-key.pem"), "utf8");
+const certificate = fs.readFileSync(path.join(__dirname, "..", "ssl-certs", "cert.pem"), "utf8");
+const httpsServer = https.createServer(
+  { key: privateKey, cert: certificate },
+  app
+);
+httpsServer.listen(port, () => {
+  console.log(`HTTPS server listening on port ${port}`);
 });
+
+// app.listen(port, () => {
+//   console.log(`Server is running at http://localhost:${port}`);
+// });

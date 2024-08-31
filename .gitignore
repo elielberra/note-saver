@@ -7,3 +7,5 @@ ec2/*
 *.pem
 *.pfx
 *.crt
+*.csr
+*.cnf
