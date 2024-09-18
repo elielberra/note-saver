@@ -1,19 +1,9 @@
 #!/bin/bash -e
 
-if ! command -v psql &> /dev/null; then
-    read -p "You don't have postgresql installed, do you want to install it? \
-It is required for this App to run correctly [Yy/Nn]" -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[y|Y]$ ]]; then
-    echo "Updating packages version list"
-    sudo apt update
-    echo "Installing postgresql"
-    sudo apt install -y postgresql
-    else
-        echo "Exiting from script, cannot proceed without postgresql"
-        exit
-    fi
-fi
+# TODO: Polish this script
+scriptPath="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${scriptPath}/utils.sh"
+verifyAndInstallDependency "psql" "postgresql"
 
 scriptDir=$(realpath $(dirname $0))
 serverProjectDir=$(dirname $(dirname "${scriptDir}"))
