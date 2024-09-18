@@ -96,6 +96,7 @@ openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilenam
 echo "The certificate was successfully generated and signed by the CA"
 
 # Delete previous ssl certs, if exist, and copy into server and client dirs
+echo "Copying certificates into each application directory"
 for app in "client" "server"; do
     [ -d "../${app}/${sslCertsDir}" ] && rm -rf "../${app}/${sslCertsDir}"
     mkdir "../${app}/${sslCertsDir}"
@@ -126,3 +127,4 @@ if checkIfLibraryIsInstalled "firefox"; then
     echo "Configuring the CA on Firefox"
     insertCertIntoNSSDB "${firefoxNSSDBDir}"
 fi
+echo "Completed configuring SSL Certificates for local development"
