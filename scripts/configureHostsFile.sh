@@ -12,3 +12,4 @@ if ! grep -qF "$entry" "${hostsFile}"; then
 else
     echo "Entry already exists in ${hostsFile}"
 fi
+echo "Completed configuring hosts file"
