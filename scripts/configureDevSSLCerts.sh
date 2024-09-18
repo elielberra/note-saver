@@ -57,6 +57,7 @@ openssl genrsa -aes256 -out "${CAKeyFilename}" -passout pass:"${CA_PASSPHRASE}" 
 # Generate CA
 openssl req -new -x509 -sha256 -days ${certTTL} -key "${CAKeyFilename}" -out "${CAFilename}" -passin pass:${CA_PASSPHRASE} \
     -subj "/C=${country}/ST=${state}/L=${locality}/O=${organization}/OU=${organizationUnit}/CN=${commonName}"
+echo "The CA was successfully generated"
 # Generate Certificate's key
 openssl genrsa -out "${certKeyFilename}" -passout pass:"${CERT_PASSPHRASE}" 4096
 # Generate Certificate Signing Request
@@ -92,6 +93,7 @@ EOF
 # CA signs the Certificate Signing Request, generating the Certificate itself
 openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" \
     -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
+echo "The certificate was successfully generated and signed by the CA"
 
 # Delete previous ssl certs, if exist, and copy into server and client dirs
 for app in "client" "server"; do
@@ -106,6 +108,7 @@ if [ -f ".${localCACertificatesDir}/${CAFilename}" ]; then
     sudo update-ca-certificates
 fi
 # Install the CA Certificate as a trusted root CA for the OS
+echo "Adding the  CA Certificate as a trusted root CA for the Operating System"
 sudo cp "${CAFilename}" "${localCACertificatesDir}"
 sudo update-ca-certificates
 
@@ -114,10 +117,12 @@ sudo update-ca-certificates
 if checkIfLibraryIsInstalled "google-chrome"; then
     # Set Network Security Services Database directory
     chromeNSSDBDir="${HOME}/.pki/nssdb"
+    echo "Configuring the CA on Chrome"
     insertCertIntoNSSDB "${chromeNSSDBDir}"
 fi
 # Same process as the block above
 if checkIfLibraryIsInstalled "firefox"; then
     firefoxNSSDBDir="$(dirname "$(sudo find ${HOME} -type d -name "*mozilla*" -exec find {} -name "cert9.db" \;)")"
+    echo "Configuring the CA on Firefox"
     insertCertIntoNSSDB "${firefoxNSSDBDir}"
 fi
