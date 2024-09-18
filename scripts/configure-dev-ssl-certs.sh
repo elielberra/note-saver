@@ -3,6 +3,17 @@
 # The creation of the certificates was based on Chrstian Lempa's post https://www.patreon.com/posts/109937722
 # Adding the certs to the browser NSS DB was based on Thomas Leister's post https://thomas-leister.de/en/how-to-import-ca-root-certificate/
 
+insertCertIntoNSSDB() {
+    local browserNSSDBDir=$1
+    # Check if a prevoous certificate exists before deleting it
+    if certutil -L -n "${certificateAuthorityName}" -d sql:"${browserNSSDBDir}" &> /dev/null; then
+        # Delete previous CA from Network Security Services Database of the browser
+        certutil -D -n "${certificateAuthorityName}" -d sql:"${browserNSSDBDir}"
+    fi
+    # Run query to insert CA on NSS DB
+    certutil -A -n "${certificateAuthorityName}" -t "TCu,Cu,Tu" -i "${localCACertificatesDir}/${CAFilename}" -d sql:"${browserNSSDBDir}"
+}
+
 # Default Certificate Properties
 country="AR"
 state="Ciudad Autónoma de Buenos Aires"
@@ -12,16 +23,18 @@ organization="NoteSaver"
 organizationUnit="Engineering"
 commonName="notesaver"
 certificateAuthorityName="NoteSaverCertificateAuthority"
+certTTL=3650
 
 # Certificate filenames
 CAKeyFilename="ca-key.pem"
-CAFilename="ca.pem"
+CAFilename="ca.crt"
 certKeyFilename="cert-key.pem"
 CSRFilename="cert.csr"
+certExtConfFilename="openssl.cnf"
 certFilename="cert.pem"
 
 # Directory paths
-scriptDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+scriptDir=$(realpath $(dirname $0))
 rootProjectDir="$(dirname "${scriptDir}")"
 sslCertsDir="ssl-certs"
 localCACertificatesDir="/usr/local/share/ca-certificates"
@@ -35,24 +48,21 @@ verifyAndInstallDependency "certutil" "libnss3-tools"
 
 # Remove previus ssl directory, if exists, and create a new one
 cd "${rootProjectDir}"
-if [ -d "./${sslCertsDir}" ]; then
-    rm -rf "./${sslCertsDir}"
-fi
+[ -d "./${sslCertsDir}" ] && rm -rf "./${sslCertsDir}"
 mkdir "./${sslCertsDir}"
 cd "./${sslCertsDir}"
 
 # Generate CA's key
 openssl genrsa -aes256 -out "${CAKeyFilename}" -passout pass:"${CA_PASSPHRASE}" 4096 
 # Generate CA
-openssl req -new -x509 -sha256 -days 365 -key "${CAKeyFilename}" -out "${CAFilename}" -passin pass:${CA_PASSPHRASE} \
+openssl req -new -x509 -sha256 -days ${certTTL} -key "${CAKeyFilename}" -out "${CAFilename}" -passin pass:${CA_PASSPHRASE} \
     -subj "/C=${country}/ST=${state}/L=${locality}/O=${organization}/OU=${organizationUnit}/CN=${commonName}"
 # Generate Certificate's key
 openssl genrsa -out "${certKeyFilename}" -passout pass:"${CERT_PASSPHRASE}" 4096
 # Generate Certificate Signing Request
 openssl req -new -sha256 -key "${certKeyFilename}" -out "${CSRFilename}" -passin pass:${CA_PASSPHRASE} -subj "/CN=${commonName}" 
 # Generate Extension Configuration File for the Certificate
-# TODO: Check if defaults can be deleted
-cat > openssl.cnf <<EOF
+cat > "${certExtConfFilename}" <<EOF
 [req]
 distinguished_name = req_distinguished_name
 req_extensions = v3_req
@@ -79,38 +89,35 @@ DNS.1 = ${commonName}
 DNS.2 = server.${commonName}
 IP.1 = 127.0.0.1
 EOF
-
 # CA signs the Certificate Signing Request, generating the Certificate itself
-# TODO: Check if setting .crt instead of .pem works
-openssl x509 -req -sha256 -days 365 -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" -out "${certFilename}" -extfile openssl.cnf -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
+openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" \
+    -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
 
+# Delete previous ssl certs, if exist, and copy into server and client dirs
 for app in "client" "server"; do
-    if [ -d "../${app}/${sslCertsDir}" ]; then
-        rm -rf "../${app}/${sslCertsDir}"
-    fi
-    # TODO: USE vars
+    [ -d "../${app}/${sslCertsDir}" ] && rm -rf "../${app}/${sslCertsDir}"
     mkdir "../${app}/${sslCertsDir}"
     cp "${certKeyFilename}" "${certFilename}" "../${app}/${sslCertsDir}"
 done
 
-# TODO: This block might be unncessary
-# If exists, remove the preovious certificate and run update
-if [ -f ".${localCACertificatesDir}/ca.crt" ]; then
-    sudo rm "${localCACertificatesDir}/ca.crt"
+# If exists, remove the previous certificate of the Operating System and run update
+if [ -f ".${localCACertificatesDir}/${CAFilename}" ]; then
+    sudo rm "${localCACertificatesDir}/${CAFilename}"
     sudo update-ca-certificates
 fi
 # Install the CA Certificate as a trusted root CA for the OS
-sudo cp "${CAFilename}" "${localCACertificatesDir}/ca.crt"
+sudo cp "${CAFilename}" "${localCACertificatesDir}"
 sudo update-ca-certificates
 
-# TODO: Check if Chrome or Mozilla are installed
-# TODO: Delete previous certificates to avoid duplicate collision
 # Insert CA on Authorized SSL Authorities of the Browsers
-# Insert CA on Network Security Services Database of Chrome
-chromeNSSDBDir="${HOME}/.pki/nssdb"
-certutil -A -n "${certificateAuthorityName}" -t "TCu,Cu,Tu" -i "${localCACertificatesDir}/ca.crt" -d sql:"${chromeNSSDBDir}"
-# Insert CA on Network Security Services Database of Firefox
-firefoxNSSDBDir="$(dirname "$(sudo find ${HOME} -type d -name "*mozilla*" -exec find {} -name "cert9.db" \;)")"
-certutil -A -n "${certificateAuthorityName}" -t "TCu,Cuw,Tuw" -i "${localCACertificatesDir}/ca.crt" -d sql:"${firefoxNSSDBDir}"
-
-# Append domains to /etc/hosts
+# Check if Chrome is installed
+if checkIfLibraryIsInstalled "google-chrome"; then
+    # Set Network Security Services Database directory
+    chromeNSSDBDir="${HOME}/.pki/nssdb"
+    insertCertIntoNSSDB "${chromeNSSDBDir}"
+fi
+# Same process as the block above
+if checkIfLibraryIsInstalled "firefox"; then
+    firefoxNSSDBDir="$(dirname "$(sudo find ${HOME} -type d -name "*mozilla*" -exec find {} -name "cert9.db" \;)")"
+    insertCertIntoNSSDB "${firefoxNSSDBDir}"
+fi
