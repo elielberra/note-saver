@@ -12,7 +12,7 @@ export async function fetchNotes(
 ) {
   try {
     const response = await fetch(
-      `http://localhost:3333/notes?areActive=${notesStatus}${
+      `https://localhost:3333/notes?areActive=${notesStatus}${
         filteringText ? `&filteringText=${filteringText}` : ""
       }`,
       {
@@ -69,7 +69,7 @@ export async function handleErrorInResponse(responseWithError: Response) {
 
 export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticatedResponse> {
   try {
-    const response = await fetch("http://localhost:3333/isauthenticated", {
+    const response = await fetch("https://localhost:3333/isauthenticated", {
       credentials: "include"
     });
     if (!response.ok && response.status !== 401) {

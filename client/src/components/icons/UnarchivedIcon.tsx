@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 export default function UnarchivedIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       height={props.height || "100%"}
       {...props}

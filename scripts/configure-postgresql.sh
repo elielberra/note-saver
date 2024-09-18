@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 if ! command -v psql &> /dev/null; then
     read -p "You don't have postgresql installed, do you want to install it? \

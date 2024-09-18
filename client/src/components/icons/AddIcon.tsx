@@ -8,7 +8,7 @@ type AddIconProps = {
 export default function AddIcon({ addBackgroundCircle, ...props }: AddIconProps) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
       xmlSpace="preserve"
       fill="#161F3C"
       viewBox="0 0 512 512"

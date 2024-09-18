@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 export default function NoteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
       fill="#161F3C"
       viewBox="0 0 36 36"
       height={props.height || "100%"}

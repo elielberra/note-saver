@@ -1,4 +1,5 @@
-const path = require('path');
+const path = require("path");
+const fs = require("fs");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (_, { mode }) => {
@@ -41,12 +42,23 @@ module.exports = (_, { mode }) => {
         template: "./src/index.html"
       })
     ],
-    devtool: 'source-map',
+    devtool: "source-map",
     devServer: {
       port: 3000,
       static: {
-        directory: path.join(__dirname, 'public'),
+        directory: path.join(__dirname, "public")
       },
+      server: {
+        type: "https",
+        options: {
+          key: fs.readFileSync(path.join(__dirname, "ssl-certs", "cert-key.pem")),
+          cert: fs.readFileSync(path.join(__dirname, "ssl-certs", "cert.pem"))
+        }
+      },
+      allowedHosts: [
+        "notesaver"
+      ],
+      historyApiFallback: true
     }
   };
 };

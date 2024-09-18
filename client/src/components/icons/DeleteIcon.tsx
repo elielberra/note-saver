@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 export default function DeleteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
       className="delete-icon_svg__icon"
       viewBox="0 0 1024 1024"
       height={props.height || "100%"}

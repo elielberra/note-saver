@@ -36,7 +36,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3333/${action}`, {
+      const response = await fetch(`https://localhost:3333/${action}`, {
         method: "POST",
         credentials: "include",
         headers: {

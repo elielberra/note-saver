@@ -17,7 +17,9 @@ app.use(express.json());
 
 const corsOptions: CorsOptions = {
   origin: [
-    "http://localhost:3000"
+    "https://127.0.0.0:3000",
+    "https://localhost:3000",
+    "https://notesaver:3000"
   ],
   optionsSuccessStatus: 200,
   credentials: true
@@ -38,8 +40,8 @@ app.use(
     cookie: {
       maxAge: parseInt(process.env.COOKIE_MINUTES_TTL!) * 60 * 1000,
       httpOnly: true,
-      secure: false
-      // sameSite: "none"
+      secure: true,
+      sameSite: "none"
     }
   })
 );

@@ -27,7 +27,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function deleteNote() {
     try {
-      const response = await fetch("http://localhost:3333/delete-note", {
+      const response = await fetch("https://localhost:3333/delete-note", {
         method: "DELETE",
         credentials: "include",
         headers: {
@@ -47,7 +47,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function addTag() {
     try {
-      const response = await fetch("http://localhost:3333/create-tag", {
+      const response = await fetch("https://localhost:3333/create-tag", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -81,7 +81,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function changeNoteStatus(noteStatus: boolean) {
     try {
-      const response = await fetch("http://localhost:3333/set-note-status", {
+      const response = await fetch("https://localhost:3333/set-note-status", {
         method: "POST",
         credentials: "include",
         headers: {

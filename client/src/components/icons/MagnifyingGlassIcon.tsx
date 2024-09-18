@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 export default function MagnifyingGlassIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
       fill="#161f3c"
       viewBox="0 0 15 15"
       height={props.height || "100%"}
