@@ -17,8 +17,7 @@ app.use(express.json());
 
 const corsOptions: CorsOptions = {
   origin: [
-    "https://127.0.0.0:3000",
-    "https://localhost:3000",
+    "https://127.0.0.1:3000",
     "https://notesaver:3000"
   ],
   optionsSuccessStatus: 200,
@@ -62,7 +61,3 @@ const httpsServer = https.createServer(
 httpsServer.listen(port, () => {
   console.log(`HTTPS server listening on port ${port}`);
 });
-
-// app.listen(port, () => {
-//   console.log(`Server is running at http://localhost:${port}`);
-// });

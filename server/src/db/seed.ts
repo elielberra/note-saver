@@ -1,4 +1,3 @@
-// The database will be constructed from the init.sql file. This is just for seeding dummy data.
 import { Client, QueryConfig } from "pg";
 import { getDBClient, connectToDB } from "./utils";
 import dotenv from "dotenv";
