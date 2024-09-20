@@ -4,6 +4,10 @@ dummyFile=".env_dummy"
 envFile=".env"
 # List of directories with .env_dummy files
 dirsWithEnvDummyFile=("server" "db" "scripts")
+scriptDir=$(realpath $(dirname $0))
+rootProjectDir="$(dirname "${scriptDir}")"
+
+cd "${rootProjectDir}"
 
 # Iterate over each file
 for dir in "${dirsWithEnvDummyFile[@]}"; do
