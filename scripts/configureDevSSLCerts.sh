@@ -118,12 +118,14 @@ sudo update-ca-certificates
 if checkIfLibraryIsInstalled "google-chrome"; then
     # Set Network Security Services Database directory
     chromeNSSDBDir="${HOME}/.pki/nssdb"
+    echo "Chrome's NSS Database is on ${chromeNSSDBDir}"
     echo "Configuring the CA on Chrome"
     insertCertIntoNSSDB "${chromeNSSDBDir}"
 fi
 # Same process as the block above
 if checkIfLibraryIsInstalled "firefox"; then
     firefoxNSSDBDir="$(dirname "$(sudo find ${HOME} -type d -name "*mozilla*" -exec find {} -name "cert9.db" \;)")"
+    echo "Firefox's NSS Database is on ${firefoxNSSDBDir}"
     echo "Configuring the CA on Firefox"
     insertCertIntoNSSDB "${firefoxNSSDBDir}"
 fi
