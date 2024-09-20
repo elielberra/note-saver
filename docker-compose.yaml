@@ -14,7 +14,7 @@ services:
     env_file:
       - ./server/.env
     volumes:
-      - ./server/src:/app/src
+      - ./server:/app
       - /app/node_modules
     ports:
       - 3333:3333
