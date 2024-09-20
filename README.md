@@ -28,3 +28,7 @@ psql -U postgres
 \c note_saver
 \dt # List tables
 ```
+
+## How to Run this App Locally
+You must first the script `scripts/setupLocalEnvironment.sh` so that the SSL certificates are created and the CA is automatically configured on your browser (chrome and mozilla) as a trusted source. This script will also configure proper DNS resolution on the hosts file.
+Run `docker-compose up` and enter the URL `https://notesaver:3000`
