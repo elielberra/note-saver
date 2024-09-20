@@ -53,15 +53,15 @@ mkdir "./${sslCertsDir}"
 cd "./${sslCertsDir}"
 
 # Generate CA's key
-openssl genrsa -aes256 -out "${CAKeyFilename}" -passout pass:"${CA_PASSPHRASE}" 4096 
+openssl genrsa -aes256 -out "${CAKeyFilename}" -passout pass:"${CA_PASSWORD}" 4096 
 # Generate CA
-openssl req -new -x509 -sha256 -days ${certTTL} -key "${CAKeyFilename}" -out "${CAFilename}" -passin pass:${CA_PASSPHRASE} \
+openssl req -new -x509 -sha256 -days ${certTTL} -key "${CAKeyFilename}" -out "${CAFilename}" -passin pass:${CA_PASSWORD} \
     -subj "/C=${country}/ST=${state}/L=${locality}/O=${organization}/OU=${organizationUnit}/CN=${commonName}"
 echo "The CA was successfully generated"
 # Generate Certificate's key
-openssl genrsa -out "${certKeyFilename}" -passout pass:"${CERT_PASSPHRASE}" 4096
+openssl genrsa -out "${certKeyFilename}" -passout pass:"${CERT_PASSWORD}" 4096
 # Generate Certificate Signing Request
-openssl req -new -sha256 -key "${certKeyFilename}" -out "${CSRFilename}" -passin pass:${CA_PASSPHRASE} -subj "/CN=${commonName}" 
+openssl req -new -sha256 -key "${certKeyFilename}" -out "${CSRFilename}" -passin pass:${CA_PASSWORD} -subj "/CN=${commonName}" 
 # Generate Extension Configuration File for the Certificate
 cat > "${certExtConfFilename}" <<EOF
 [req]
@@ -92,7 +92,7 @@ IP.1 = 127.0.0.1
 EOF
 # CA signs the Certificate Signing Request, generating the Certificate itself
 openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" \
-    -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
+    -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSWORD} 
 echo "The certificate was successfully generated and signed by the CA"
 
 # Delete previous ssl certs, if exist, and copy into server and client dirs
