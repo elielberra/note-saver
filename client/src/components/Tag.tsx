@@ -16,7 +16,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
   const [tagContent, setTagContent] = useState(tag.tagContent);
   async function deleteTag() {
     try {
-      const response = await fetch("https://localhost:3333/delete-tag", {
+      const response = await fetch("https://server.notesaver:3333/delete-tag", {
         method: "DELETE",
         credentials: "include",
         headers: {
@@ -48,7 +48,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
   const saveTagOnDB = useCallback(
     async (newContent: string) => {
       try {
-        const response = await fetch("https://localhost:3333/update-tag-content", {
+        const response = await fetch("https://server.notesaver:3333/update-tag-content", {
           method: "POST",
           credentials: "include",
           headers: {

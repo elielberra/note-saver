@@ -18,7 +18,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
   const saveNoteOnDB = useCallback(
     async (newContent: string) => {
       try {
-        const response = await fetch("https://localhost:3333/update-note-content", {
+        const response = await fetch("https://server.notesaver:3333/update-note-content", {
           method: "POST",
           credentials: "include",
           headers: {

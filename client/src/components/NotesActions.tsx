@@ -25,7 +25,7 @@ export default function NoteActions({
 
   async function addNote() {
     try {
-      const response = await fetch("https://localhost:3333/create-note", {
+      const response = await fetch("https://server.notesaver:3333/create-note", {
         method: "POST",
         credentials: "include",
         headers: {

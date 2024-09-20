@@ -32,7 +32,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   );
   const logout = useCallback(async () => {
     try {
-      const response = await fetch("https://localhost:3333/signout", {
+      const response = await fetch("https://server.notesaver:3333/signout", {
         method: "POST",
         credentials: "include",
         headers: {
