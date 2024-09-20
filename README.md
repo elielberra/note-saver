@@ -1,6 +1,6 @@
 # NoteSaver Application
 
-This is the repository for an app that allows users to write notes. Once the user is logged in, they can create their own notes. They can also archive and tag them.
+This is the repository for an app that allows users to write notes. Once the users are logged in, they can create their own notes. They can also archive and tag them.
 
 ## Frontend Client
 It was developed with React and TypeScript. It is compiled and served through Webpack.
