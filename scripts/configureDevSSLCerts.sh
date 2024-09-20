@@ -118,6 +118,15 @@ sudo update-ca-certificates
 if checkIfLibraryIsInstalled "google-chrome"; then
     # Set Network Security Services Database directory
     chromeNSSDBDir="${HOME}/.pki/nssdb"
+    # If the user is vagrant running the provisions script
+    if [[ "${IS_VAGRANT_PROVISIONING}" == "true" ]]; then
+        # Use vagrant's directory
+        chromeNSSDBDir="/home/vagrant/.pki/nssdb"
+    else
+        # Else set the standard user's home directory
+        chromeNSSDBDir="${HOME}/.pki/nssdb"
+    fi
+
     echo "Chrome's NSS Database is on ${chromeNSSDBDir}"
     echo "Configuring the CA on Chrome"
     insertCertIntoNSSDB "${chromeNSSDBDir}"
