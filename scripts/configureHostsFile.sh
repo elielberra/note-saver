@@ -2,7 +2,7 @@
 
 # Entry for resolving domains to localhost IP
 pattern="127\.0\.0\.1\s*notesaver server\.notesaver"
-entry="127.0.0.2 notesaver server.notesaver"
+entry="127.0.0.1    notesaver server.notesaver"
 hostsFile="/etc/hosts"
 
 # Check if the entry already exists in /etc/hosts
