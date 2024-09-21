@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
         vb.name = "note-saver-vm"
         vb.gui = true
         vb.memory = "4096"
+        # Allow copy pasting from cliboard of host machine to VM and viceversa
         vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
     config.vm.provision "shell", path: "provision.sh"
