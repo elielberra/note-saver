@@ -23,8 +23,8 @@ verifyAndInstallDependency() {
             exit 1
         fi
         echo "Updating packages version list"
-        sudo apt update
+        sudo apt-get update
         echo "Installing ${dependencyName}"
-        sudo apt install -y "${dependencyName}"
+        sudo apt-get install -y "${dependencyName}"
     fi
 }
