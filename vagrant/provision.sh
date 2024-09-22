@@ -61,11 +61,13 @@ opensslRandFile="/home/vagrant/.rnd"
 openssl rand -out ${opensslRandFile} -hex 256
 chown vagrant:vagrant ${opensslRandFile}
 
-echo "The VM was succesfully configured :)"
 echo "Login to the Ubuntu  session on the VM's UI with the user \`vagrant\` and the password \`vagrant\`"
 echo "When prompted for the setup of the first startup select 'Use default config'"
-echo "Clone the repository with \`git clone https://github.com/elielberra/note-saver.git\`"
 echo "Launch first \`google-chrome\` from the console to initialize the browser"
-echo "Then run the script \`bash note-saver/scripts/setupLocalEnvironment.sh\`"
-echo "Start the app with \`docker compose -f note-saver/docker-compose.yaml up\`"
+echo "Clone the repository with \`git clone https://github.com/elielberra/note-saver.git\`"
+echo "Change to the directory of the repository with \`cd <path_to_repo>/note-saver\`"
+echo "Then run the script \`bash scripts/setupLocalEnvironment.sh\`"
+echo "Start the app with \`docker compose up\`"
 echo "Access https://notesaver:3000 on the browser"
+echo "The VM was succesfully configured!"
+
