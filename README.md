@@ -22,6 +22,7 @@ If you want to populate the database with some dummy data, you can execute the c
 PostgreSQL is the engine of the app. Its data model is composed of tables containing user data, notes, their corresponding tags, and session information. The file `init.sql` will set up this data model.
 
 #### How to Connect to the Database
+After starting the app with docker compose run:
 ```
 docker exec -it db bash
 psql -U postgres
@@ -30,11 +31,9 @@ psql -U postgres
 ```
 
 ## Run this App Locally
-You must first the script `scripts/setupLocalEnvironment.sh` so that the SSL certificates are created and the CA is automatically configured on your browser (chrome and mozilla) as a trusted source. This script will also configure proper DNS resolution on the hosts file.
-Run `docker-compose up` and enter the URL `https://notesaver:3000`
 
 ### Initial considerations
-The real .env file is not upploaded to the repository for security reasons. However, a dummy .env file is, and its passwords can be autopopulated through a bash script. In order to store the session cookies, the site needs to handle traffic through https. Through another script, the SSL certificates and keys will be created and the generated CA is listed as a valid Authority. This will be done automatically so that you don't have to manually add configure it. The hosts file is also modified so that DNS resolution can work properly.
+The real .env file is not upploaded to the repository for security reasons. However, a dummy .env file is, and its passwords can be autopopulated through a bash script. In order to store the session cookies, the site needs to handle traffic through https. Through another script, the SSL certificates and keys will be created and the generated CA is listed as a valid Authority. This will be done automatically for Google Chrome and Mozilla Firefox so that you don't have to manually add configure it. The hosts file is also modified so that DNS resolution can work properly.
 
 ### Debian environment
 The script that sets up the environment works only for Debian/Ubuntu distributions. If you have Windows, Mac or any other distro it won't work. You can try to adjust the script to run on your OS, or if not, to make things easier, I have prepared a `Vagrantfile` so that you can execute it on an Ubuntu Bionic Virtual Machine. The provisioning script will install all the required dependencies: a UI for the OS, docker, docker compose and Google Chrome.
@@ -45,9 +44,9 @@ You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/in
 cd <path_to_notesaver_repo>/vagrant
 vagrant up
 ```
-The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` and wait for the message "The VM was succesfully configured!" to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script ). Follow the steps down below.
+The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` and wait for the message "The VM was succesfully configured!" to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
 
-### How to execute it
+### How to run this app
 After you have cloned/downloaded this repository perform these commands:
 ```
 cd <path_to_notesaver_repo>\note-saver
