@@ -37,7 +37,7 @@ Run `docker-compose up` and enter the URL `https://notesaver:3000`
 The real .env file is not upploaded to the repository for security reasons. However, a dummy .env file is, and its passwords can be autopopulated through a bash script. In order to store the session cookies, the site needs to handle traffic through https. Through another script, the SSL certificates and keys will be created and the generated CA is listed as a valid Authority. This will be done automatically so that you don't have to manually add configure it. The hosts file is also modified so that DNS resolution can work properly.
 
 ### Debian environment
-The script that sets up the environment works only for Debian/Ubuntu distributions. If you have Windows, Mac or any other distro it won't work. You can try to adjust the script to run on your OS, or if not I have prepared a Vagrantfile so that you can execute it on an Ubuntu Bionic Virtual. The provisioning script will install all the required dependencies: a UI for the OS, docker, docker compose and Google Chrome.
+The script that sets up the environment works only for Debian/Ubuntu distributions. If you have Windows, Mac or any other distro it won't work. You can try to adjust the script to run on your OS, or if not I have prepared a Vagrantfile so that you can execute it on an Ubuntu Bionic Virtual Machine in order to make things easier. The provisioning script will install all the required dependencies: a UI for the OS, docker, docker compose and Google Chrome.
 
 #### How to set up the VM
 You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. Clone this repository on your host machine. And follow these commands:
@@ -45,7 +45,7 @@ You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/in
 cd <path_to_notesaver_repo>/vagrant
 vagrant up
 ```
-The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` and wait for the message "The VM was succesfully configured!" to appear (be patient, it may take a while). Switch back to Virtual Box's UI and login into the Ubuntu session with  user 'vagrant' and the password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch first \`google-chrome\` from a terminal to initialize the browser. Follow the steps down below.
+The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` and wait for the message "The VM was succesfully configured!" to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch \`google-chrome\` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script ). Follow the steps down below.
 
 ### How to execute it
 After you have cloned/downloaded this repository perform these commands:
