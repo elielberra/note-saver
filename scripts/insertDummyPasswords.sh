@@ -17,7 +17,6 @@ for dir in "${dirsWithEnvDummyFile[@]}"; do
     fi
     cp "${dir}/${dummyFile}" "${dir}/${envFile}"
     # Replace all keys containing 'PASSWORD' or 'SECRET' with dummy passwords
-    sed -i 's/^\(.*PASSWORD.*=\).*/\1dummy-password/' "${dir}/${envFile}"
-    sed -i 's/^\(.*SECRET.*=\).*/\1dummy-secret/' "${dir}/${envFile}"
+    sed -i 's/^\(.*\(PASSWORD\|SECRET\|PASSPHRASE\).*=*\).*/\1dummy-password/' "${dir}/${envFile}"
     echo "Inserted dummy passwords into ${dir}/${envFile}"
 done

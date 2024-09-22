@@ -70,4 +70,3 @@ echo "Then run the script \`bash scripts/setupLocalEnvironment.sh\`"
 echo "Start the app with \`docker compose up\`"
 echo "Access https://notesaver:3000 on the browser"
 echo "The VM was succesfully configured!"
-

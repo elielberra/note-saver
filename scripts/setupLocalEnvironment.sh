@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 scriptDir=$(realpath $(dirname $0))
 bash "${scriptDir}"/insertDummyPasswords.sh
