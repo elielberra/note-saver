@@ -44,7 +44,7 @@ You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/in
 cd <path_to_notesaver_repo>/vagrant
 vagrant up
 ```
-The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` and wait for the message "The VM was succesfully configured!" to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
+The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
 
 ### How to run this app
 After you have cloned/downloaded this repository perform these commands:
