@@ -1,20 +1,13 @@
 import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 import {
   AuthPostBody,
-  AuthResponseBody,
+  AuthTokenPayload,
   IsAuthenticatedResponse,
   RequestBodyWithId,
   UpdateEntityBody
 } from "../types/types";
 import { getUserIdFromNoteId, getUserIdFromTagId } from "../dao";
-
-export function isAuthenticated(req: Request, res: Response<AuthResponseBody>, next: NextFunction) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.status(401).json({ isAuthenticated: false } as IsAuthenticatedResponse);
-  }
-}
 
 export function hasUsernameAndPassword(
   req: Request<Record<string, never>, Record<string, never>, AuthPostBody>,
@@ -93,4 +86,19 @@ export function validateIdInRequestBody(
   if (!id) return res.status(400).send("Field id is missing in Request body");
   if (Number.isNaN(id)) return res.status(400).send("Field id has to be a number");
   next();
+}
+
+export function verifyJWT(req: Request, res: Response, next: NextFunction) {
+  const authToken = req.headers.authorization?.split(" ")[1];
+  if (!authToken) {
+    return res.status(401).json({ isAuthenticated: false } as IsAuthenticatedResponse);
+    }
+  jwt.verify(authToken, process.env.JWT_SECRET!, (error, decodedPayload) => {
+    if (error) {
+      return res.status(403).json({ isAuthenticated: false } as IsAuthenticatedResponse);
+    }
+    const {userId, username} = decodedPayload as AuthTokenPayload;
+    req.user = {userId, username};
+    next();
+  });
 }

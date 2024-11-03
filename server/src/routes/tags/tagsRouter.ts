@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { createTag, deleteTag, updateTagContent } from "../../dao";
 import { RequestBodyWithId, UpdateEntityBody } from "../../types/types";
 import {
-  isAuthenticated,
+  verifyJWT,
   noteIdCorrespondsToSessionUserId,
   tagIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
@@ -14,7 +14,7 @@ const tagsRouter = express.Router();
 
 tagsRouter.post(
   "/update-tag-content",
-  isAuthenticated,
+  verifyJWT,
   validateUpdateEntityRequestBody,
   tagIdCorrespondsToSessionUserId,
   async (req: Request<{}, {}, UpdateEntityBody>, res: Response) => {
@@ -31,7 +31,7 @@ tagsRouter.post(
 
 tagsRouter.post(
   "/create-tag",
-  isAuthenticated,
+  verifyJWT,
   noteIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
   async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
@@ -48,7 +48,7 @@ tagsRouter.post(
 
 tagsRouter.delete(
   "/delete-tag",
-  isAuthenticated,
+  verifyJWT,
   tagIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
   async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {

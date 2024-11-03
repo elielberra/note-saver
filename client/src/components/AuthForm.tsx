@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import { getHeadersWithContentType, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
 import {
   AuthenticateUserResponse,
   SuccessfulAuthResponse,
@@ -38,10 +38,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
     try {
       const response = await fetch(`https://server.notesaver:3333/${action}`, {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: getHeadersWithContentType(),
         body: JSON.stringify({ username, password })
       });
       const responseBody: AuthenticateUserResponse = await response.json();
@@ -52,7 +49,10 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         return;
       }
       error && setError(null);
-      isSuccessfulResponse(responseBody) && login(responseBody.username);
+      if (isSuccessfulResponse(responseBody)) {
+        sessionStorage.setItem("authToken", responseBody.authToken);
+        login(responseBody.username);
+      }
     } catch (error) {
       handleErrorLogging(error, "Error while registering user");
     }

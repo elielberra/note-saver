@@ -1,12 +1,14 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import { createUser, getUserByField } from "../dao";
 import { hashPassword } from "../dao/utils";
 import {
   ALREADY_REGISTERED_USER,
   AuthErrors,
   AuthPostBody,
+  AuthTokenUserInfo,
   PASSWORD_NOT_VALID,
   SuccessfulAuthResponse,
   UnsuccessfulAuthResponse,
@@ -14,6 +16,9 @@ import {
   UserT
 } from "../types/types";
 import { checkIfPasswordIsValid } from "../routes/utils";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!
 
 async function checkIfUserIsAlreadyRegistered(username: UserT["username"]) {
   const user = await getUserByField("username", username);
@@ -92,12 +97,20 @@ export function authenticationCallback(
       message: `Internal Server error while attempting to ${authAction} a user`
     } as UnsuccessfulAuthResponse);
   }
-  req.logIn(user, (error: any) => {
-    if (error) {
-      return res
-        .status(500)
-        .json({ message: `Internal Server error while attempting to ${authAction} a user` });
-    }
-    return res.status(200).json({ username: user.username } as SuccessfulAuthResponse);
-  });
+
+  try {
+    const authTokenUserInfo: AuthTokenUserInfo = { userId: user.userId, username: user.username };
+    const authToken = jwt.sign(authTokenUserInfo, JWT_SECRET, {
+      expiresIn: JWT_EXPIRATION_TIME
+    });
+    return res.status(200).json({
+      username: user.username,
+      authToken
+    } as SuccessfulAuthResponse);
+  } catch (error) {
+    console.error("Error while creating a JWT", error);
+    return res.status(500).json({
+      message: `Internal Server error while attempting to ${authAction} a user`
+    } as UnsuccessfulAuthResponse);
+  }
 }

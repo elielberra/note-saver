@@ -4,7 +4,7 @@ import "./Tag.css";
 import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "../types/types";
-import { getNewSortedNotes, getNoteToBeUpdated, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import { getHeadersWithAuthAndContentType, getNewSortedNotes, getNoteToBeUpdated, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
 
 type TagProps = {
   tag: NoteT["tags"][number];
@@ -18,10 +18,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
     try {
       const response = await fetch("https://server.notesaver:3333/delete-tag", {
         method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: tag.tagId })
       });
       if (!response.ok) {
@@ -50,10 +47,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
       try {
         const response = await fetch("https://server.notesaver:3333/update-tag-content", {
           method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: getHeadersWithAuthAndContentType(),
           body: JSON.stringify({ id: tag.tagId, newContent })
         });
         if (!response.ok) {

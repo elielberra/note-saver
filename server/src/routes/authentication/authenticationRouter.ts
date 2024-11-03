@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { AuthErrors, AuthPostBody, IsAuthenticatedResponse, UserT } from "../../types/types";
 import passport from "passport";
-import { hasUsernameAndPassword, isAuthenticated } from "../../middlewares";
+import { hasUsernameAndPassword, verifyJWT } from "../../middlewares";
 import { authenticationCallback } from "../../passport/passportConfig";
 
 const authenticationRouter = express.Router();
@@ -22,18 +22,7 @@ authenticationRouter.post(
   }
 );
 
-authenticationRouter.post("/signout", (req: Request, res: Response) => {
-  req.logout((error) => {
-    if (error) {
-      return res
-        .status(500)
-        .json({ message: "Internal server error while attempting to login a user" });
-    }
-    res.sendStatus(200);
-  });
-});
-
-authenticationRouter.get("/isauthenticated", isAuthenticated, async (req: Request, res: Response) => {
+authenticationRouter.get("/isauthenticated", verifyJWT, async (req: Request, res: Response) => {
   res
     .status(200)
     .json({ isAuthenticated: true, username: req.user!.username } as IsAuthenticatedResponse);

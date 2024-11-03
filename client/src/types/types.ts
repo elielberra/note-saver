@@ -14,7 +14,9 @@ export interface UserT {
   username: string;
 }
 
-export interface SuccessfulAuthResponse extends Response, UserT {}
+export interface SuccessfulAuthResponse extends Response, UserT {
+  authToken: string;
+}
 
 export interface UnsuccessfulAuthResponse extends Response {
   message: string;
@@ -35,3 +37,5 @@ export interface IsAuthenticatedUnsuccessfulResponse {
 export type IsAuthenticatedResponse =
   | IsAuthenticatedSuccessfulResponse
   | IsAuthenticatedUnsuccessfulResponse;
+
+export type AuthorizationTokenT = string | null;

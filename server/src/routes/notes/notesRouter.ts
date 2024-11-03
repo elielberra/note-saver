@@ -1,19 +1,13 @@
 import express, { Request, Response } from "express";
-import {
-  createNote,
-  deleteNote,
-  getNotes,
-  updateNoteContent,
-  updateNoteStatus,
-} from "../../dao";
+import { createNote, deleteNote, getNotes, updateNoteContent, updateNoteStatus } from "../../dao";
 import {
   GetNotesQueryParams,
   RequestBodyWithId,
   SetNoteStatusBody,
-  UpdateEntityBody,
+  UpdateEntityBody
 } from "../../types/types";
 import {
-  isAuthenticated,
+  verifyJWT,
   noteIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
   validateUpdateEntityRequestBody
@@ -24,7 +18,7 @@ const notesRouter = express.Router();
 
 notesRouter.get(
   "/notes",
-  isAuthenticated,
+  verifyJWT,
   async (req: Request<{}, {}, {}, GetNotesQueryParams>, res: Response) => {
     if (
       !req.query.areActive ||
@@ -44,7 +38,7 @@ notesRouter.get(
   }
 );
 
-notesRouter.post("/create-note", isAuthenticated, async (req: Request, res: Response) => {
+notesRouter.post("/create-note", verifyJWT, async (req: Request, res: Response) => {
   try {
     const userId = req.user!.userId;
     const newNoteId = await createNote(userId);
@@ -56,7 +50,7 @@ notesRouter.post("/create-note", isAuthenticated, async (req: Request, res: Resp
 
 notesRouter.post(
   "/update-note-content",
-  isAuthenticated,
+  verifyJWT,
   validateUpdateEntityRequestBody,
   async (req: Request<{}, {}, UpdateEntityBody>, res: Response) => {
     const userId = req.user!.userId;
@@ -73,7 +67,7 @@ notesRouter.post(
 
 notesRouter.delete(
   "/delete-note",
-  isAuthenticated,
+  verifyJWT,
   validateIdInRequestBody,
   async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
     const noteId = req.body.id as number;
@@ -90,15 +84,15 @@ notesRouter.delete(
 
 notesRouter.post(
   "/set-note-status",
-  isAuthenticated,
+  verifyJWT,
   noteIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
   async (req: Request<{}, {}, SetNoteStatusBody>, res: Response) => {
     const isActive = req.body.isActive;
-    if (!isActive && isActive !== false) return res.status(400).send("Field isActive has to be included in the body");
+    if (!isActive && isActive !== false)
+      return res.status(400).send("Field isActive has to be included in the body");
     if (typeof isActive !== "boolean")
       return res.status(400).send("Field isActive has to be a boolean");
-
     const noteId = req.body.id as number;
     try {
       await updateNoteStatus(noteId, isActive);
