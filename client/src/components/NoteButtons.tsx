@@ -8,6 +8,7 @@ import "./NoteButtons.css";
 import AddIcon from "./icons/AddIcon";
 import { NoteT } from "../types/types";
 import {
+  getHeadersWithAuthAndContentType,
   getNewSortedNotes,
   getNoteToBeUpdated,
   handleErrorInResponse,
@@ -29,10 +30,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     try {
       const response = await fetch("https://server.notesaver:3333/delete-note", {
         method: "DELETE",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId })
       });
       if (!response.ok) {
@@ -49,10 +47,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     try {
       const response = await fetch("https://server.notesaver:3333/create-tag", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId })
       });
       if (!response.ok) {
@@ -83,10 +78,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     try {
       const response = await fetch("https://server.notesaver:3333/set-note-status", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId, isActive: noteStatus })
       });
       if (!response.ok) {

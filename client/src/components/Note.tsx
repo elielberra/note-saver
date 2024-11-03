@@ -3,7 +3,7 @@ import "./Note.css";
 import { NoteT } from "../types/types";
 import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
-import { handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import { getHeadersWithAuthAndContentType, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
 
 export type NoteProps = {
   note: NoteT;
@@ -20,10 +20,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
       try {
         const response = await fetch("https://server.notesaver:3333/update-note-content", {
           method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: getHeadersWithAuthAndContentType(),
           body: JSON.stringify({ id: noteId, newContent })
         });
         if (!response.ok) {

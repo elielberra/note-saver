@@ -52,20 +52,13 @@ async function runQueries(client: Client) {
     text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES ($1, $2), ($3, $4)`,
     values: ["tag1", 1, "tag2", 1]
   };
-  const createSessionsTableQuery = `CREATE TABLE ${process.env.DB_SESSIONS_TABLE} (
-    sid VARCHAR NOT NULL,
-    sess JSON NOT NULL,
-    expire TIMESTAMP NOT NULL,
-    PRIMARY KEY (sid)
-);`;
   const queries = [
     createUsersTableQuery,
     insertAdminUserQuery,
     createNotesTableQuery,
     insertNotesQuery,
     createTagsTableQuery,
-    insertTagsQuery,
-    createSessionsTableQuery
+    insertTagsQuery
   ];
   try {
     for (const query of queries) {

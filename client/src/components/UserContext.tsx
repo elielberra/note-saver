@@ -1,8 +1,6 @@
 import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from "react";
 import { UserT } from "../types/types";
 import {
-  handleErrorInResponse,
-  handleErrorLogging,
   validateAndGetUserIfAuthenticated
 } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -31,25 +29,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
     [navigate]
   );
   const logout = useCallback(async () => {
-    try {
-      const response = await fetch("https://server.notesaver:3333/signout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      if (!response.ok) {
-        handleErrorInResponse(response);
-        return;
-      }
+      sessionStorage.removeItem("authToken");
       setIsLoggedIn(false);
       setUsername(null);
       navigate("/signin");
-    } catch (error) {
-      handleErrorLogging(error, "Error while logging out");
-    }
-  }, [navigate]);
+    }, [navigate]);
   useEffect(() => {
     async function checkAuthStatus() {
       const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated();

@@ -5,7 +5,12 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "../types/types";
-import { fetchNotes, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import {
+  fetchNotes,
+  getHeadersWithAuth,
+  handleErrorInResponse,
+  handleErrorLogging
+} from "../lib/utils";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -27,10 +32,7 @@ export default function NoteActions({
     try {
       const response = await fetch("https://server.notesaver:3333/create-note", {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        }
+        headers: getHeadersWithAuth()
       });
       if (!response.ok) {
         handleErrorInResponse(response);

@@ -49,9 +49,16 @@ export interface AuthResponseBody {
   message?: string;
 }
 
+export type AuthTokenUserInfo = Pick<UserT, "userId" | "username">;
+
+export interface AuthTokenPayload extends AuthTokenUserInfo {
+  iat: number;
+  exp: number;
+}
+
 declare global {
   namespace Express {
-    interface User extends UserT {}
+    interface User extends AuthTokenUserInfo {}
   }
 }
 
@@ -100,6 +107,6 @@ export type IsAuthenticatedResponse =
   | IsAuthenticatedSuccessfulResponse
   | IsAuthenticatedUnsuccessfulResponse;
 
-export type FieldsT = "id" | "username";
+export type UserFieldName = "id" | "username";
 
 export type FieldValue = number | string;

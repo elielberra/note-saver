@@ -5,6 +5,25 @@ import {
   NoteT
 } from "../types/types";
 
+export function getAuthTokenFromStorage() {
+  return `Bearer ${sessionStorage.getItem("authToken")}`;
+}
+
+export function getHeadersWithAuth() {
+  return { "Authorization": getAuthTokenFromStorage() };
+}
+
+export function getHeadersWithContentType() {
+  return { "Content-Type": "application/json" };
+}
+
+export function getHeadersWithAuthAndContentType() {
+  return { 
+    ...getHeadersWithAuth(), 
+    ...getHeadersWithContentType()
+  };
+}
+
 export async function fetchNotes(
   setNotes: (value: React.SetStateAction<NoteT[]>) => void,
   notesStatus: boolean,
@@ -16,7 +35,7 @@ export async function fetchNotes(
         filteringText ? `&filteringText=${filteringText}` : ""
       }`,
       {
-        credentials: "include"
+        headers: getHeadersWithAuth()
       }
     );
     if (!response.ok) {
@@ -70,12 +89,12 @@ export async function handleErrorInResponse(responseWithError: Response) {
 export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticatedResponse> {
   try {
     const response = await fetch("https://server.notesaver:3333/isauthenticated", {
-      credentials: "include"
+      headers: getHeadersWithAuth()
     });
-    if (!response.ok && response.status !== 401) {
+    if (!response.ok && response.status !== 401 && response.status !== 403) {
       handleErrorInResponse(response);
       return { isAuthenticated: false };
-    } else if (response.status === 401) {
+    } else if (response.status === 401 || response.status === 403) {
       return (await response.json()) as IsAuthenticatedUnsuccessfulResponse;
     }
     return (await response.json()) as IsAuthenticatedSuccessfulResponse;

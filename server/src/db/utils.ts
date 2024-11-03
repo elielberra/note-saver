@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Client, Pool } from "pg";
+import { Client } from "pg";
 import { ClientObject } from "../types/types";
 
 dotenv.config();
@@ -16,10 +16,6 @@ function getDBObjectInfo(isUsingDatabase: boolean = true): ClientObject {
 
 export function getDBClient(isUsingDatabase: boolean = true): Client {
   return new Client(getDBObjectInfo(isUsingDatabase));
-}
-
-export function getDBPool() {
-  return new Pool(getDBObjectInfo());
 }
 
 export async function connectToDB(client: Client) {

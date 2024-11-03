@@ -23,9 +23,3 @@ CREATE TABLE tags (
     note_id INTEGER NOT NULL REFERENCES notes (id) ON DELETE CASCADE
 );
 
-CREATE TABLE sessions (
-    sid VARCHAR NOT NULL,
-    sess JSON NOT NULL,
-    expire TIMESTAMP NOT NULL,
-    PRIMARY KEY (sid)
-);

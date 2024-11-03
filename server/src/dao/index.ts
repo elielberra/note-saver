@@ -1,5 +1,5 @@
 import { QueryConfig, QueryResult } from "pg";
-import { FieldsT, FieldValue, NoteT, TagT, UserT } from "../types/types";
+import { UserFieldName, FieldValue, NoteT, TagT, UserT } from "../types/types";
 import dotenv from "dotenv";
 import { runQuery } from "./utils";
 
@@ -98,9 +98,9 @@ export async function updateNoteStatus(noteId: NoteT["noteId"], isActive: NoteT[
   await runQuery(query);
 }
 
-export async function getUserByField(fieldname: FieldsT, fieldValue: FieldValue) {
+export async function getUserByField(fieldName: UserFieldName, fieldValue: FieldValue) {
   const query: QueryConfig = {
-    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE ${fieldname} = $1`,
+    text: `SELECT id AS "userId", username, password FROM ${process.env.DB_USERS_TABLE} WHERE ${fieldName} = $1`,
     values: [fieldValue]
   };
   const result: QueryResult<UserT> = await runQuery(query);
