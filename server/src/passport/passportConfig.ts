@@ -18,6 +18,7 @@ import {
 import { checkIfPasswordIsValid } from "../routes/utils";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!
 
 async function checkIfUserIsAlreadyRegistered(username: UserT["username"]) {
   const user = await getUserByField("username", username);
@@ -100,14 +101,14 @@ export function authenticationCallback(
   try {
     const authTokenUserInfo: AuthTokenUserInfo = { userId: user.userId, username: user.username };
     const authToken = jwt.sign(authTokenUserInfo, JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRATION_TIME!
+      expiresIn: JWT_EXPIRATION_TIME
     });
     return res.status(200).json({
       username: user.username,
       authToken
     } as SuccessfulAuthResponse);
   } catch (error) {
-    console.error("Error creating JWT", error);
+    console.error("Error while creating a JWT", error);
     return res.status(500).json({
       message: `Internal Server error while attempting to ${authAction} a user`
     } as UnsuccessfulAuthResponse);
