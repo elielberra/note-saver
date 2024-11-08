@@ -31,7 +31,7 @@ export async function fetchNotes(
 ) {
   try {
     const response = await fetch(
-      `https://server.notesaver:3333/notes?areActive=${notesStatus}${
+      `https://server.notesaver:8080/notes?areActive=${notesStatus}${
         filteringText ? `&filteringText=${filteringText}` : ""
       }`,
       {
@@ -88,7 +88,7 @@ export async function handleErrorInResponse(responseWithError: Response) {
 
 export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticatedResponse> {
   try {
-    const response = await fetch("https://server.notesaver:3333/isauthenticated", {
+    const response = await fetch("https://server.notesaver:8080/isauthenticated", {
       headers: getHeadersWithAuth()
     });
     if (!response.ok && response.status !== 401 && response.status !== 403) {

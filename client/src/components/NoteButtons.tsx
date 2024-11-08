@@ -28,7 +28,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function deleteNote() {
     try {
-      const response = await fetch("https://server.notesaver:3333/delete-note", {
+      const response = await fetch("https://server.notesaver:8080/delete-note", {
         method: "DELETE",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId })
@@ -45,7 +45,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function addTag() {
     try {
-      const response = await fetch("https://server.notesaver:3333/create-tag", {
+      const response = await fetch("https://server.notesaver:8080/create-tag", {
         method: "POST",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId })
@@ -76,7 +76,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
 
   async function changeNoteStatus(noteStatus: boolean) {
     try {
-      const response = await fetch("https://server.notesaver:3333/set-note-status", {
+      const response = await fetch("https://server.notesaver:8080/set-note-status", {
         method: "POST",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId, isActive: noteStatus })
