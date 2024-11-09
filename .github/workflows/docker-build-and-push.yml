@@ -1,0 +1,30 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: elober
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push client image
+      run: |
+        docker build -t elober/notesaver-client:latest ./client
+        docker push elober/notesaver-client:latest
+
+    - name: Build and push server image
+      run: |
+        docker build -t elober/notesaver-server:latest ./server
+        docker push elober/notesaver-server:latest
