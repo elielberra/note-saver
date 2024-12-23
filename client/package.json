@@ -56,7 +56,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm test"
+      "pre-commit": "echo 'HOOK RUNNING!!!!!' && npm test",
+      "pre-push": "echo 'HOOK RUNNING!!!!!' && npm test"
     }
   }
 }
