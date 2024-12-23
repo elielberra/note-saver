@@ -104,6 +104,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       <div id="del-status-btns">
         <Button
           id="delete-btn"
+          data-testid="delete-btn"
           className="note-btn del-status-btn"
           Icon={DeleteIcon}
           iconProps={{ height: 27, fill: "white" }}
