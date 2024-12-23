@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import NoteActions from "./NotesActions";
+import NoteActions from "../components/NotesActions";
 
 jest.mock("../lib/utils", () => ({
   fetchNotes: jest.fn(),

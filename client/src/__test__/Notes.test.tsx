@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import Notes from "./Notes";
+import Notes from "../components/Notes";
 import { NoteT } from "../types/types";
 
 describe("Notes Component", () => {
