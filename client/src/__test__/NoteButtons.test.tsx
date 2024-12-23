@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import NoteButtons from "../components/NoteButtons";
 import { NoteT } from "../types/types";
+import { createRootElement, mockModalFunctions } from "./utils/utils";
 
 jest.mock("../lib/utils", () => ({
   getHeadersWithAuthAndContentType: jest.fn(),
@@ -12,14 +13,10 @@ jest.mock("../lib/utils", () => ({
 
 describe("NoteButtons Component", () => {
   it("deletes a note when 'Delete' button is clicked", async () => {
-
-		const portalRoot = document.createElement("div");
-    portalRoot.setAttribute("id", "root");
-    document.body.appendChild(portalRoot);
-
-    global.HTMLDialogElement.prototype.showModal = jest.fn();
-    global.HTMLDialogElement.prototype.close = jest.fn();
-
+		
+		createRootElement()
+		mockModalFunctions()
+		
     const mockFetch = jest.fn().mockResolvedValue({
       ok: true
     });

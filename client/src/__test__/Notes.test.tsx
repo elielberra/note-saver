@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import Notes from "../components/Notes";
 import { NoteT } from "../types/types";
+import { createRootElement, mockModalFunctions } from "./utils/utils";
 
 describe("Notes Component", () => {
   const mockSetNotes = jest.fn();
@@ -30,12 +31,9 @@ describe("Notes Component", () => {
   });
 
   it("renders notes when notes are provided", () => {
-    const portalRoot = document.createElement("div");
-    portalRoot.setAttribute("id", "root");
-    document.body.appendChild(portalRoot);
-
-    global.HTMLDialogElement.prototype.showModal = jest.fn();
-    global.HTMLDialogElement.prototype.close = jest.fn();
+    
+    createRootElement()
+    mockModalFunctions()
 
     const mockedNotes: NoteT[] = [
       {
