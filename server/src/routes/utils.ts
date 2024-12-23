@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import express, { Response } from "express";
+import { Response } from "express";
 
 export async function checkIfPasswordIsValid(enteredPassword: string, userPassword: string) {
   return await bcrypt.compare(enteredPassword, userPassword);
