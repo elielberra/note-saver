@@ -5,14 +5,14 @@ import { createNote } from "../dao";
 import { verifyJWT } from "../middlewares";
 
 jest.mock("../dao", () => ({
-  createNote: jest.fn(),
+  createNote: jest.fn()
 }));
 
 jest.mock("../middlewares", () => ({
   verifyJWT: jest.fn((req, res, next) => next()),
   noteIdCorrespondsToSessionUserId: jest.fn((req, res, next) => next()),
   validateIdInRequestBody: jest.fn((req, res, next) => next()),
-  validateUpdateEntityRequestBody: jest.fn((req, res, next) => next()),
+  validateUpdateEntityRequestBody: jest.fn((req, res, next) => next())
 }));
 
 const app = express();
@@ -22,14 +22,16 @@ app.use("/api", notesRouter);
 describe("POST request to /api/create-note", () => {
   const mockUserId = 1;
   const mockNewNoteId = 1;
-  const mockUsername= "user-test";
+  const mockUsername = "user-test";
 
   beforeEach(() => {
     (createNote as jest.Mock).mockClear();
-    (verifyJWT as jest.Mock).mockImplementation((req: Request, res: Response, next: NextFunction) => {
-      req.user = { userId: mockUserId, username: mockUsername };
-      next();
-    });
+    (verifyJWT as jest.Mock).mockImplementation(
+      (req: Request, res: Response, next: NextFunction) => {
+        req.user = { userId: mockUserId, username: mockUsername };
+        next();
+      }
+    );
   });
 
   it("should create a new note and return the new note ID", async () => {
