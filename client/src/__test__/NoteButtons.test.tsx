@@ -13,10 +13,9 @@ jest.mock("../lib/utils", () => ({
 
 describe("NoteButtons Component", () => {
   it("deletes a note when 'Delete' button is clicked", async () => {
-		
-		createRootElement()
-		mockModalFunctions()
-		
+    createRootElement();
+    mockModalFunctions();
+
     const mockFetch = jest.fn().mockResolvedValue({
       ok: true
     });

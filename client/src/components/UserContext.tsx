@@ -1,8 +1,6 @@
 import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from "react";
 import { UserT } from "../types/types";
-import {
-  validateAndGetUserIfAuthenticated
-} from "../lib/utils";
+import { validateAndGetUserIfAuthenticated } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
 
 type UserContextT = {
@@ -29,11 +27,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
     [navigate]
   );
   const logout = useCallback(async () => {
-      sessionStorage.removeItem("authToken");
-      setIsLoggedIn(false);
-      setUsername(null);
-      navigate("/signin");
-    }, [navigate]);
+    sessionStorage.removeItem("authToken");
+    setIsLoggedIn(false);
+    setUsername(null);
+    navigate("/signin");
+  }, [navigate]);
   useEffect(() => {
     async function checkAuthStatus() {
       const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated();

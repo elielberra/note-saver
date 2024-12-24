@@ -31,9 +31,8 @@ describe("Notes Component", () => {
   });
 
   it("renders notes when notes are provided", () => {
-    
-    createRootElement()
-    mockModalFunctions()
+    createRootElement();
+    mockModalFunctions();
 
     const mockedNotes: NoteT[] = [
       {

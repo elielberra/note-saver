@@ -4,7 +4,13 @@ import "./Tag.css";
 import { useCallback, useMemo, useState } from "react";
 import debounce from "lodash/debounce";
 import { NoteT } from "../types/types";
-import { getHeadersWithAuthAndContentType, getNewSortedNotes, getNoteToBeUpdated, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import {
+  getHeadersWithAuthAndContentType,
+  getNewSortedNotes,
+  getNoteToBeUpdated,
+  handleErrorInResponse,
+  handleErrorLogging
+} from "../lib/utils";
 
 type TagProps = {
   tag: NoteT["tags"][number];
