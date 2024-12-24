@@ -18,7 +18,7 @@ import {
 import { checkIfPasswordIsValid } from "../routes/utils";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!
+const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!;
 
 async function checkIfUserIsAlreadyRegistered(username: UserT["username"]) {
   const user = await getUserByField("username", username);

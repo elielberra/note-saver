@@ -3,7 +3,11 @@ import "./Note.css";
 import { NoteT } from "../types/types";
 import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
-import { getHeadersWithAuthAndContentType, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import {
+  getHeadersWithAuthAndContentType,
+  handleErrorInResponse,
+  handleErrorLogging
+} from "../lib/utils";
 
 export type NoteProps = {
   note: NoteT;

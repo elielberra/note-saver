@@ -15,8 +15,7 @@ It was developed with Node and TypeScript. It contains the API for performing ba
 If you want to populate the database with some dummy data, you can execute the command: `npm run seed` (note that it will first **DESTROY** your previous database).
 
 ## Common Config Files for Frontend and Backend
-- The ESLint file `eslint.config.mjs` performs syntax checks. To validate that the code follows the established guidelines, run `npm run lint`.
-- The Prettier file `.prettierrc` enforces consistent code style. To format the code according to these standards, run `npm run prettify`.
+- The Prettier file `.prettierrc` enforces consistent code style. Run `npm run prettier:fix` on the client and the server apps to apply that styling to the code.
 
 ## Database
 PostgreSQL is the engine of the app. Its data model is composed of tables containing user data, notes, their corresponding tags, and session information. The file `init.sql` will set up this data model.

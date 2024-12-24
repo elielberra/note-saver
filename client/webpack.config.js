@@ -48,9 +48,7 @@ module.exports = (_, { mode }) => {
         directory: path.join(__dirname, "public")
       },
       server: "http",
-      allowedHosts: [
-        "notesaver"
-      ],
+      allowedHosts: ["notesaver"],
       historyApiFallback: true
     }
   };

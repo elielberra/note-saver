@@ -92,13 +92,13 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction) {
   const authToken = req.headers.authorization?.split(" ")[1];
   if (!authToken) {
     return res.status(401).json({ isAuthenticated: false } as IsAuthenticatedResponse);
-    }
+  }
   jwt.verify(authToken, process.env.JWT_SECRET!, (error, decodedPayload) => {
     if (error) {
       return res.status(403).json({ isAuthenticated: false } as IsAuthenticatedResponse);
     }
-    const {userId, username} = decodedPayload as AuthTokenPayload;
-    req.user = {userId, username};
+    const { userId, username } = decodedPayload as AuthTokenPayload;
+    req.user = { userId, username };
     next();
   });
 }

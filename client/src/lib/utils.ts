@@ -10,7 +10,7 @@ export function getAuthTokenFromStorage() {
 }
 
 export function getHeadersWithAuth() {
-  return { "Authorization": getAuthTokenFromStorage() };
+  return { Authorization: getAuthTokenFromStorage() };
 }
 
 export function getHeadersWithContentType() {
@@ -18,8 +18,8 @@ export function getHeadersWithContentType() {
 }
 
 export function getHeadersWithAuthAndContentType() {
-  return { 
-    ...getHeadersWithAuth(), 
+  return {
+    ...getHeadersWithAuth(),
     ...getHeadersWithContentType()
   };
 }
