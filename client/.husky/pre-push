@@ -1,8 +1,22 @@
-#!/bin/bash
+#!/bin/sh
+
+BLUE="\033[1;34m"
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+NC="\033[0m"
+
 ROOT_PROJECT_DIR="${PWD}"
-cd client
-echo "Running client tests"
-npm run test
-cd "${ROOT_PROJECT_DIR}/server"
-echo "Running server tests"
-npm run test
+apps="client server"
+
+for app in $apps; do
+    cd "${ROOT_PROJECT_DIR}/${app}"
+    echo "${BLUE}Running ${app} styling check${NC}"
+    if ! npm run prettier:check; then
+        echo "${RED}Prettier check failed for ${app}. Please run 'npm run prettier:fix' on the ${app}.${NC}"
+        exit 1
+    fi
+    echo "${GREEN}Prettier check successful for ${app}.${NC}"
+    echo "${BLUE}Running ${app} tests${NC}"
+    npm run test
+    echo "${GREEN}Tests successful for ${app}.${NC}"
+done
