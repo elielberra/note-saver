@@ -16,7 +16,7 @@ If you want to populate the database with some dummy data, you can execute the c
 
 ## Common Config Files for Frontend and Backend
 - The ESLint file `eslint.config.mjs` performs syntax checks. To validate that the code follows the established guidelines, run `npm run lint`.
-- The Prettier file `.prettierrc` enforces consistent code style. To format the code according to these standards, run `npm run prettify`.
+- The Prettier file `.prettierrc` enforces consistent code style.
 
 ## Database
 PostgreSQL is the engine of the app. Its data model is composed of tables containing user data, notes, their corresponding tags, and session information. The file `init.sql` will set up this data model.
