@@ -1,0 +1,8 @@
+#!/bin/bash
+ROOT_PROJECT_DIR="${PWD}"
+cd client
+echo "Running client tests"
+npm run test
+cd "${ROOT_PROJECT_DIR}/server"
+echo "Running server tests"
+npm run test

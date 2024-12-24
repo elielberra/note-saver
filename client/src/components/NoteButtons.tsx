@@ -140,4 +140,3 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
     </div>
   );
 }
-console.log("Test")
