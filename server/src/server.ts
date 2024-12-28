@@ -27,3 +27,4 @@ const httpServer = http.createServer(app);
 httpServer.listen(port, () => {
   console.log(`HTTP server listening on port ${port}`);
 });
+console.log("TEST");
