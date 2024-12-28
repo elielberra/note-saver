@@ -23,15 +23,15 @@ jobs:
           git config user.email "github-actions@github.com"
 
           # Ensure the refs are fetched
-          git fetch origin master $BRANCH_NAME
+          git fetch origin master "${BRANCH_NAME}"
 
           # Check if the branch has no unique commits compared to master
-          if git diff --quiet origin/master..origin/$BRANCH_NAME; then
-            echo "Branch already has commits, skipping initial commit."
-          else
+          if [ -z "$(git diff origin/master..origin/${BRANCH_NAME})" ]; then
             echo "Branch has no commits, creating an empty initial commit..."
-            git commit --allow-empty -m "Initial automatic empty commit for PR creation"
-            git push origin $BRANCH_NAME
+            git commit --allow-empty -m "Automatic initial empty commit for PR creation"
+            git push origin "${BRANCH_NAME}"
+          else
+            echo "Branch already has commits, skipping initial commit"
           fi
 
       - name: Create Pull Request
