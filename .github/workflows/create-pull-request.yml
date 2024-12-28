@@ -21,8 +21,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # Check if the branch has commits
-          if git rev-parse --verify origin/$BRANCH_NAME >/dev/null 2>&1; then
+          # Check if the branch has no unique commits compared to master
+          if git diff --quiet origin/master..origin/$BRANCH_NAME; then
             echo "Branch already has commits, skipping initial commit."
           else
             echo "Branch has no commits, creating an empty initial commit..."
