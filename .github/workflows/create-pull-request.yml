@@ -12,11 +12,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up GitHub CLI
-        uses: cli/cli-action@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Pull Request
         run: |
-          gh pr create --title "PR for ${{ github.ref_name }}" --base master
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          gh pr create --title "PR for ${BRANCH_NAME}" --base master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
