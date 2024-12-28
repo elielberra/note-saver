@@ -32,7 +32,11 @@ If you want to populate the database with some dummy data, you can execute the c
 
 ## Common Config Files for Frontend and Backend
 
-- The Prettier file `.prettierrc` enforces consistent code style. Run `npm run prettier:fix` on the client and the server apps to apply that styling to the code.
+- The Prettier file `.prettierrc` enforces consistent code style. Run `npm run prettier:fix` on the client and server apps to apply that styling to the code.
+- The `jest.config.js` file is used to configure Jest, the testing framework. To run the tests, use the command `npm run test`.
+- The `tsconfig.json` file is used to configure TypeScript. It defines the TypeScript compiler options and helps enforce consistent TypeScript settings across the project.
+- The `babel.config.js` file is used to configure Babel, a JavaScript compiler. It is used to ensure compatibility between Jest and Typescript.
+
 
 ## Database
 
