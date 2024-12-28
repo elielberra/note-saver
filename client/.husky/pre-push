@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Define color codes for output formatting
 BLUE="\033[1;34m"
 RED="\033[1;31m"
 GREEN="\033[1;32m"
@@ -7,16 +8,38 @@ NC="\033[0m"
 
 ROOT_PROJECT_DIR="${PWD}"
 apps="client server"
+modifiedApps=""
 
+# Check if an upstream branch is set; if so, use it to find modified files, otherwise use HEAD
+if git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null; then
+    modifiedFiles=$(git diff --name-only @{upstream})  # Get modified files from the upstream branch
+else
+    modifiedFiles=$(git diff --name-only HEAD)  # Get modified files from the current branch (HEAD)
+fi
+
+# Loop through each app (client and server) and check if any files have been modified
 for app in $apps; do
-    cd "${ROOT_PROJECT_DIR}/${app}"
-    echo "${BLUE}Running ${app} styling check${NC}"
+    if echo "$modifiedFiles" | grep -q "^${app}/"; then
+        modifiedApps="${modifiedApps} ${app}"
+    fi
+done
+
+# If no apps were modified, exit the script with a success message
+if [ -z "$modifiedApps" ]; then
+    echo "${GREEN}No changes detected in client/ or server/ since the last push. Exiting${NC}"
+    exit 0
+fi
+
+# Loop through each modified app and run Prettier check and tests
+for app in $modifiedApps; do
+    cd "${ROOT_PROJECT_DIR}/${app}"  # Navigate to the app directory
+    echo "${BLUE}Running prettier styling check for the ${app}${NC}"
     if ! npm run prettier:check; then
-        echo "${RED}Prettier check failed for ${app}. Please run 'npm run prettier:fix' on the ${app}.${NC}"
+        echo "${RED}The prettier styling check failed for the ${app}. Run 'npm run prettier:fix' on the ${app}${NC}"
         exit 1
     fi
-    echo "${GREEN}Prettier check successful for ${app}.${NC}"
+    echo "${GREEN}Prettier check ran successfully for the ${app}${NC}"
     echo "${BLUE}Running ${app} tests${NC}"
     npm run test
-    echo "${GREEN}Tests successful for ${app}.${NC}"
+    echo "${GREEN}The tests ran successfully for the ${app}${NC}"
 done
