@@ -9,6 +9,9 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  BRANCH_NAME: ${GITHUB_REF#refs/heads/}
+
 jobs:
   create-pr:
     runs-on: ubuntu-latest
@@ -18,7 +21,6 @@ jobs:
 
       - name: Add initial commit if branch has no commits
         run: |
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
@@ -36,7 +38,6 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
           gh pr create --title "PR for ${BRANCH_NAME}" --body "PR generated from Git Action" --base master
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
