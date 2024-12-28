@@ -69,7 +69,7 @@ The application includes basic test coverage using [Jest](https://jestjs.io/), p
 The `setupLocalEnvironment.sh` bash script configures the host machine to run this application. It executes three sub-scripts to achieve this:
 
 - The real `.env` file is not uploaded to the repository for security reasons. However, a dummy `.env` file is included, and its passwords can be auto-populated using `insertDummyPasswords.sh`.
-- `insertDummyPasswords.sh` generates the Certificate Authority (CA) and the key required for creating SSL certificates. It also configures the CA to be recognized as a valid authority by the operating system. Additionally, this script automatically configures Google Chrome and Mozilla Firefox to trust the CA, so you don't need to manually configure it.
+- `insertDummyPasswords.sh` generates the Certificate Authority (CA) and the key required for creating SSL certificates. It also configures the CA to be recognized as a valid authority by the operating system. Additionally, this script automatically configures Google Chrome and Mozilla Firefox to trust the CA.
 - `configureHostsFile.sh` modifies the hosts file to enable local DNS resolution for the domains `notesaver` and `server.notesaver`.
 
 ## How to Run this App
@@ -93,6 +93,8 @@ vagrant up
 The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
 
 #### Start the Application
+
+After you have cloned/downloaded this repository perform these commands:
 
 ```bash
 cd <path_to_notesaver_repo>\note-saver
