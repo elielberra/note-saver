@@ -15,6 +15,6 @@ jobs:
       - name: Create Pull Request
         run: |
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          gh pr create --title "PR for ${BRANCH_NAME}" --base master
+          gh pr create --title "PR for ${BRANCH_NAME}" --body "PR generated from Git Action" --base master
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
