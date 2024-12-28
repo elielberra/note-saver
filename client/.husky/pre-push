@@ -8,10 +8,10 @@ NC="\033[0m"
 ROOT_PROJECT_DIR="${PWD}"
 apps="client server"
 modifiedApps=""
-changedFiles=$(git diff --name-only @{upstream})
+modifiedFiles=$(git diff --name-only @{upstream})
 
 for app in $apps; do
-    if echo "$changedFiles" | grep -q "^${app}/"; then
+    if echo "$modifiedFiles" | grep -q "^${app}/"; then
         modifiedApps="${modifiedApps} ${app}"
     fi
 done
