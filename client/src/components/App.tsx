@@ -25,4 +25,4 @@ export default function App() {
     </Router>
   );
 }
-console.log("TEST");
+console.log("TEST2");
