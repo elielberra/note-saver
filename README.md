@@ -56,9 +56,13 @@ psql -U postgres
 
 An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client** and **server**, ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections.
 
-## Git Workflows
+## Git Actions
 
-The project uses Git workflows to automatically build Docker images on each push on the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
+Git Actions are used for automating various tasks in the repository:
+
+- `Build and Push Docker Images` generates the Docker images for the **client** and **server** on each push to the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
+- `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
+
 
 ## Pre-Push Hook
 
@@ -68,7 +72,7 @@ A pre-push hook is implemented using [Husky](https://typicode.github.io/husky/) 
 
 The application includes basic test coverage using [Jest](https://jestjs.io/), primarily as an experiment. While the current coverage is minimal, additional tests may be added in the future to enhance reliability.
 
-### Bash Scripts
+## Bash Scripts
 
 The `setupLocalEnvironment.sh` bash script configures the host machine to run this application. It executes three sub-scripts to achieve this:
 
