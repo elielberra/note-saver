@@ -1,7 +1,5 @@
 # NoteSaver Application
 
-[[_TOC_]]
-
 ## Overview
 I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes some noteworthy infrastructure features.
 
@@ -53,13 +51,17 @@ A pre-push hook is implemented using [Husky](https://typicode.github.io/husky/) 
 ## Testing
 The application includes basic test coverage using [Jest](https://jestjs.io/), primarily as an experiment. While the current coverage is minimal, additional tests may be added in the future to enhance reliability.
 
-## Run this App Locally
+### Bash scripts
+The `setupLocalEnvironment.sh` bash script will configure the host machine so that it can run this application. It will run three sub scripts to achienve this:
+- The real .env file is not upploaded to the repository for security reasons. However, a dummy .env file is, and its passwords can be autopopulated through `insertDummyPasswords.sh`
+- `insertDummyPasswords.sh` will generate the Certificate Authority and the key for creating the SSL certificates. It will also configure the CA so that it is listed as a valid Authority for the OS. This will also be done automatically for Google Chrome and Mozilla Firefox so that you don't have to manually add configure it.
+- `configureHostsFile.sh` will modify the hosts file so that DNS resolution can work locally for the domain `notesaver` and `server.notesaver`.
 
-### Initial considerations
-The real .env file is not upploaded to the repository for security reasons. However, a dummy .env file is, and its passwords can be autopopulated through a bash script. In order to store the session cookies, the site needs to handle traffic through https. Through another script, the SSL certificates and keys will be created and the generated CA is listed as a valid Authority. This will be done automatically for Google Chrome and Mozilla Firefox so that you don't have to manually add configure it. The hosts file is also modified so that DNS resolution can work properly.
+## How to Run this App
 
-### Debian environment
-The script that sets up the environment works only for Debian/Ubuntu distributions. If you have Windows, Mac or any other distro it won't work. You can try to adjust the script to run on your OS, or if not, to make things easier, I have prepared a `Vagrantfile` so that you can execute it on an Ubuntu Bionic Virtual Machine. The provisioning script will install all the required dependencies: a UI for the OS, docker, docker compose and Google Chrome.
+### Locally
+
+The script that sets up the environment (`setupLocalEnvironment`) works only for Debian/Ubuntu distributions. If you have Windows, Mac or any other distro it won't work. You can try to adjust the script to run on your OS. You need to run that script in order to execute the App correctly. If you don't have a Debian/Ubuntu machine, you have can try to manually adjust the scripts to work on your OS. If not, to make things easier, I have prepared a `Vagrantfile` so that you can execute it on an Ubuntu Bionic Virtual Machine. The provisioning script will install all the required dependencies: a UI for the OS, docker, docker compose and Google Chrome. If you already have a Debian Ubuntu Machine you can simply go to the section [Start the Application](#start-the-application)
 
 #### How to set up the VM
 You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. Clone this repository on your host machine. And follow these commands:
@@ -69,8 +71,8 @@ vagrant up
 ```
 The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
 
-### How to run this app
-After you have cloned/downloaded this repository perform these commands:
+#### Start the Application
+
 ```bash
 cd <path_to_notesaver_repo>\note-saver
 bash scripts/setupLocalEnvironment.sh
