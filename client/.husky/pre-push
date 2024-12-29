@@ -7,9 +7,6 @@ GREEN="\033[1;32m"
 NC="\033[0m"
 
 ROOT_PROJECT_DIR="${PWD}"
-npmCommands="prettier lint test"
-apps="client server"
-modifiedApps=""
 
 # Check if an upstream branch is set; if so, use it to find modified files, otherwise use HEAD
 if git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null; then
@@ -18,8 +15,9 @@ else
     modifiedFiles=$(git diff --name-only HEAD)  # Get modified files from the current branch (HEAD)
 fi
 
+modifiedApps=""
 # Loop through each app (client and server) and check if any files have been modified
-for app in $apps; do
+for app in "client server"; do
     if echo "$modifiedFiles" | grep -q "^${app}/"; then
         modifiedApps="${modifiedApps} ${app}"
     fi
@@ -46,7 +44,7 @@ run_command() {
 
 # Loop through each modified app and run checks
 for app in $modifiedApps; do
-    for command in $npmCommands; do
+    for command in "prettier lint test"; do
         run_command "${app}" "${command}"
     done
 done
