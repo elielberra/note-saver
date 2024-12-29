@@ -15,7 +15,7 @@ authenticationRouter.post("/signup", hasUsernameAndPassword, (req: Request, res:
 authenticationRouter.post(
   "/signin",
   hasUsernameAndPassword,
-  (req: Request<{}, {}, AuthPostBody>, res: Response) => {
+  (req: Request<object, object, AuthPostBody>, res: Response) => {
     passport.authenticate("local-signin", (error: AuthErrors, user: UserT | false) =>
       authenticationCallback(error, user, req, res, "signin")
     )(req as Request, res as Response);

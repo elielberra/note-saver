@@ -80,7 +80,7 @@ export function initializePassport() {
 export function authenticationCallback(
   error: AuthErrors,
   user: UserT | false,
-  req: Request<{}, {}, AuthPostBody>,
+  req: Request<object, object, AuthPostBody>,
   res: Response,
   authAction: "signup" | "signin"
 ) {

@@ -66,7 +66,7 @@ export async function noteIdCorrespondsToSessionUserId(
 }
 
 export function validateUpdateEntityRequestBody(
-  req: Request<{}, {}, UpdateEntityBody>,
+  req: Request<object, object, UpdateEntityBody>,
   res: Response,
   next: NextFunction
 ) {
@@ -78,7 +78,7 @@ export function validateUpdateEntityRequestBody(
 }
 
 export function validateIdInRequestBody(
-  req: Request<{}, {}, RequestBodyWithId>,
+  req: Request<object, object, RequestBodyWithId>,
   res: Response,
   next: NextFunction
 ) {
