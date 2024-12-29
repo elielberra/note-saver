@@ -17,7 +17,7 @@ tagsRouter.post(
   verifyJWT,
   validateUpdateEntityRequestBody,
   tagIdCorrespondsToSessionUserId,
-  async (req: Request<{}, {}, UpdateEntityBody>, res: Response) => {
+  async (req: Request<object, object, UpdateEntityBody>, res: Response) => {
     const tagId = req.body.id as number;
     const newContent = req.body.newContent!;
     try {
@@ -34,7 +34,7 @@ tagsRouter.post(
   verifyJWT,
   noteIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
-  async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
+  async (req: Request<object, object, RequestBodyWithId>, res: Response) => {
     const noteId = req.body.id as number;
     if (!noteId) return res.status(400).send("Field id is missing in Request body");
     try {
@@ -51,7 +51,7 @@ tagsRouter.delete(
   verifyJWT,
   tagIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
-  async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
+  async (req: Request<object, object, RequestBodyWithId>, res: Response) => {
     const tagId = req.body.id as number;
     try {
       await deleteTag(tagId);

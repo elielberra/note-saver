@@ -19,7 +19,7 @@ const notesRouter = express.Router();
 notesRouter.get(
   "/notes",
   verifyJWT,
-  async (req: Request<{}, {}, {}, GetNotesQueryParams>, res: Response) => {
+  async (req: Request<object, object, object, GetNotesQueryParams>, res: Response) => {
     if (
       !req.query.areActive ||
       (req.query.areActive !== "true" && req.query.areActive !== "false")
@@ -52,7 +52,7 @@ notesRouter.post(
   "/update-note-content",
   verifyJWT,
   validateUpdateEntityRequestBody,
-  async (req: Request<{}, {}, UpdateEntityBody>, res: Response) => {
+  async (req: Request<object, object, UpdateEntityBody>, res: Response) => {
     const userId = req.user!.userId;
     const noteId = req.body.id as number;
     const newContent = req.body.newContent!;
@@ -69,7 +69,7 @@ notesRouter.delete(
   "/delete-note",
   verifyJWT,
   validateIdInRequestBody,
-  async (req: Request<{}, {}, RequestBodyWithId>, res: Response) => {
+  async (req: Request<object, object, RequestBodyWithId>, res: Response) => {
     const noteId = req.body.id as number;
     if (!noteId) return res.status(400).send("Field noteId is missing in Request body");
     const userId = req.user!.userId;
@@ -87,7 +87,7 @@ notesRouter.post(
   verifyJWT,
   noteIdCorrespondsToSessionUserId,
   validateIdInRequestBody,
-  async (req: Request<{}, {}, SetNoteStatusBody>, res: Response) => {
+  async (req: Request<object, object, SetNoteStatusBody>, res: Response) => {
     const isActive = req.body.isActive;
     if (!isActive && isActive !== false)
       return res.status(400).send("Field isActive has to be included in the body");
