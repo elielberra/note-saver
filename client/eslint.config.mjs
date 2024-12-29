@@ -5,9 +5,6 @@ import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
 
 export default [
   {
-    env: {
-      browser: true
-    },
     settings: {
       react: {
         version: "detect"
@@ -26,5 +23,13 @@ export default [
       "react/react-in-jsx-scope": "off"
     }
   },
-  { ignores: [".svgrrc.js", "src/custom.template.js"] }
+  {
+    ignores: [
+      ".svgrrc.js",
+      "src/custom.template.js",
+      "**/main.*.js",
+      "jest.config.js",
+      "webpack.config.js"
+    ]
+  }
 ];
