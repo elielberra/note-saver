@@ -9,7 +9,7 @@ import {
   getNewSortedNotes,
   getNoteToBeUpdated,
   handleErrorInResponse,
-  handleErrorLogging
+  handleLogging
 } from "../lib/utils";
 
 type TagProps = {
@@ -44,7 +44,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         return getNewSortedNotes(prevNotes, noteId, newNote);
       });
     } catch (error) {
-      handleErrorLogging(error, "Error while updating note content");
+      handleLogging("error", "Error while updating note content", error);
     }
   }
 
@@ -60,7 +60,7 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
           handleErrorInResponse(response);
         }
       } catch (error) {
-        handleErrorLogging(error, "Error while updating tag content");
+        handleLogging("error", "Error while updating tag content", error);
       }
     },
     [tag.tagId]

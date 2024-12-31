@@ -9,7 +9,7 @@ import {
   fetchNotes,
   getHeadersWithAuth,
   handleErrorInResponse,
-  handleErrorLogging
+  handleLogging
 } from "../lib/utils";
 
 type NoteActionsProps = {
@@ -49,7 +49,7 @@ export default function NoteActions({
         }
       ]);
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new note");
+      handleLogging("error", "Error while creating a new note", error);
     }
   }
 
@@ -59,7 +59,7 @@ export default function NoteActions({
       setIsShowingActiveNotes(notesStatus);
       setSearchText("");
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new note");
+      handleLogging("error", "Error while creating a new note", error);
     }
   }
   return (

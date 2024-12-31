@@ -5,7 +5,7 @@ jest.mock("../lib/utils", () => ({
   fetchNotes: jest.fn(),
   getHeadersWithAuth: jest.fn(),
   handleErrorInResponse: jest.fn(),
-  handleErrorLogging: jest.fn()
+  handleLogging: jest.fn()
 }));
 
 describe("NoteActions Component", () => {
