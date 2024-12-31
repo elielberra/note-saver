@@ -5,6 +5,7 @@ import passport from "passport";
 import http from "http";
 import { initializePassport } from "./passport/passportConfig";
 import router from "./routes/routes";
+import logger from "./logging";
 
 dotenv.config();
 const app = express();
@@ -25,5 +26,5 @@ app.use("/", router);
 const port = process.env.BACKEND_PORT!;
 const httpServer = http.createServer(app);
 httpServer.listen(port, () => {
-  console.log(`HTTP server listening on port ${port}`);
+  logger.log('info', `HTTP server listening on port ${port}`);
 });
