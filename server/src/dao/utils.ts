@@ -3,17 +3,17 @@ import { getDBClient } from "../db/utils";
 import { QueryConfig } from "pg";
 import { UserT } from "../types/types";
 
-export async function runQuery(query: QueryConfig) {
-  const dbClient = getDBClient();
+export async function runQuery(query: QueryConfig, isUsingDatabase: boolean = true) {
+  const dbClient = getDBClient(isUsingDatabase);
   try {
-    dbClient.connect();
+    await dbClient.connect();
     const result = await dbClient.query(query);
     return result;
   } catch (error) {
     console.error(`Error executing query: ${JSON.stringify(query, null, 2)}`);
     throw error;
   } finally {
-    dbClient.end();
+    await dbClient.end();
   }
 }
 
