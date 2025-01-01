@@ -54,7 +54,7 @@ export async function fetchNotes(
 export function isProductionEnv() {
   return process.env.NODE_ENV === "production";
 }
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleLogging(logLevel: LogLevels, message: string, error?: unknown) {
   switch (logLevel) {
     case "debug":
