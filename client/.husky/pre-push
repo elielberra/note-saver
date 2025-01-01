@@ -7,14 +7,13 @@ GREEN="\033[1;32m"
 NC="\033[0m"
 
 ROOT_PROJECT_DIR="${PWD}"
-echo "inside pre-push"
 branchName=$(git branch --show-current)
 MASTER_BRANCH="master"
 
 commitLogsOfNewBranch=$(git log "${MASTER_BRANCH}".."$branchName")
 # If the branch does not have new commits, block the pushs to prevent the PR auto creation from faililing
 # If this is the master branch, skip this test
-if [[ -z "$commitLogsOfNewBranch" && "${branchName}" !== "${MASTER_BRANCH}" ]]; then
+if [ -z "$commitLogsOfNewBranch" ] && [ "$branchName" != "$MASTER_BRANCH" ]; then
     echo "${RED} You must add an initial commit to the branch before performing a push${NC}"
     exit 1
 fi
