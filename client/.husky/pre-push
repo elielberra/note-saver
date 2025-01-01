@@ -7,6 +7,16 @@ GREEN="\033[1;32m"
 NC="\033[0m"
 
 ROOT_PROJECT_DIR="${PWD}"
+echo "inside pre-push"
+branchName=$(git branch --show-current)
+
+commitLogsOfNewBranch=$(git log master.."$branchName")
+# If the branch does not have new commits, block the pushs to prevent the PR auto creation from faililing
+if [ -z "$commitLogsOfNewBranch" ]; then
+    echo "${RED} You must add an initial commit to the branch before performing a push${NC}"
+    exit 1
+fi
+exit
 
 # Check if an upstream branch is set; if so, use it to find modified files, otherwise use HEAD
 if git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null >&2; then
