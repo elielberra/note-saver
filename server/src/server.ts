@@ -5,7 +5,7 @@ import passport from "passport";
 import http from "http";
 import { initializePassport } from "./passport/passportConfig";
 import router from "./routes/routes";
-import { generateLog } from "./logging/utils";
+import { generateLog } from "./logging";
 
 dotenv.config();
 const app = express();

@@ -112,13 +112,20 @@ export type UserFieldName = "id" | "username";
 
 export type FieldValue = number | string;
 
+export const UNSPECIFIED_ERROR = "UnspecifiedError" as const;
+
+export interface ErrorLogData {
+  errorName?: Error["name"] | typeof UNSPECIFIED_ERROR;
+  errorMessage?: Error["message"];
+  errorStack?: Error["stack"];
+}
+
 type LogLevels = "error" | "warning" | "info" | "debug";
 
 type Services = "client" | "server";
 
-export interface LogData {
+export interface LogData extends ErrorLogData {
   logLevel: LogLevels;
   logMessage: string;
   service: Services;
-  error?: unknown;
 }

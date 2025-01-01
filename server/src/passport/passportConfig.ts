@@ -16,7 +16,7 @@ import {
   UserT
 } from "../types/types";
 import { checkIfPasswordIsValid } from "../routes/utils";
-import { generateLog } from "../logging";
+import { generateLog, getLogErrorData } from "../logging";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!;
@@ -52,7 +52,7 @@ export function initializePassport() {
           logLevel: "error",
           logMessage: "Error while attempting to sign up a user",
           service: "server",
-          error
+          ...getLogErrorData(error)
         });
         return done(error as Error);
       }
@@ -86,7 +86,7 @@ export function initializePassport() {
           logLevel: "error",
           logMessage: "Error while attempting to sign in user",
           service: "server",
-          error: error
+          ...getLogErrorData(error)
         });
         return done(error as Error);
       }
@@ -114,7 +114,7 @@ export function initializePassport() {
         logLevel: "error",
         logMessage: "Error while attepmting to deserialize user",
         service: "server",
-        error: error
+        ...getLogErrorData(error)
       });
       done(error, false);
     }
@@ -156,7 +156,7 @@ export function authenticationCallback(
       logLevel: "error",
       logMessage: "Error while creating a JWT",
       service: "server",
-      error: error
+      ...getLogErrorData(error)
     });
     return res.status(500).json({
       message: `Internal Server error while attempting to ${authAction} a user`
