@@ -16,7 +16,7 @@ import {
   UserT
 } from "../types/types";
 import { checkIfPasswordIsValid } from "../routes/utils";
-import { generateLog } from "../logging/utils";
+import { generateLog } from "../logging";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!;

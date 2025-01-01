@@ -2,7 +2,7 @@ import { genSalt, hash } from "bcrypt";
 import { getDBClient } from "../db/utils";
 import { QueryConfig } from "pg";
 import { UserT } from "../types/types";
-import { generateLog } from "../logging/utils";
+import { generateLog } from "../logging";
 
 export async function runQuery(query: QueryConfig, isUsingDatabase: boolean = true) {
   const dbClient = getDBClient(isUsingDatabase);

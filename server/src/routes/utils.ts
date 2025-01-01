@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { Response } from "express";
-import { generateLog } from "../logging/utils";
+import { generateLog } from "../logging";
 
 export async function checkIfPasswordIsValid(enteredPassword: string, userPassword: string) {
   return await bcrypt.compare(enteredPassword, userPassword);

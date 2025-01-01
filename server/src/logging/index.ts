@@ -1,5 +1,6 @@
 import winston from "winston";
 import { isProductionEnv } from "../lib/utils";
+import { LogData } from "../types/types";
 
 const consoleFormat = winston.format.combine(
   winston.format.colorize({ all: true }),
@@ -22,5 +23,27 @@ const consoleLogger = winston.createLogger({
     })
   ]
 });
+
+export function generateLog(logData: LogData) {
+  // TODO: Add logic for RabbitMQ
+  if (logData.service === "client") return;
+  consoleLogger.log(logData.logLevel, logData.logMessage);
+  if (logData.error) {
+    let message = "";
+    if (logData.error instanceof Error) {
+      if (logData.error.stack) {
+        message = logData.error.stack;
+      } else {
+        message = `${logData.error.name}: ${logData.error.message}`;
+      }
+    } else {
+      message = logData.error as string;
+    }
+    consoleLogger.log(
+      "error",
+      message
+    );
+  }
+}
 
 export default consoleLogger;
