@@ -39,10 +39,7 @@ export function generateLog(logData: LogData) {
     } else {
       message = logData.error as string;
     }
-    consoleLogger.log(
-      "error",
-      message
-    );
+    consoleLogger.log("error", message);
   }
 }
 
