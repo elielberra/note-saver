@@ -16,28 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set branch name as env var for the next steps
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
-      - name: Add initial commit if branch has no commits
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          # Ensure the refs are fetched
-          git fetch origin master "${BRANCH_NAME}"
-
-          # Check if the branch has no unique commits compared to master
-          if [ -z "$(git diff origin/master..origin/${BRANCH_NAME})" ]; then
-            echo "Branch has no commits, creating an empty initial commit..."
-            git commit --allow-empty -m "Automatic initial empty commit for PR creation"
-            git push origin "${BRANCH_NAME}"
-          else
-            echo "Branch already has commits, skipping initial commit"
-          fi
-
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
           gh pr create --title "PR for ${BRANCH_NAME}" --body "PR generated from Git Action" --base master
