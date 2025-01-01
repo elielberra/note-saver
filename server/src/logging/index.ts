@@ -2,12 +2,12 @@ import winston from "winston";
 import { isProductionEnv } from "../lib/utils";
 import { ErrorLogData, LogData, UNSPECIFIED_ERROR } from "../types/types";
 
+const colorizer = winston.format.colorize();
 const consoleFormat = winston.format.combine(
-  winston.format.colorize({ all: true }),
   winston.format.timestamp({ format: "DD-MM-YY HH:mm:ss.SSS" }),
-  winston.format.printf((info) => {
-    return `${info.timestamp} -- ${info.message} ${info.errorDetails ? `${info.errorDetails}` : ""}`;
-  })
+  winston.format.printf(info => 
+    colorizer.colorize(info.level, `${info.timestamp} -- ${info.message} ${info.errorDetails ? `\n${info.errorDetails}` : ""}`)
+  )
 );
 winston.addColors({
   debug: "bold cyan",
