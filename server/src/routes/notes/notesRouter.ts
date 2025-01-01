@@ -33,7 +33,7 @@ notesRouter.get(
       const notes = await getNotes(userId, areActive, filteringText);
       res.status(200).json(notes);
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while getting notes", error);
     }
   }
 );
@@ -44,7 +44,7 @@ notesRouter.post("/create-note", verifyJWT, async (req: Request, res: Response) 
     const newNoteId = await createNote(userId);
     res.status(201).json({ newNoteId });
   } catch (error) {
-    handleErrorResponse(error, res);
+    handleErrorResponse(res, "Error while creating a note", error);
   }
 });
 
@@ -60,7 +60,7 @@ notesRouter.post(
       await updateNoteContent(userId, noteId, newContent);
       res.sendStatus(204);
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while updating a note", error);
     }
   }
 );
@@ -77,7 +77,7 @@ notesRouter.delete(
       await deleteNote(noteId, userId);
       res.sendStatus(204);
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while deleting a note", error);
     }
   }
 );
@@ -98,7 +98,7 @@ notesRouter.post(
       await updateNoteStatus(noteId, isActive);
       res.sendStatus(204);
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while setting the status of a note", error);
     }
   }
 );

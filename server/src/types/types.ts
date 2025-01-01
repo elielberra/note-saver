@@ -111,3 +111,14 @@ export type IsAuthenticatedResponse =
 export type UserFieldName = "id" | "username";
 
 export type FieldValue = number | string;
+
+type LogLevels = "error" | "warning" | "info" | "debug";
+
+type Services = "client" | "server";
+
+export interface LogData {
+  logLevel: LogLevels;
+  logMessage: string;
+  service: Services;
+  error?: unknown;
+}

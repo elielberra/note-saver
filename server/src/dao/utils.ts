@@ -2,6 +2,7 @@ import { genSalt, hash } from "bcrypt";
 import { getDBClient } from "../db/utils";
 import { QueryConfig } from "pg";
 import { UserT } from "../types/types";
+import { generateLog } from "../logging/utils";
 
 export async function runQuery(query: QueryConfig, isUsingDatabase: boolean = true) {
   const dbClient = getDBClient(isUsingDatabase);
@@ -10,7 +11,11 @@ export async function runQuery(query: QueryConfig, isUsingDatabase: boolean = tr
     const result = await dbClient.query(query);
     return result;
   } catch (error) {
-    console.error(`Error executing query: ${JSON.stringify(query, null, 2)}`);
+    generateLog({
+      logLevel: "error",
+      logMessage: `Error executing query:\n${JSON.stringify(query, null, 2)}`,
+      service: "server"
+    })
     throw error;
   } finally {
     await dbClient.end();

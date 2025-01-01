@@ -24,7 +24,7 @@ tagsRouter.post(
       await updateTagContent(tagId, newContent);
       res.sendStatus(204);
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while updating a tag", error);
     }
   }
 );
@@ -41,7 +41,7 @@ tagsRouter.post(
       const newTagId = await createTag(noteId);
       res.status(201).json({ newTagId });
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while creating a tag", error);
     }
   }
 );
@@ -57,7 +57,7 @@ tagsRouter.delete(
       await deleteTag(tagId);
       res.sendStatus(204);
     } catch (error) {
-      handleErrorResponse(error, res);
+      handleErrorResponse(res, "Error while deleting a tag", error);
     }
   }
 );

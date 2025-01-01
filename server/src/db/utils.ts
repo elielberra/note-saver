@@ -18,11 +18,3 @@ export function getDBClient(isUsingDatabase: boolean = true): Client {
   return new Client(getDBObjectInfo(isUsingDatabase));
 }
 
-export async function connectToDB(client: Client) {
-  try {
-    await client.connect();
-    console.log("Connected to PostgreSQL Database");
-  } catch (error) {
-    console.error("Error while connecting to DB", error);
-  }
-}
