@@ -5,12 +5,7 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "../types/types";
-import {
-  fetchNotes,
-  getHeadersWithAuth,
-  handleErrorInResponse,
-  handleErrorLogging
-} from "../lib/utils";
+import { fetchNotes, getHeadersWithAuth, handleErrorInResponse, handleLogging } from "../lib/utils";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -49,7 +44,7 @@ export default function NoteActions({
         }
       ]);
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new note");
+      handleLogging("error", "Error while creating a new note", error);
     }
   }
 
@@ -59,7 +54,7 @@ export default function NoteActions({
       setIsShowingActiveNotes(notesStatus);
       setSearchText("");
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new note");
+      handleLogging("error", "Error while creating a new note", error);
     }
   }
   return (

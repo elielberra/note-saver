@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getHeadersWithContentType, handleErrorInResponse, handleErrorLogging } from "../lib/utils";
+import { getHeadersWithContentType, handleErrorInResponse, handleLogging } from "../lib/utils";
 import {
   AuthenticateUserResponse,
   SuccessfulAuthResponse,
@@ -54,7 +54,11 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
         login(responseBody.username);
       }
     } catch (error) {
-      handleErrorLogging(error, "Error while registering user");
+      handleLogging(
+        "error",
+        `Error while ${action == "signin" ? "signing in" : "signing up"} the user`,
+        error
+      );
     }
   };
   return (

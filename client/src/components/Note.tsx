@@ -6,7 +6,7 @@ import debounce from "lodash/debounce";
 import {
   getHeadersWithAuthAndContentType,
   handleErrorInResponse,
-  handleErrorLogging
+  handleLogging
 } from "../lib/utils";
 
 export type NoteProps = {
@@ -31,7 +31,7 @@ export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps
           handleErrorInResponse(response);
         }
       } catch (error) {
-        handleErrorLogging(error, "Error while updating note content");
+        handleLogging("error", "Error while updating note content", error);
       }
     },
     [noteId]

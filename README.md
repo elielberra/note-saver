@@ -38,7 +38,6 @@ If you want to populate the database with some dummy data, you can execute the c
 - The `tsconfig.json` file is used to configure TypeScript. It defines the TypeScript compiler options and helps enforce consistent TypeScript settings across the project.
 - The `babel.config.js` file is used to configure Babel, a JavaScript compiler. It is used to ensure compatibility between Jest and Typescript.
 
-
 ## Database
 
 [PostgreSQL](https://www.postgresql.org/) is the engine of the app. Its data model is composed of tables containing user data, notes, their corresponding tags, and session information. The file `init.sql` will set up this data model.
@@ -52,6 +51,10 @@ psql -U postgres
 \c note_saver
 \dt # List tables
 ```
+
+## Logging
+
+On the server side, the application uses the **Winston** library for logging, with colorized logs in the console for improved readability. On the client side, **Loglevel** is used for logging, and it only logs to the browser console in non-production environments. In production, logging is minimized to reduce unnecessary performance overhead and to avoid exposing the error stack and potentially sensitive code to the user for security reasons.
 
 ## Nginx Proxy
 
@@ -90,7 +93,6 @@ The `setupLocalEnvironment` script is designed specifically for Debian/Ubuntu di
 To ensure the app runs correctly, the environment must be set up using this script. If you don’t have a Debian/Ubuntu machine, you can either manually adapt the script for your system or use the provided `Vagrantfile`. This file sets up an Ubuntu Bionic virtual machine where all dependencies will be installed automatically, including a UI, Docker, Docker Compose, and Google Chrome.
 
 If you already have a Debian/Ubuntu machine, you can skip this and proceed directly to the section [Start the Application](#start-the-application).
-
 
 #### How to set up the VM
 

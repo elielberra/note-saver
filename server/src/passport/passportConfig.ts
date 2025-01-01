@@ -16,6 +16,7 @@ import {
   UserT
 } from "../types/types";
 import { checkIfPasswordIsValid } from "../routes/utils";
+import { generateLog, getLogErrorData } from "../logging";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME!;
@@ -30,8 +31,15 @@ export function initializePassport() {
     "local-signup",
     new LocalStrategy({ usernameField: "username" }, async (username, password, done) => {
       try {
-        if (await checkIfUserIsAlreadyRegistered(username))
-          return done("AlreadyRegisteredUser", false);
+        if (await checkIfUserIsAlreadyRegistered(username)) {
+          generateLog({
+            logLevel: "warn",
+            logMessage: "User already exists, can not register it",
+            service: "server",
+            errorName: ALREADY_REGISTERED_USER
+          });
+          return done(ALREADY_REGISTERED_USER, false);
+        }
         const hashedPassword = await hashPassword(password);
         const insertedId = await createUser(username, hashedPassword);
         const newUser: UserT = {
@@ -41,6 +49,12 @@ export function initializePassport() {
         };
         return done(null, newUser);
       } catch (error) {
+        generateLog({
+          logLevel: "error",
+          logMessage: "Error while attempting to sign up a user",
+          service: "server",
+          ...getLogErrorData(error)
+        });
         return done(error as Error);
       }
     })
@@ -50,11 +64,33 @@ export function initializePassport() {
     new LocalStrategy({ usernameField: "username" }, async (username, password, done) => {
       try {
         const user = await getUserByField("username", username);
-        if (!user) return done(USER_NOT_FOUND, false);
+        if (!user) {
+          generateLog({
+            logLevel: "warn",
+            logMessage: "Can not find that username",
+            service: "server",
+            errorName: USER_NOT_FOUND
+          });
+          return done(USER_NOT_FOUND, false);
+        }
         const isPasswordValid = await checkIfPasswordIsValid(password, user.password);
-        if (!isPasswordValid) return done(PASSWORD_NOT_VALID, false);
+        if (!isPasswordValid) {
+          generateLog({
+            logLevel: "warn",
+            logMessage: "The password was invalid",
+            service: "server",
+            errorName: PASSWORD_NOT_VALID
+          });
+          return done(PASSWORD_NOT_VALID, false);
+        }
         done(null, user);
       } catch (error) {
+        generateLog({
+          logLevel: "error",
+          logMessage: "Error while attempting to sign in user",
+          service: "server",
+          ...getLogErrorData(error)
+        });
         return done(error as Error);
       }
     })
@@ -68,10 +104,21 @@ export function initializePassport() {
       if (user) {
         done(null, user);
       } else {
-        done("No user found with that Id. Error deseralizing user", false);
+        const errorMessage = "No user found with that Id. Error deserializing user";
+        generateLog({
+          logLevel: "error",
+          logMessage: errorMessage,
+          service: "server"
+        });
+        done(errorMessage, false);
       }
     } catch (error) {
-      console.error("Error while attepmting to deserialize user", error);
+      generateLog({
+        logLevel: "error",
+        logMessage: "Error while attepmting to deserialize user",
+        service: "server",
+        ...getLogErrorData(error)
+      });
       done(error, false);
     }
   });
@@ -90,7 +137,9 @@ export function authenticationCallback(
     authAction === "signin" &&
     (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID)
   ) {
-    return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);
+    return res
+      .status(401)
+      .json({ message: "Invalid username or wrong credentials" } as UnsuccessfulAuthResponse);
   }
   if (error || !user) {
     return res.status(500).json({
@@ -108,7 +157,12 @@ export function authenticationCallback(
       authToken
     } as SuccessfulAuthResponse);
   } catch (error) {
-    console.error("Error while creating a JWT", error);
+    generateLog({
+      logLevel: "error",
+      logMessage: "Error while creating a JWT",
+      service: "server",
+      ...getLogErrorData(error)
+    });
     return res.status(500).json({
       message: `Internal Server error while attempting to ${authAction} a user`
     } as UnsuccessfulAuthResponse);

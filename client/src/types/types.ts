@@ -39,3 +39,5 @@ export type IsAuthenticatedResponse =
   | IsAuthenticatedUnsuccessfulResponse;
 
 export type AuthorizationTokenT = string | null;
+
+export type LogLevels = "error" | "warning" | "info" | "debug";

@@ -12,7 +12,7 @@ import {
   getNewSortedNotes,
   getNoteToBeUpdated,
   handleErrorInResponse,
-  handleErrorLogging
+  handleLogging
 } from "../lib/utils";
 import { useState } from "react";
 
@@ -39,7 +39,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      handleErrorLogging(error, "Error while deleting a note");
+      handleLogging("error", "Error while deleting a note", error);
     }
   }
 
@@ -70,7 +70,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         return getNewSortedNotes(prevNotes, noteId, newNote);
       });
     } catch (error) {
-      handleErrorLogging(error, "Error while creating a new tag");
+      handleLogging("error", "Error while creating a new tag", error);
     }
   }
 
@@ -87,7 +87,7 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      handleErrorLogging(error, "Error while updating the note status");
+      handleLogging("error", "Error while updating the note status", error);
     }
   }
 

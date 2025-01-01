@@ -8,7 +8,7 @@ jest.mock("../lib/utils", () => ({
   getNewSortedNotes: jest.fn(),
   getNoteToBeUpdated: jest.fn(),
   handleErrorInResponse: jest.fn(),
-  handleErrorLogging: jest.fn()
+  handleLogging: jest.fn()
 }));
 
 describe("NoteButtons Component", () => {

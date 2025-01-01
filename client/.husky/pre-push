@@ -9,7 +9,7 @@ NC="\033[0m"
 ROOT_PROJECT_DIR="${PWD}"
 
 # Check if an upstream branch is set; if so, use it to find modified files, otherwise use HEAD
-if git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null; then
+if git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null >&2; then
     modifiedFiles=$(git diff --name-only @{upstream})  # Get modified files from the upstream branch
 else
     modifiedFiles=$(git diff --name-only HEAD)  # Get modified files from the current branch (HEAD)
@@ -17,7 +17,7 @@ fi
 
 modifiedApps=""
 # Loop through each app (client and server) and check if any files have been modified
-for app in "client server"; do
+for app in "client" "server"; do
     if echo "$modifiedFiles" | grep -q "^${app}/"; then
         modifiedApps="${modifiedApps} ${app}"
     fi
@@ -44,7 +44,7 @@ run_command() {
 
 # Loop through each modified app and run checks
 for app in $modifiedApps; do
-    for command in "prettier lint test"; do
+    for command in "prettier" "lint" "test"; do
         run_command "${app}" "${command}"
     done
 done
