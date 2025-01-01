@@ -1,0 +1,59 @@
+{
+	"users": [
+		{
+			"name": "guest",
+			"password_hash": "BMfxN8drrYcIqXZMr+pWTpDT0nMcOagMduLX0bjr4jwud/pN",
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"tags": [
+				"administrator"
+			],
+			"limits": {}
+		}
+	],
+	"vhosts": [
+		{
+			"name": "/notesaver"
+		}
+	],
+	"permissions": [
+		{
+			"user": "guest",
+			"vhost": "/notesaver",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		}
+	],
+	"queues": [
+		{
+			"name": "logs_queue",
+			"vhost": "/notesaver",
+			"durable": true,
+			"auto_delete": false,
+			"arguments": {
+				"x-queue-type": "classic"
+			}
+		}
+	],
+	"exchanges": [
+		{
+			"name": "notesaver_echange",
+			"vhost": "/notesaver",
+			"type": "direct",
+			"durable": true,
+			"auto_delete": false,
+			"internal": false,
+			"arguments": {}
+		}
+	],
+	"bindings": [
+		{
+			"source": "notesaver_echange",
+			"vhost": "/notesaver",
+			"destination": "logs_queue",
+			"destination_type": "queue",
+			"routing_key": "notesaver_key",
+			"arguments": {}
+		}
+	]
+}

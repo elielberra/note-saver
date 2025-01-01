@@ -56,6 +56,14 @@ psql -U postgres
 
 On the server side, the application uses the **Winston** library for logging, with colorized logs in the console for improved readability. On the client side, **Loglevel** is used for logging, and it only logs to the browser console in non-production environments. In production, logging is minimized to reduce unnecessary performance overhead and to avoid exposing the error stack and potentially sensitive code to the user for security reasons.
 
+## RabbitMQ
+
+This project uses [RabbitMQ](https://www.rabbitmq.com/docs) to manage message queuing, where logs from both the client and server are sent for centralized handling. A consumer retrieves the logs from the queue and sends them to Elasticsearch.
+
+The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
+
+When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `guest` and the password `guest`.
+
 ## Nginx Proxy
 
 An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client** and **server**, ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections.
@@ -113,3 +121,7 @@ bash scripts/setupLocalEnvironment.sh
 docker compose up
 ```
 Access https://notesaver:8080 on the browser
+
+#### Credentials during development
+
+During development, the script `insertDummyPasswords` will automatically set the value `dummy-password` for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. For RabbitMQ, the default user is `guest` with the password `guest`.
