@@ -4,7 +4,8 @@ import {
   IsAuthenticatedSuccessfulResponse,
   IsAuthenticatedUnsuccessfulResponse,
   LogLevels,
-  NoteT
+  NoteT,
+  UnsuccessfulAuthResponse
 } from "../types/types";
 
 export function getAuthTokenFromStorage() {
@@ -73,10 +74,12 @@ export function handleLogging(logLevel: LogLevels, message: string, error?: unkn
   // TODO: Add logic for sending the log to the server
 }
 
-export async function handleErrorInResponse(responseWithError: Response) {
-  const responseWithErrorBody = await responseWithError.text();
+export async function handleErrorInResponse(
+  responseWithError: Response,
+  responseBody?: UnsuccessfulAuthResponse
+) {
   const logFullText =
-    `- Response body: ${responseWithErrorBody}\n` +
+    `- Response body: ${responseBody ? responseBody : await responseWithError.text()}\n` +
     `- Status code: ${responseWithError.status}\n` +
     `- Server error: ${responseWithError.statusText}`;
   handleLogging("error", logFullText);
