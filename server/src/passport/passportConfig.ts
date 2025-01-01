@@ -137,7 +137,9 @@ export function authenticationCallback(
     authAction === "signin" &&
     (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID)
   ) {
-    return res.status(401).json({ message: "Invalid username or wrong credentials" } as UnsuccessfulAuthResponse);
+    return res
+      .status(401)
+      .json({ message: "Invalid username or wrong credentials" } as UnsuccessfulAuthResponse);
   }
   if (error || !user) {
     return res.status(500).json({
