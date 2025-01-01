@@ -5,8 +5,11 @@ import { ErrorLogData, LogData, UNSPECIFIED_ERROR } from "../types/types";
 const colorizer = winston.format.colorize();
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: "DD-MM-YY HH:mm:ss.SSS" }),
-  winston.format.printf(info => 
-    colorizer.colorize(info.level, `${info.timestamp} -- ${info.message} ${info.errorDetails ? `\n${info.errorDetails}` : ""}`)
+  winston.format.printf((info) =>
+    colorizer.colorize(
+      info.level,
+      `${info.timestamp} -- ${info.message} ${info.errorDetails ? `\n${info.errorDetails}` : ""}`
+    )
   )
 );
 winston.addColors({
