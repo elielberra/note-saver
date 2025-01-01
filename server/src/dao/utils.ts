@@ -15,7 +15,7 @@ export async function runQuery(query: QueryConfig, isUsingDatabase: boolean = tr
       logLevel: "error",
       logMessage: `Error executing query:\n${JSON.stringify(query, null, 2)}`,
       service: "server"
-    })
+    });
     throw error;
   } finally {
     await dbClient.end();

@@ -17,7 +17,7 @@ async function deleteAndCreateDatabase() {
             END IF;
           END $$;`
   };
-  await runQuery(terminateActiveConnections, false)
+  await runQuery(terminateActiveConnections, false);
   const dropBDIfExists: QueryConfig = {
     text: `DROP DATABASE IF EXISTS ${process.env.DB_NAME};`
   };
@@ -37,7 +37,7 @@ async function runSeedingQueries() {
           password VARCHAR(60) NOT NULL
           )`
   };
-  await runQuery(createUsersTableQuery)
+  await runQuery(createUsersTableQuery);
   const adminHashedPassword = await hashPassword(process.env.ADMIN_PASSWORD || "admin");
   const insertAdminUserQuery: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_USERS_TABLE} (username, password) VALUES ($1, $2)`,
@@ -53,7 +53,7 @@ async function runSeedingQueries() {
           user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE
           )`
   };
-  await runQuery(createNotesTableQuery)
+  await runQuery(createNotesTableQuery);
   // Issue https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/70402 pending response
   const insertNotesQuery: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_NOTES_TABLE} (content, is_active, user_id) VALUES ($1, $2, $3)`,
@@ -68,7 +68,7 @@ async function runSeedingQueries() {
           note_id INTEGER NOT NULL REFERENCES ${process.env.DB_NOTES_TABLE} (id) ON DELETE CASCADE
           )`
   };
-  await runQuery(createTagsTableQuery)
+  await runQuery(createTagsTableQuery);
   const insertTagsQuery: QueryConfig = {
     text: `INSERT INTO ${process.env.DB_TAGS_TABLE} (tag, note_id) VALUES ($1, $2), ($3, $4)`,
     values: ["tag1", 1, "tag2", 1]

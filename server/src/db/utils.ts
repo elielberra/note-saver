@@ -17,4 +17,3 @@ function getDBObjectInfo(isUsingDatabase: boolean = true): ClientObject {
 export function getDBClient(isUsingDatabase: boolean = true): Client {
   return new Client(getDBObjectInfo(isUsingDatabase));
 }
-
