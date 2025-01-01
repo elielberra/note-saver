@@ -44,7 +44,7 @@ run_command() {
 
 # Loop through each modified app and run checks
 for app in $modifiedApps; do
-    for command in "prettier lint test"; do
+    for command in "prettier" "lint" "test"; do
         run_command "${app}" "${command}"
     done
 done
