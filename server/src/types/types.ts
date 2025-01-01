@@ -120,7 +120,7 @@ export interface ErrorLogData {
   errorStack?: Error["stack"];
 }
 
-type LogLevels = "error" | "warning" | "info" | "debug";
+type LogLevels = "error" | "warn" | "info" | "debug";
 
 type Services = "client" | "server";
 

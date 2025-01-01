@@ -33,9 +33,10 @@ export function initializePassport() {
       try {
         if (await checkIfUserIsAlreadyRegistered(username)) {
           generateLog({
-            logLevel: "error",
-            logMessage: ALREADY_REGISTERED_USER,
-            service: "server"
+            logLevel: "warn",
+            logMessage: "User already exists, can not register it",
+            service: "server",
+            errorName: ALREADY_REGISTERED_USER
           });
           return done(ALREADY_REGISTERED_USER, false);
         }
@@ -65,18 +66,20 @@ export function initializePassport() {
         const user = await getUserByField("username", username);
         if (!user) {
           generateLog({
-            logLevel: "error",
-            logMessage: USER_NOT_FOUND,
-            service: "server"
+            logLevel: "warn",
+            logMessage: "Can not find that username",
+            service: "server",
+            errorName: USER_NOT_FOUND
           });
           return done(USER_NOT_FOUND, false);
         }
         const isPasswordValid = await checkIfPasswordIsValid(password, user.password);
         if (!isPasswordValid) {
           generateLog({
-            logLevel: "error",
-            logMessage: PASSWORD_NOT_VALID,
-            service: "server"
+            logLevel: "warn",
+            logMessage: "The password was invalid",
+            service: "server",
+            errorName: PASSWORD_NOT_VALID
           });
           return done(PASSWORD_NOT_VALID, false);
         }
@@ -134,7 +137,7 @@ export function authenticationCallback(
     authAction === "signin" &&
     (error === USER_NOT_FOUND || error === PASSWORD_NOT_VALID)
   ) {
-    return res.status(401).json({ message: "Wrong credentials" } as UnsuccessfulAuthResponse);
+    return res.status(401).json({ message: "Invalid username or wrong credentials" } as UnsuccessfulAuthResponse);
   }
   if (error || !user) {
     return res.status(500).json({

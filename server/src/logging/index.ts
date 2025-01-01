@@ -30,9 +30,9 @@ const consoleLogger = winston.createLogger({
 });
 
 function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: LogData) {
-  if (!errorName || !errorStack) return "";
+  if (!errorName && !errorStack) return "";
   if (errorStack) return errorStack;
-  if (errorName === UNSPECIFIED_ERROR) return errorName;
+  if (errorName === UNSPECIFIED_ERROR || !errorMessage) return errorName;
   return `${errorName}: ${errorMessage}`;
 }
 
