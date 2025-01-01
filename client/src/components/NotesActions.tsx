@@ -5,12 +5,7 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "../types/types";
-import {
-  fetchNotes,
-  getHeadersWithAuth,
-  handleErrorInResponse,
-  handleLogging
-} from "../lib/utils";
+import { fetchNotes, getHeadersWithAuth, handleErrorInResponse, handleLogging } from "../lib/utils";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
