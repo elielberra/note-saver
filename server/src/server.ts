@@ -6,6 +6,7 @@ import http from "http";
 import { initializePassport } from "./passport/passportConfig";
 import router from "./routes/routes";
 import { generateLog } from "./logging";
+import { rabbitMQSender } from "./logging/rabbitmq";
 
 dotenv.config();
 const app = express();
@@ -32,3 +33,5 @@ httpServer.listen(port, () => {
     logMessage: `HTTP server listening on port ${port}`
   });
 });
+
+rabbitMQSender.connect();

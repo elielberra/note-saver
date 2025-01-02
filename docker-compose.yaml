@@ -26,6 +26,7 @@ services:
       - /app/node_modules
     depends_on:
       - db
+      - rabbitmq
   client:
     build: ./client
     container_name: client

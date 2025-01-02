@@ -122,6 +122,7 @@ docker compose up
 ```
 Access https://notesaver:8080 on the browser
 
-#### Credentials during development
+#### Credentials During Development
 
-During development, the script `insertDummyPasswords` will automatically set the value `dummy-password` for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. For RabbitMQ, the default user is `guest` with the password `guest`.
+During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file. For RabbitMQ, the username is `admin`, and the password is also `password`.
+
