@@ -19,13 +19,13 @@ class RabbitMQSender {
       generateLog({
         logLevel: "info",
         service: "server",
-        logMessage: "Server's RabbitMQ connection initialized successfully"
+        logMessage: "RabbitMQ connection initialized successfully"
       });
     } catch (error) {
       generateLog({
         logLevel: "error",
         service: "server",
-        logMessage: "Failed to initialize Server's RabbitMQ connection"
+        logMessage: "Failed to initialize RabbitMQ connection"
       });
       throw error;
     }
@@ -51,13 +51,13 @@ class RabbitMQSender {
       generateLog({
         logLevel: "info",
         service: "server",
-        logMessage: "Closed successfully Server's RabbitMQ connection"
+        logMessage: "Closed successfully RabbitMQ connection"
       });
     } catch (error) {
       generateLog({
         logLevel: "error",
         service: "server",
-        logMessage: "Failed to initialize Server's RabbitMQ connection"
+        logMessage: "Failed to initialize RabbitMQ connection"
       });
       throw error;
     }

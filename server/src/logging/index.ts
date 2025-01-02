@@ -1,6 +1,7 @@
 import winston from "winston";
 import { isProductionEnv } from "../lib/utils";
 import { ErrorLogData, LogData, UNSPECIFIED_ERROR } from "../types/types";
+import { rabbitMQSender } from "./rabbitmq";
 
 const colorizer = winston.format.colorize();
 const consoleFormat = winston.format.combine(
@@ -36,8 +37,18 @@ function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: LogData
   return `${errorName}: ${errorMessage}`;
 }
 
+function addMissingProperties(logData: LogData) {
+  return {
+    errorStack: null,
+    errorMessage: null,
+    errorName: null,
+    ...logData
+  };
+}
+
 export function generateLog(logData: LogData) {
-  // TODO: Add logic for RabbitMQ
+  const completeLogData = addMissingProperties(logData);
+  rabbitMQSender.sendToQueue(JSON.stringify(completeLogData));
   if (logData.service === "client") return;
   consoleLogger.log(logData.logLevel, logData.logMessage, {
     errorDetails: getConsoleErrorMessage(logData)
