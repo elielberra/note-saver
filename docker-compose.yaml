@@ -7,6 +7,12 @@ services:
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
   db:
     image: postgres
     container_name: db
@@ -15,25 +21,6 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/postgresql/data
-  server:
-    build: ./server
-    container_name: server
-    env_file:
-      - ./server/.env
-    volumes:
-      - ./server:/app
-      - /app/node_modules
-    depends_on:
-      - db
-      - rabbitmq
-  client:
-    build: ./client
-    container_name: client
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    depends_on:
-      - server
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -43,8 +30,28 @@ services:
       - ./ssl-certs/cert-key.pem:/root/ssl-certs/cert-key.pem
     ports:
       - 8080:8080
+  server:
+    build: ./server
+    container_name: server
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     depends_on:
-      - client
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
+      nginx:
+        condition: service_started
+  client:
+    build: ./client
+    container_name: client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
       - server
 volumes:
   db_data:
