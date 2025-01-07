@@ -1,5 +1,6 @@
 import amqp from "amqplib";
-import { generateLog } from ".";
+import { consoleLogger, generateLog, getConsoleErrorMessage } from ".";
+import { ErrorLogData, UNSPECIFIED_ERROR } from "../types/types";
 
 class RabbitMQSender {
   private connection: amqp.Connection | null = null;
@@ -22,20 +23,35 @@ class RabbitMQSender {
         logMessage: "RabbitMQ connection initialized successfully"
       });
     } catch (error) {
-      generateLog({
-        logLevel: "error",
-        service: "server",
-        logMessage: "Failed to initialize RabbitMQ connection"
-      });
+      consoleLogger.error("Error while trying to connect with RabbitMQ");
       throw error;
     }
   }
 
   async sendToQueue(message: string) {
     await this.connect();
-    this.channel!.publish(this.exchange, process.env.RABBITMQ_ROUTING_KEY!, Buffer.from(message), {
-      persistent: true
-    });
+    try {
+      this.channel!.publish(
+        this.exchange,
+        process.env.RABBITMQ_ROUTING_KEY!,
+        Buffer.from(message),
+        {
+          persistent: true
+        }
+      );
+    } catch (error) {
+      const errorLogData: ErrorLogData = {};
+      if (error instanceof Error) {
+          errorLogData.errorName = error.name,
+          errorLogData.errorMessage = error.message,
+          errorLogData.errorStack = error.stack
+      } else {
+        errorLogData.errorName = UNSPECIFIED_ERROR
+        };
+      consoleLogger.error(`Error while trying to send to RabbitMQ the log:\n${message}`, {
+        errorDetails: getConsoleErrorMessage(errorLogData)
+      });
+    }
   }
 
   async closeConnection() {
@@ -54,11 +70,7 @@ class RabbitMQSender {
         logMessage: "Closed successfully RabbitMQ connection"
       });
     } catch (error) {
-      generateLog({
-        logLevel: "error",
-        service: "server",
-        logMessage: "Failed to initialize RabbitMQ connection"
-      });
+      consoleLogger.error("Error while trying to close the connection with RabbitMQ");
       throw error;
     }
   }
