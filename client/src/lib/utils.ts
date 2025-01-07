@@ -3,8 +3,10 @@ import {
   IsAuthenticatedResponse,
   IsAuthenticatedSuccessfulResponse,
   IsAuthenticatedUnsuccessfulResponse,
+  LogData,
   LogLevels,
   NoteT,
+  UNSPECIFIED_ERROR,
   UnsuccessfulAuthResponse
 } from "../types/types";
 
@@ -55,8 +57,8 @@ export async function fetchNotes(
 export function isProductionEnv() {
   return process.env.NODE_ENV === "production";
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function handleLogging(logLevel: LogLevels, message: string, error?: unknown) {
+
+export async function handleLogging(logLevel: LogLevels, message: string, error?: unknown) {
   switch (logLevel) {
     case "debug":
       log.debug(message);
@@ -64,25 +66,57 @@ export function handleLogging(logLevel: LogLevels, message: string, error?: unkn
     case "info":
       log.info(message);
       break;
-    case "warning":
+    case "warn":
       log.warn(message);
       break;
     case "error":
-      log.error(message);
+      log.error(message, error);
       break;
   }
-  // TODO: Add logic for sending the log to the server
+  const requestBody: LogData = {
+    logLevel,
+    logMessage: message,
+    service: "client"
+  };
+  if (error instanceof Error) {
+    requestBody.errorName = error.name;
+    requestBody.errorMessage = error.message;
+    requestBody.errorStack = error.stack;
+  } else {
+    requestBody.errorName = UNSPECIFIED_ERROR;
+  }
+  try {
+    const response = await fetch("https://server.notesaver:8080/logs", {
+      method: "POST",
+      headers: sessionStorage.getItem("authToken")
+        ? getHeadersWithAuthAndContentType()
+        : getHeadersWithContentType(),
+      body: JSON.stringify(requestBody)
+    });
+    if (!response.ok) {
+      log.error(await getResponseErrorFormatted(response));
+    }
+  } catch (error) {
+    log.error(`Error while trying to send a log to the server`, error);
+  }
+}
+
+async function getResponseErrorFormatted(
+  responseWithError: Response,
+  responseBody?: UnsuccessfulAuthResponse
+) {
+  return (
+    `- Response body: ${responseBody ? responseBody : await responseWithError.text()}\n` +
+    `- Status code: ${responseWithError.status}\n` +
+    `- Server error: ${responseWithError.statusText}`
+  );
 }
 
 export async function handleErrorInResponse(
   responseWithError: Response,
   responseBody?: UnsuccessfulAuthResponse
 ) {
-  const logFullText =
-    `- Response body: ${responseBody ? responseBody : await responseWithError.text()}\n` +
-    `- Status code: ${responseWithError.status}\n` +
-    `- Server error: ${responseWithError.statusText}`;
-  handleLogging("error", logFullText);
+  handleLogging("error", await getResponseErrorFormatted(responseWithError, responseBody));
 }
 
 export function getNoteToBeUpdated(prevNotes: NoteT[], noteToBeUpdatedId: NoteT["noteId"]) {

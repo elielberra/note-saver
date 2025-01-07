@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import authenticationRouter from "./authentication/authenticationRouter";
 import notesRouter from "./notes/notesRouter";
 import tagsRouter from "./tags/tagsRouter";
+import logsRouter from "./logs/logsRouter";
 
 const router = express.Router();
 
@@ -14,5 +15,7 @@ router.use(notesRouter);
 router.use(tagsRouter);
 
 router.use(authenticationRouter);
+
+router.use(logsRouter);
 
 export default router;

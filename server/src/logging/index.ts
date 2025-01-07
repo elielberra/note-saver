@@ -9,7 +9,7 @@ const consoleFormat = winston.format.combine(
   winston.format.printf((info) =>
     colorizer.colorize(
       info.level,
-      `${info.timestamp} -- ${info.message} ${info.errorDetails ? `\n${info.errorDetails}` : ""}`
+      `${info.timestamp} -- ${info.message} ${info.errorDetails ? `\n${typeof info.errorDetails === "object" ? JSON.stringify(info.errorDetails, null, 2) : info.errorDetails}` : ""}\n`
     )
   )
 );
@@ -20,7 +20,7 @@ winston.addColors({
   error: "bold red"
 });
 
-const consoleLogger = winston.createLogger({
+export const consoleLogger = winston.createLogger({
   level: isProductionEnv() ? "info" : "debug",
   transports: [
     new winston.transports.Console({
@@ -30,25 +30,15 @@ const consoleLogger = winston.createLogger({
   ]
 });
 
-function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: LogData) {
+export function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: ErrorLogData) {
   if (!errorName && !errorStack) return "";
   if (errorStack) return errorStack;
   if (errorName === UNSPECIFIED_ERROR || !errorMessage) return errorName;
   return `${errorName}: ${errorMessage}`;
 }
 
-function addMissingProperties(logData: LogData) {
-  return {
-    errorStack: null,
-    errorMessage: null,
-    errorName: null,
-    ...logData
-  };
-}
-
 export function generateLog(logData: LogData) {
-  const completeLogData = addMissingProperties(logData);
-  rabbitMQSender.sendToQueue(JSON.stringify(completeLogData));
+  rabbitMQSender.sendToQueue(JSON.stringify(logData));
   if (logData.service === "client") return;
   consoleLogger.log(logData.logLevel, logData.logMessage, {
     errorDetails: getConsoleErrorMessage(logData)

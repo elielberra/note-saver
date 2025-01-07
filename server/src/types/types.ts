@@ -59,7 +59,7 @@ export interface AuthTokenPayload extends AuthTokenUserInfo {
 // Augment the Express module to add the User interface
 declare module "express-serve-static-core" {
   interface Request {
-    user: AuthTokenUserInfo;
+    user?: AuthTokenUserInfo;
   }
 }
 

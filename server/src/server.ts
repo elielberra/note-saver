@@ -13,8 +13,7 @@ app.use(express.json());
 
 const corsOptions: CorsOptions = {
   origin: ["https://notesaver:8080"],
-  optionsSuccessStatus: 200,
-  credentials: true
+  optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
