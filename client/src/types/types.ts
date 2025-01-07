@@ -47,6 +47,7 @@ export interface ErrorLogData {
   errorMessage?: Error["message"];
   errorStack?: Error["stack"];
 }
+
 type Services = "client" | "server";
 
 export type LogLevels = "error" | "warn" | "info" | "debug";
