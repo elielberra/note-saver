@@ -1,6 +1,7 @@
 import winston from "winston";
 import { isProductionEnv } from "../lib/utils";
 import { ErrorLogData, LogData, UNSPECIFIED_ERROR } from "../types/types";
+import { rabbitMQSender } from "./rabbitmq";
 
 const colorizer = winston.format.colorize();
 const consoleFormat = winston.format.combine(
@@ -8,7 +9,7 @@ const consoleFormat = winston.format.combine(
   winston.format.printf((info) =>
     colorizer.colorize(
       info.level,
-      `${info.timestamp} -- ${info.message} ${info.errorDetails ? `\n${info.errorDetails}` : ""}`
+      `${info.timestamp} -- ${info.message} ${info.errorDetails ? info.errorDetails : ""}\n`
     )
   )
 );
@@ -19,7 +20,7 @@ winston.addColors({
   error: "bold red"
 });
 
-const consoleLogger = winston.createLogger({
+export const consoleLogger = winston.createLogger({
   level: isProductionEnv() ? "info" : "debug",
   transports: [
     new winston.transports.Console({
@@ -29,15 +30,15 @@ const consoleLogger = winston.createLogger({
   ]
 });
 
-function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: LogData) {
+export function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: ErrorLogData) {
   if (!errorName && !errorStack) return "";
   if (errorStack) return errorStack;
-  if (errorName === UNSPECIFIED_ERROR || !errorMessage) return errorName;
+  if (errorName === UNSPECIFIED_ERROR || !errorMessage) return errorName as string;
   return `${errorName}: ${errorMessage}`;
 }
 
 export function generateLog(logData: LogData) {
-  // TODO: Add logic for RabbitMQ
+  rabbitMQSender.sendToQueue(JSON.stringify(logData));
   if (logData.service === "client") return;
   consoleLogger.log(logData.logLevel, logData.logMessage, {
     errorDetails: getConsoleErrorMessage(logData)

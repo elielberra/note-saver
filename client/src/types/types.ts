@@ -40,4 +40,20 @@ export type IsAuthenticatedResponse =
 
 export type AuthorizationTokenT = string | null;
 
-export type LogLevels = "error" | "warning" | "info" | "debug";
+export const UNSPECIFIED_ERROR = "UnspecifiedError" as const;
+
+export interface ErrorLogData {
+  errorName?: Error["name"] | typeof UNSPECIFIED_ERROR;
+  errorMessage?: Error["message"];
+  errorStack?: Error["stack"];
+}
+
+type Services = "client" | "server";
+
+export type LogLevels = "error" | "warn" | "info" | "debug";
+
+export interface LogData extends ErrorLogData {
+  logLevel: LogLevels;
+  logMessage: string;
+  service: Services;
+}

@@ -56,6 +56,14 @@ psql -U postgres
 
 On the server side, the application uses the **Winston** library for logging, with colorized logs in the console for improved readability. On the client side, **Loglevel** is used for logging, and it only logs to the browser console in non-production environments. In production, logging is minimized to reduce unnecessary performance overhead and to avoid exposing the error stack and potentially sensitive code to the user for security reasons.
 
+## RabbitMQ
+
+This project uses [RabbitMQ](https://www.rabbitmq.com/documentation.html) to manage message queues. Logs from both the client and server are sent to RabbitMQ for centralized processing. Server logs are sent directly to the queue, while client logs are sent to the server via HTTP and then forwarded to the queue. A consumer retrieves the logs from the queue and forwards them to Elasticsearch.
+
+The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
+
+When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
+
 ## Nginx Proxy
 
 An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client** and **server**, ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections.
@@ -66,7 +74,6 @@ Git Actions are used for automating various tasks in the repository:
 
 - `Build and Push Docker Images` generates the Docker images for the **client** and **server** on each push to the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
-
 
 ## Pre-Push Hook
 
@@ -113,3 +120,8 @@ bash scripts/setupLocalEnvironment.sh
 docker compose up
 ```
 Access https://notesaver:8080 on the browser
+
+#### Credentials During Development
+
+During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file. For RabbitMQ, the username is `admin`, and the password is also `password`.
+
