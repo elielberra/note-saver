@@ -21,15 +21,6 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/postgresql/data
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./ssl-certs/cert.pem:/root/ssl-certs/cert.pem
-      - ./ssl-certs/cert-key.pem:/root/ssl-certs/cert-key.pem
-    ports:
-      - 8080:8080
   server:
     build: ./server
     container_name: server
@@ -43,15 +34,28 @@ services:
         condition: service_healthy
       db:
         condition: service_started
-      nginx:
-        condition: service_started
   client:
     build: ./client
     container_name: client
     volumes:
       - ./client:/app
       - /app/node_modules
+    # TODO: Evaluate how to fix ws connection error of the browser's console
+    environment:
+      - WDS_SOCKET_PORT=8080
     depends_on:
       - server
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl-certs/cert.pem:/root/ssl-certs/cert.pem
+      - ./ssl-certs/cert-key.pem:/root/ssl-certs/cert-key.pem
+    ports:
+      - 8080:8080
+    depends_on:
+      - server
+      - client
 volumes:
   db_data:
