@@ -42,12 +42,12 @@ class RabbitMQSender {
     } catch (error) {
       const errorLogData: ErrorLogData = {};
       if (error instanceof Error) {
-          errorLogData.errorName = error.name,
-          errorLogData.errorMessage = error.message,
-          errorLogData.errorStack = error.stack
+        (errorLogData.errorName = error.name),
+          (errorLogData.errorMessage = error.message),
+          (errorLogData.errorStack = error.stack);
       } else {
-        errorLogData.errorName = UNSPECIFIED_ERROR
-        };
+        errorLogData.errorName = UNSPECIFIED_ERROR;
+      }
       consoleLogger.error(`Error while trying to send to RabbitMQ the log:\n${message}`, {
         errorDetails: getConsoleErrorMessage(errorLogData)
       });
