@@ -58,11 +58,11 @@ On the server side, the application uses the **Winston** library for logging, wi
 
 ## RabbitMQ
 
-This project uses [RabbitMQ](https://www.rabbitmq.com/docs) to manage message queuing, where logs from both the client and server are sent for centralized handling. A consumer retrieves the logs from the queue and sends them to Elasticsearch.
+This project uses [RabbitMQ](https://www.rabbitmq.com/documentation.html) to manage message queues. Logs from both the client and server are sent to RabbitMQ for centralized processing. Server logs are sent directly to the queue, while client logs are sent to the server via HTTP and then forwarded to the queue. A consumer retrieves the logs from the queue and forwards them to Elasticsearch.
 
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
-When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `guest` and the password `guest`.
+When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
 
 ## Nginx Proxy
 
@@ -74,7 +74,6 @@ Git Actions are used for automating various tasks in the repository:
 
 - `Build and Push Docker Images` generates the Docker images for the **client** and **server** on each push to the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
-
 
 ## Pre-Push Hook
 
