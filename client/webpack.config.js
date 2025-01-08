@@ -49,7 +49,10 @@ module.exports = (_, { mode }) => {
       },
       server: "http",
       allowedHosts: ["notesaver"],
-      historyApiFallback: true
+      historyApiFallback: true,
+      client: {
+        webSocketURL: 'wss://notesaver:8080/ws',
+      }
     }
   };
 };
