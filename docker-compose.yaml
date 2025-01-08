@@ -40,9 +40,6 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-    # TODO: Evaluate how to fix ws connection error of the browser's console
-    environment:
-      - WDS_SOCKET_PORT=8080
     depends_on:
       - server
   nginx:
