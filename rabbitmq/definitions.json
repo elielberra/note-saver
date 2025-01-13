@@ -37,7 +37,7 @@
 	],
 	"exchanges": [
 		{
-			"name": "notesaver_echange",
+			"name": "notesaver_exchange",
 			"vhost": "/notesaver",
 			"type": "direct",
 			"durable": true,
@@ -48,7 +48,7 @@
 	],
 	"bindings": [
 		{
-			"source": "notesaver_echange",
+			"source": "notesaver_exchange",
 			"vhost": "/notesaver",
 			"destination": "logs_queue",
 			"destination_type": "queue",
