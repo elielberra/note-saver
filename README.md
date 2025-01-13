@@ -60,7 +60,7 @@ On the server side, the application uses the **Winston** library for logging, wi
 
 This project uses [RabbitMQ](https://www.rabbitmq.com/documentation.html) to manage message queues. Logs from both the client and server are sent to RabbitMQ for centralized processing. Server logs are sent directly to the queue, while client logs are sent to the server via HTTP and then forwarded to the queue. A consumer retrieves the logs from the queue and forwards them to Elasticsearch.
 
-You might be wondering why the app doesn’t send logs directly to Elasticsearch, bypassing RabbitMQ. As I mentioned earlier, this project aims to explore different technologies and architectural features. In reality, having a queue is beneficial because it decouples the logs. If the Elasticsearch service is down, the logs can still be retrieved later from the queue.
+You might be wondering why the app doesn’t send logs directly to Elasticsearch, bypassing RabbitMQ. As I mentioned earlier, this project aims to explore different technologies and architectural features. Furthermore, on a production setup, having a queue is beneficial because it decouples the logs. If the Elasticsearch service is down, the logs can still be retrieved later from the queue.
 
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
@@ -68,9 +68,9 @@ When running locally with Docker Compose, for a user-friendly interaction with R
 
 ## Consumer
 
-The Consumer service is written in Go and is responsible for retrieving messages from a RabbitMQ service. Once the messages are received, it sends the data to an Elasticsearch serrvice for log storage and indexing.
+The Consumer service is written in Go and is responsible for retrieving messages from a RabbitMQ service. Once the messages are received, it sends the data to an Elasticsearch service for log storage and indexing.
 
-Note that the Consumer will actually consume the messages from the queue. Therefore, if this service is running, you will not find any messages queued in the RabbitMQ management console or when using rabbimq client CLI.
+Note that the Consumer will actually consume the messages from the queue. Therefore, if this service is running, you will not find any messages queued in the RabbitMQ management console.
 
 ## Nginx Proxy
 

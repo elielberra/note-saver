@@ -51,7 +51,7 @@ func main() {
 		log.Fatalf("Failed to register a consumer: %v", err)
 	}
 
-	log.Printf("Waiting for messages. To exit, press CTRL+C")
+	log.Printf("The consumer service is ready to retrieve messages from the queue")
 
 	forever := make(chan bool)
 
