@@ -25,3 +25,6 @@ scripts/test.sh
 # Vagrant specific VM files
 vagrant/.vagrant
 vagrant/ubuntu*
+
+# Go compiled code
+consumer/consumer

@@ -1,4 +1,4 @@
-- Add ElasticSearch and Kibana as services.
-- Decouple logging through an AMQP queue. Create the consumer in Go.
+- Add ElasticSearch and Kibana as services
+- Add Prometheus metrics
 - Deploy through Kubernetes. Create a Helm chart for the apps
 - Use terraform to create an EKS on AWS

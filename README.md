@@ -60,9 +60,17 @@ On the server side, the application uses the **Winston** library for logging, wi
 
 This project uses [RabbitMQ](https://www.rabbitmq.com/documentation.html) to manage message queues. Logs from both the client and server are sent to RabbitMQ for centralized processing. Server logs are sent directly to the queue, while client logs are sent to the server via HTTP and then forwarded to the queue. A consumer retrieves the logs from the queue and forwards them to Elasticsearch.
 
+You might be wondering why the app doesn’t send logs directly to Elasticsearch, bypassing RabbitMQ. As I mentioned earlier, this project aims to explore different technologies and architectural features. Furthermore, on a production setup, having a queue is beneficial because it decouples the logs. If the Elasticsearch service is down, the logs can still be retrieved later from the queue.
+
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
 When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
+
+## Consumer
+
+The Consumer service is written in Go and is responsible for retrieving messages from a RabbitMQ service. Once the messages are received, it sends the data to an Elasticsearch service for log storage and indexing.
+
+Note that the Consumer will actually consume the messages from the queue. Therefore, if this service is running, you will not find any messages queued in the RabbitMQ management console.
 
 ## Nginx Proxy
 
@@ -104,10 +112,12 @@ If you already have a Debian/Ubuntu machine, you can skip this and proceed direc
 #### How to set up the VM
 
 You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. Clone this repository on your host machine. And follow these commands:
+
 ```bash
 cd <path_to_notesaver_repo>/vagrant
 vagrant up
 ```
+
 The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
 
 #### Start the Application
