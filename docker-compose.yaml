@@ -4,37 +4,35 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
+      - ./elk/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9200:9200
     env_file:
-      - ./elk/.env_elk_credentials
-      - ./elk/.env_elastic
+      - ./elk/base_credentials/.env
+      - ./elk/elastic/.env
     mem_limit: 1073741824
     ulimits:
       memlock:
         soft: -1
-        hard: -1 # TODO: Are these memory blocks really necessary?
+        hard: -1
     healthcheck:
       test: ["CMD-SHELL", "curl 'localhost:9200/_cluster/health'"]
       interval: 5s
       timeout: 5s
       retries: 20
-
   setup_kibana:
     container_name: setup_kibana
     # The elasticsearch image is only used because it has bash and curl preinstalled
     # and to avoid downloading a new image with those dependencies
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     env_file:
-      - ./elk/.env_elk_credentials
+      - ./elk/base_credentials/.env
     volumes:
-      - ./elk/setKibanaCredentials.sh:/scripts/setKibanaCredentials.sh
+      - ./elk/kibana/setKibanaCredentials.sh:/scripts/setKibanaCredentials.sh
     command: ["bash","-c", "/scripts/setKibanaCredentials.sh"]
-    # command: ["sleep","120"]
     depends_on:
       elastic:
         condition: service_healthy
-
   kibana:
     container_name: kibana
     depends_on:
@@ -43,11 +41,11 @@ services:
     image: docker.elastic.co/kibana/kibana:8.7.0
     volumes:
       - kibana_data:/usr/share/kibana/data
+      - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - 5601:5601
     env_file:
-      - ./elk/.env_elk_credentials
-      - ./elk/.env_kibana
+      - ./elk/kibana/.env
     mem_limit: 1073741824
 
 
@@ -86,6 +84,12 @@ services:
       #   volumes:
       #     - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       #     - db_data:/var/lib/postgresql/data
+      # # healthcheck:
+      # #   test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      # #   interval: 30s
+      # #   timeout: 60s
+      # #   retries: 5
+      # #   start_period: 80s # TODO: Test this healtcheck
       # server:
       #   build: ./server
       #   container_name: server
@@ -99,6 +103,7 @@ services:
       #       condition: service_healthy
       #     db:
       #       condition: service_started
+      #  # # TODO: Add a healtcheck for the server
       # client:
       #   build: ./client
       #   container_name: client
@@ -107,6 +112,7 @@ services:
       #     - /app/node_modules
       #   depends_on:
       #     - server
+      #  # # TODO: Add a healtcheck for the client
       # nginx:
       #   image: nginx:latest
       #   container_name: nginx
