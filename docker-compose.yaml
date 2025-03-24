@@ -1,66 +1,125 @@
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "15672:15672"
+  elastic:
+    container_name: elastic 
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     volumes:
-      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - elastic_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    env_file:
+      - ./elk/.env_elk_credentials
+      - ./elk/.env_elastic
+    mem_limit: 1073741824
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1 # TODO: Are these memory blocks really necessary?
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
-  consumer:
-    build: ./consumer
-    container_name: consumer
+      test: ["CMD-SHELL", "curl 'localhost:9200/_cluster/health'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  setup_kibana:
+    container_name: setup_kibana
+    # The elasticsearch image is only used because it has bash and curl preinstalled
+    # and to avoid downloading a new image with those dependencies
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     env_file:
-      - ./consumer/.env
+      - ./elk/.env_elk_credentials
+    volumes:
+      - ./elk/setKibanaCredentials.sh:/scripts/setKibanaCredentials.sh
+    command: ["bash","-c", "/scripts/setKibanaCredentials.sh"]
+    # command: ["sleep","120"]
     depends_on:
-      rabbitmq:
+      elastic:
         condition: service_healthy
-  db:
-    image: postgres
-    container_name: db
-    env_file:
-      - ./db/.env
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db_data:/var/lib/postgresql/data
-  server:
-    build: ./server
-    container_name: server
-    env_file:
-      - ./server/.env
-    volumes:
-      - ./server:/app
-      - /app/node_modules
+
+  kibana:
+    container_name: kibana
     depends_on:
-      rabbitmq:
+      elastic:
         condition: service_healthy
-      db:
-        condition: service_started
-  client:
-    build: ./client
-    container_name: client
+    image: docker.elastic.co/kibana/kibana:8.7.0
     volumes:
-      - ./client:/app
-      - /app/node_modules
-    depends_on:
-      - server
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./ssl-certs/cert.pem:/root/ssl-certs/cert.pem
-      - ./ssl-certs/cert-key.pem:/root/ssl-certs/cert-key.pem
+      - kibana_data:/usr/share/kibana/data
     ports:
-      - 8080:8080
-    depends_on:
-      - server
-      - client
+      - 5601:5601
+    env_file:
+      - ./elk/.env_elk_credentials
+      - ./elk/.env_kibana
+    mem_limit: 1073741824
+
+
+
+
+
+
+
+      # rabbitmq:
+      #   image: rabbitmq:3-management
+      #   container_name: rabbitmq
+      #   ports:
+      #     - "15672:15672"
+      #   volumes:
+      #     - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      #     - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      #   healthcheck:
+      #     test: rabbitmq-diagnostics -q ping
+      #     interval: 30s
+      #     timeout: 10s
+      #     retries: 5
+      #     start_period: 10s
+      # consumer:
+      #   build: ./consumer
+      #   container_name: consumer
+      #   env_file:
+      #     - ./consumer/.env
+      #   depends_on:
+      #     rabbitmq:
+      #       condition: service_healthy
+      # db:
+      #   image: postgres
+      #   container_name: db
+      #   env_file:
+      #     - ./db/.env
+      #   volumes:
+      #     - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      #     - db_data:/var/lib/postgresql/data
+      # server:
+      #   build: ./server
+      #   container_name: server
+      #   env_file:
+      #     - ./server/.env
+      #   volumes:
+      #     - ./server:/app
+      #     - /app/node_modules
+      #   depends_on:
+      #     rabbitmq:
+      #       condition: service_healthy
+      #     db:
+      #       condition: service_started
+      # client:
+      #   build: ./client
+      #   container_name: client
+      #   volumes:
+      #     - ./client:/app
+      #     - /app/node_modules
+      #   depends_on:
+      #     - server
+      # nginx:
+      #   image: nginx:latest
+      #   container_name: nginx
+      #   volumes:
+      #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      #     - ./ssl-certs/cert.pem:/root/ssl-certs/cert.pem
+      #     - ./ssl-certs/cert-key.pem:/root/ssl-certs/cert-key.pem
+      #   ports:
+      #     - 8080:8080
+      #   depends_on:
+      #     - server
+      #     - client
 volumes:
-  db_data:
+  db_data: {}
+  elastic_data: {}
+  kibana_data: {}

@@ -1,4 +1,4 @@
-- Add ElasticSearch and Kibana as services
+- Send logs from the consumer to Elasticsearch. Add the timestamp to the logs.
 - Add Prometheus metrics
 - Deploy through Kubernetes. Create a Helm chart for the apps
 - Use terraform to create an EKS on AWS

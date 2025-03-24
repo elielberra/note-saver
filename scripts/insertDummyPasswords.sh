@@ -3,7 +3,7 @@
 dummyFile=".env_dummy"
 envFile=".env"
 # List of directories with .env_dummy files
-dirsWithEnvDummyFile=("server" "db" "scripts" "consumer")
+dirsWithEnvDummyFile=("server" "db" "scripts" "consumer" "elk")
 scriptDir=$(realpath $(dirname $0))
 rootProjectDir="$(dirname "${scriptDir}")"
 
@@ -11,6 +11,7 @@ cd "${rootProjectDir}"
 
 # Iterate over each file
 for dir in "${dirsWithEnvDummyFile[@]}"; do
+    # TODO: Add logic for .env_elk_credentials
     if [ -f "${dir}/${envFile}" ]; then
         echo "The environment variables file ${dir}/${envFile} already exists, skipping"
         continue
