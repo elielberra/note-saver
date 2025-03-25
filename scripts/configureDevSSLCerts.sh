@@ -46,9 +46,9 @@ source "${scriptDir}/utils.sh"
 # Check if dependencies are install apt packages if not
 verifyAndInstallDependency "certutil" "libnss3-tools"
 
-# Remove previus ssl directory, if exists, and create a new one
+# Remove previous ssl directory, if exists, and create a new one
 cd "${rootProjectDir}"
-[ -d "./${sslCertsDir}" ] && rm -rf "./${sslCertsDir}"
+[ -d "./${sslCertsDir}" ] && sudo rm -rf "./${sslCertsDir}"
 mkdir "./${sslCertsDir}"
 cd "./${sslCertsDir}"
 

@@ -1,4 +1,5 @@
 - Send logs from the consumer to Elasticsearch. Add the timestamp to the logs.
-- Add Prometheus metrics
+- Update README
 - Deploy through Kubernetes. Create a Helm chart for the apps
-- Use terraform to create an EKS on AWS
+- Add Prometheus metrics
+- Use terraform to create a cluster with EKS
