@@ -11,7 +11,6 @@ cd "${rootProjectDir}"
 
 # Iterate over each file
 for dir in "${dirsWithEnvDummyFile[@]}"; do
-    # TODO: Add logic for .env_elk_credentials
     if [ -f "${dir}/${envFile}" ]; then
         echo "The environment variables file ${dir}/${envFile} already exists, skipping"
         continue
