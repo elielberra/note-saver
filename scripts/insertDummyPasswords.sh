@@ -3,7 +3,7 @@
 dummyFile=".env_dummy"
 envFile=".env"
 # List of directories with .env_dummy files
-dirsWithEnvDummyFile=("server" "db" "scripts" "consumer")
+dirsWithEnvDummyFile=("server" "db" "scripts" "consumer" "elk/base_credentials")
 scriptDir=$(realpath $(dirname $0))
 rootProjectDir="$(dirname "${scriptDir}")"
 
