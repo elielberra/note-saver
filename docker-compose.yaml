@@ -16,9 +16,10 @@ services:
         hard: -1
     healthcheck:
       test: ["CMD-SHELL", "curl 'localhost:9200/_cluster/health'"]
-      interval: 5s
+      interval: 15s
       timeout: 5s
       retries: 20
+      start_period: 15s
   setup_kibana:
     container_name: setup_kibana
     # The elasticsearch image is only used because it has bash and curl preinstalled
@@ -67,6 +68,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      elastic:
+        condition: service_healthy
   db:
     image: postgres
     container_name: db
@@ -77,10 +80,10 @@ services:
       - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d note_saver"]
-      interval: 30s
+      interval: 15s
       timeout: 60s
       retries: 5
-      start_period: 80s
+      start_period: 10s
   server:
     build: ./server
     container_name: server
@@ -94,7 +97,12 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
-    # # TODO: Add a healtcheck for the server
+    healthcheck:
+      test: ["CMD-SHELL", "curl 'localhost:3333/health'"]
+      interval: 15s
+      timeout: 60s
+      retries: 20
+      start_period: 10s
   client:
     build: ./client
     container_name: client
@@ -102,8 +110,14 @@ services:
       - ./client:/app
       - /app/node_modules
     depends_on:
-      - server
-    # # TODO: Add a healtcheck for the client
+      server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl 'localhost:3000'"]
+      interval: 15s
+      timeout: 60s
+      retries: 20
+      start_period: 15s
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -114,8 +128,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - server
-      - client
+      client:
+        condition: service_healthy
 volumes:
   db_data: {}
   elastic_data: {}
