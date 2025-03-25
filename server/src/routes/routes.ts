@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import authenticationRouter from "./authentication/authenticationRouter";
 import notesRouter from "./notes/notesRouter";
 import tagsRouter from "./tags/tagsRouter";
