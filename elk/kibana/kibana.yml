@@ -1,4 +1,11 @@
 logging.root.level: warn
 server.host: 0.0.0.0
-elasticsearch.hosts: http://elastic:9200
 xpack.reporting.kibanaServer.hostname: localhost
+server.name: kibana
+elasticsearch.hosts: http://elastic:9200
+elasticsearch.username: kibana_system
+elasticsearch.password: password
+# Predefined Encryption Key Sample: use only in POC environments
+xpack.security.encryptionKey: c34d38b3a14956121ff2170e5030b471551370178f43e5626eec58b04a30fae2
+xpack.encryptedSavedObjects.encryptionKey: c34d38b3a14956121ff2170e5030b471551370178f43e5626eec58b04a30fae2
+xpack.reporting.encryptionKey: c34d38b3a14956121ff2170e5030b471551370178f43e5626eec58b04a30fae2

@@ -9,7 +9,6 @@ services:
       - 9200:9200
     env_file:
       - ./elk/base_credentials/.env
-      - ./elk/elastic/.env
     mem_limit: 1073741824
     ulimits:
       memlock:
@@ -27,6 +26,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     env_file:
       - ./elk/base_credentials/.env
+    mem_limit: 1073741824
     volumes:
       - ./elk/kibana/setKibanaCredentials.sh:/scripts/setKibanaCredentials.sh
     command: ["bash","-c", "/scripts/setKibanaCredentials.sh"]
@@ -44,8 +44,6 @@ services:
       - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - 5601:5601
-    env_file:
-      - ./elk/kibana/.env
     mem_limit: 1073741824
   rabbitmq:
     image: rabbitmq:3-management
