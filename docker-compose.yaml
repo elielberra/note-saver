@@ -75,12 +75,12 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/postgresql/data
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-    #   interval: 30s
-    #   timeout: 60s
-    #   retries: 5
-    #   start_period: 80s # TODO: Test this healtcheck
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d note_saver"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
   server:
     build: ./server
     container_name: server
@@ -93,7 +93,7 @@ services:
       rabbitmq:
         condition: service_healthy
       db:
-        condition: service_started
+        condition: service_healthy
     # # TODO: Add a healtcheck for the server
   client:
     build: ./client
