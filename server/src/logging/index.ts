@@ -1,6 +1,6 @@
 import winston from "winston";
 import { isProductionEnv } from "../lib/utils";
-import { ErrorLogData, LogData, UNSPECIFIED_ERROR } from "../types/types";
+import { ErrorLogData, LogData, LogDataTimestamp, UNSPECIFIED_ERROR } from "../types/types";
 import { rabbitMQSender } from "./rabbitmq";
 
 const colorizer = winston.format.colorize();
@@ -38,7 +38,11 @@ export function getConsoleErrorMessage({ errorName, errorMessage, errorStack }: 
 }
 
 export function generateLog(logData: LogData) {
-  rabbitMQSender.sendToQueue(JSON.stringify(logData));
+  const logWithTimestamp: LogDataTimestamp = {
+    ...logData,
+    timestamp: new Date()
+  };
+  rabbitMQSender.sendToQueue(JSON.stringify(logWithTimestamp));
   if (logData.service === "client") return;
   consoleLogger.log(logData.logLevel, logData.logMessage, {
     errorDetails: getConsoleErrorMessage(logData)

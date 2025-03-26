@@ -56,4 +56,5 @@ export interface LogData extends ErrorLogData {
   logLevel: LogLevels;
   logMessage: string;
   service: Services;
+  timestamp: Date;
 }

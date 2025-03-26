@@ -129,3 +129,7 @@ export interface LogData extends ErrorLogData {
   logMessage: string;
   service: Services;
 }
+
+export interface LogDataTimestamp extends LogData {
+  timestamp: Date;
+}
