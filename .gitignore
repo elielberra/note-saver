@@ -28,3 +28,4 @@ vagrant/ubuntu*
 
 # Go compiled code
 consumer/consumer
+consumer/tmp
