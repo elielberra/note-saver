@@ -1,10 +1,13 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"github.com/rabbitmq/amqp091-go"
+	"fmt"
 	"log"
 	"os"
+	"bytes"
+	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/joho/godotenv"
+	"github.com/rabbitmq/amqp091-go"
 )
 
 func main() {
@@ -12,7 +15,6 @@ func main() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 	amqpURL := "amqp://" + os.Getenv("RABBITMQ_USER") + ":" + os.Getenv("RABBITMQ_PASSWORD") + "@" + os.Getenv("RABBITMQ_SERVICENAME") + ":5672/" + os.Getenv("RABBITMQ_VHOST")
-	queueName := os.Getenv("RABBITMQ_QUEUE")
 
 	conn, err := amqp091.Dial(amqpURL)
 	if err != nil {
@@ -26,6 +28,7 @@ func main() {
 	}
 	defer ch.Close()
 
+	queueName := os.Getenv("RABBITMQ_QUEUE")
 	q, err := ch.QueueDeclare(
 		queueName,
 		true,
@@ -51,14 +54,41 @@ func main() {
 		log.Fatalf("Failed to register a consumer: %v", err)
 	}
 
-	log.Printf("The consumer service is ready to retrieve messages from the queue")
+	log.Println("The consumer service is ready to retrieve messages from the queue")
 
 	forever := make(chan bool)
 
 	go func() {
 		for msg := range messages {
-			// TODO: Add logic for sending logs to Elasticsearch
 			log.Printf("Received a message: %s", msg.Body)
+
+			cfg := elasticsearch.Config{
+				Addresses: []string{
+					fmt.Sprintf("http://%s:9200", os.Getenv("ELASTIC_DOMAIN")),
+				},
+				Username: os.Getenv("ELASTIC_USER"),
+				Password: os.Getenv("ELASTIC_PASSWORD"),
+			}
+
+			es, err := elasticsearch.NewClient(cfg)
+			if err != nil {
+				log.Fatalf("Error creating the Elasticsearch client: %s", err)
+			}
+
+			res, err := es.Index(
+				os.Getenv("ELASTIC_INDEX"),
+				bytes.NewReader(msg.Body),
+			)
+			if err != nil {
+				log.Fatalf("Error indexing log: %s", err)
+			}
+			defer res.Body.Close()
+
+			if res.IsError() {
+				log.Fatalf("Error indexing document. Reponse satuts code: %s", res.Status())
+			}
+
+			fmt.Println("Log successfully sent to Elasticsearch")
 		}
 		log.Println("RabbitMQ channel has been closed. Once the rabbitmq service is up, restart this consumer")
 	}()
