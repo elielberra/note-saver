@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os"
-	"bytes"
+
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/joho/godotenv"
 	"github.com/rabbitmq/amqp091-go"
@@ -56,12 +57,8 @@ func main() {
 
 	log.Println("The consumer service is ready to retrieve messages from the queue")
 
-	forever := make(chan bool)
-
-	go func() {
-		for msg := range messages {
-			log.Printf("Received a message: %s", msg.Body)
-
+	for msg := range messages {
+		go func(msg amqp091.Delivery) {
 			cfg := elasticsearch.Config{
 				Addresses: []string{
 					fmt.Sprintf("http://%s:9200", os.Getenv("ELASTIC_DOMAIN")),
@@ -69,29 +66,27 @@ func main() {
 				Username: os.Getenv("ELASTIC_USER"),
 				Password: os.Getenv("ELASTIC_PASSWORD"),
 			}
-
 			es, err := elasticsearch.NewClient(cfg)
 			if err != nil {
-				log.Fatalf("Error creating the Elasticsearch client: %s", err)
+				log.Printf("Error creating the Elasticsearch client: %s", err)
+				return
 			}
 
 			res, err := es.Index(
 				os.Getenv("ELASTIC_INDEX"),
 				bytes.NewReader(msg.Body),
 			)
-			if err != nil {
-				log.Fatalf("Error indexing log: %s", err)
-			}
 			defer res.Body.Close()
-
-			if res.IsError() {
-				log.Fatalf("Error indexing document. Reponse satuts code: %s", res.Status())
+			if err != nil {
+				log.Printf("Error while trying to index a log: %s", err)
+				return
 			}
-
-			fmt.Println("Log successfully sent to Elasticsearch")
-		}
-		log.Println("RabbitMQ channel has been closed. Once the rabbitmq service is up, restart this consumer")
-	}()
-
-	<-forever
+			if res.IsError() {
+				log.Printf("Error on the Response to Elasticsearch - Status code: %s", res.Status())
+				return
+			}
+			fmt.Println("Log successfully sent to Elasticsearch") // TODO: Delete me
+		}(msg)
+	}
+	log.Println("The RabbitMQ channel has been closed")
 }
