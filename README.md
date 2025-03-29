@@ -6,7 +6,8 @@
 
 This app allows users to write notes. Once the users are logged in, they can create their own notes. They can also archive and tag them.
 
-### Objective 
+### Objective
+
 I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes some noteworthy infrastructure features.
 
 ## Monorepo Structure
