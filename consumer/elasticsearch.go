@@ -22,7 +22,7 @@ func init() {
 	}
 	es, err := elasticsearch.NewClient(cfg)
 	if err != nil {
-		log.Printf("Error creating the Elasticsearch client: %s", err)
+		log.Fatalf("Error creating the Elasticsearch client: %s", err)
 		return
 	}
 	esClient = es
