@@ -28,3 +28,8 @@ jobs:
       run: |
         docker build -t elober/notesaver-server:latest ./server
         docker push elober/notesaver-server:latest
+
+    - name: Build and push consumer image
+      run: |
+        docker build -t elober/notesaver-consumer:latest -f ./consumer/Dockerfile.prod ./consumer
+        docker push elober/notesaver-consumer:latest
