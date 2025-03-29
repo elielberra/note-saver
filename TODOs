@@ -1,8 +1,7 @@
 Mandatory
-- Update README
 - Deploy through Kubernetes. Create a Helm chart for the apps
 - Add Prometheus metrics
 - Use terraform to create a cluster with EKS
 
 Nice to have but probably won't be done
-- Add a wrapper to amqp libraries to rabbitmq client an consumer so that they automatically reconnect
+- Add a wrapper to amqp091-go and amqplib so that they automatically reconnect with RabbitMQ
