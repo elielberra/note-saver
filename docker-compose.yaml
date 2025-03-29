@@ -5,8 +5,6 @@ services:
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
       - ./elk/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    ports:
-      - 9200:9200
     env_file:
       - ./elk/base_credentials/.env
     mem_limit: 1073741824
@@ -65,6 +63,8 @@ services:
     container_name: consumer
     env_file:
       - ./consumer/.env
+    volumes:
+      - ./consumer:/app
     depends_on:
       rabbitmq:
         condition: service_healthy

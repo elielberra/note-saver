@@ -76,7 +76,8 @@ export async function handleLogging(logLevel: LogLevels, message: string, error?
   const requestBody: LogData = {
     logLevel,
     logMessage: message,
-    service: "client"
+    service: "client",
+    timestamp: new Date()
   };
   if (error instanceof Error) {
     requestBody.errorName = error.name;

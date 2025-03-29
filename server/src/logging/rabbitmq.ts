@@ -3,19 +3,24 @@ import { consoleLogger, generateLog, getConsoleErrorMessage } from ".";
 import { ErrorLogData, UNSPECIFIED_ERROR } from "../types/types";
 
 class RabbitMQSender {
-  private connection: amqp.Connection | null = null;
   private channel: amqp.Channel | null = null;
+  private isChannelOpened: boolean = false;
   private exchange = process.env.RABBITMQ_EXCHANGE!;
 
-  async connect() {
-    if (this.connection && this.channel) {
+  async connectWithRabbit() {
+    if (this.isChannelOpened) {
       return;
     }
     try {
-      this.connection = await amqp.connect(
+      const connection = await amqp.connect(
         `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_SERVICENAME}/${process.env.RABBITMQ_VHOST}`
       );
-      this.channel = await this.connection.createChannel();
+      this.channel = await connection.createChannel();
+      this.isChannelOpened = true;
+      this.channel.on("close", () => {
+        this.isChannelOpened = false;
+        consoleLogger.error("The RabbitMQ channel has been closed");
+      });
       await this.channel.assertExchange(this.exchange, "direct", { durable: true });
       generateLog({
         logLevel: "info",
@@ -29,7 +34,7 @@ class RabbitMQSender {
   }
 
   async sendToQueue(message: string) {
-    await this.connect();
+    await this.connectWithRabbit();
     try {
       this.channel!.publish(
         this.exchange,
@@ -51,27 +56,6 @@ class RabbitMQSender {
       consoleLogger.error(`Error while trying to send to RabbitMQ the log:\n${message}`, {
         errorDetails: getConsoleErrorMessage(errorLogData)
       });
-    }
-  }
-
-  async closeConnection() {
-    try {
-      if (this.channel) {
-        await this.channel.close();
-        this.channel = null;
-      }
-      if (this.connection) {
-        await this.connection.close();
-        this.connection = null;
-      }
-      generateLog({
-        logLevel: "info",
-        service: "server",
-        logMessage: "Closed successfully RabbitMQ connection"
-      });
-    } catch (error) {
-      consoleLogger.error("Error while trying to close the connection with RabbitMQ");
-      throw error;
     }
   }
 }

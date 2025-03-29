@@ -1,22 +1,12 @@
-FROM golang:1.22 as builder
+FROM golang:1.23 AS builder
+
+RUN go install github.com/air-verse/air@v1.61.7
 
 WORKDIR /app
 
 COPY go.mod go.sum ./
-
 RUN go mod download
 
 COPY . .
 
-# Disable cgo and set the target OS to Linux for a statically linked binary
-RUN CGO_ENABLED=0 GOOS=linux go build -o consumer .
-
-FROM alpine:3.21
-
-WORKDIR /app
-
-COPY --from=builder /app/consumer .
-
-COPY .env /app/.env
-
-CMD ["/app/consumer"]
+CMD ["air"]
