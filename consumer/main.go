@@ -15,47 +15,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
-	amqpURL := "amqp://" + os.Getenv("RABBITMQ_USER") + ":" + os.Getenv("RABBITMQ_PASSWORD") + "@" + os.Getenv("RABBITMQ_SERVICENAME") + ":5672/" + os.Getenv("RABBITMQ_VHOST")
-
-	conn, err := amqp091.Dial(amqpURL)
+	messages, err := connectAndConsumeRabbit()
 	if err != nil {
-		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
+		log.Fatalf("%v", err)
 	}
-	defer conn.Close()
-
-	ch, err := conn.Channel()
-	if err != nil {
-		log.Fatalf("Failed to open a channel: %v", err)
-	}
-	defer ch.Close()
-
-	queueName := os.Getenv("RABBITMQ_QUEUE")
-	q, err := ch.QueueDeclare(
-		queueName,
-		true,
-		false,
-		false,
-		false,
-		nil,
-	)
-	if err != nil {
-		log.Fatalf("Failed to declare a queue: %v", err)
-	}
-
-	messages, err := ch.Consume(
-		q.Name,
-		"",
-		true,
-		false,
-		false,
-		false,
-		nil,
-	)
-	if err != nil {
-		log.Fatalf("Failed to register a consumer: %v", err)
-	}
-
-	log.Println("The consumer service is ready to retrieve messages from the queue")
 
 	for msg := range messages {
 		go func(msg amqp091.Delivery) {
