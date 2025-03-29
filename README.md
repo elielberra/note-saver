@@ -2,17 +2,27 @@
 
 ## Overview
 
-I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes some noteworthy infrastructure features.
+### Basic Functionalities
 
 This app allows users to write notes. Once the users are logged in, they can create their own notes. They can also archive and tag them.
+
+### Objective 
+I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes some noteworthy infrastructure features.
 
 ## Monorepo Structure
 
 This project is organized as a monorepo to streamline development and deployment. It contains:
-- **Client**: Frontend application
-- **Server**: Backend services
-- **Database**: Configuration and setup
-- **Infrastructure**: Additional tools like bash scripts, an nginx proxy, Vagrant and more
+- **Client**: Frontend application  
+- **Server**: Backend services  
+- **Database**: Configuration and setup  
+- **Nginx**: An nginx server proxy  
+- **RabbitMQ Server**: Message broker for async communication  
+- **Consumer**: Processes messages from RabbitMQ  
+- **Elasticsearch**: Search and analytics engine  
+- **Kibana**: Visualization tool for Elasticsearch  
+- **Bash scripts**: Automation and utility scripts  
+- **Git Actions**: CI/CD workflows for automation 
+- **Vagrant**: Local development environment setup  
 
 ## Frontend Client
 
@@ -60,7 +70,7 @@ On the server side, the application uses the **Winston** library for logging, wi
 
 This project uses [RabbitMQ](https://www.rabbitmq.com/documentation.html) to manage message queues. Logs from both the client and server are sent to RabbitMQ for centralized processing. Server logs are sent directly to the queue, while client logs are sent to the server via HTTP and then forwarded to the queue. A consumer retrieves the logs from the queue and forwards them to Elasticsearch.
 
-You might be wondering why the app doesn’t send logs directly to Elasticsearch, bypassing RabbitMQ. As I mentioned earlier, this project aims to explore different technologies and architectural features. Furthermore, on a production setup, having a queue is beneficial because it decouples the logs. If the Elasticsearch service is down, the logs can still be retrieved later from the queue.
+You might be wondering why the app doesn’t harvest logs through Filebeat and send them to Elasticsearch, as that is the usual flow. However, as I mentioned earlier, this project aims to explore different technologies and architectural approaches.  
 
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
@@ -72,6 +82,16 @@ The Consumer service is written in Go and is responsible for retrieving messages
 
 Note that the Consumer will actually consume the messages from the queue. Therefore, if this service is running, you will not find any messages queued in the RabbitMQ management console.
 
+## Elasticsearch  
+
+[Elasticsearch](https://www.elastic.co/docs) is a search and analytics engine. In this project, logs from the consumer are sent directly to Elasticsearch and indexed in the `note-saver` index.  
+
+## Kibana  
+
+[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at [localhost:5601](http://localhost:5601) using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
+
+When running Kibana with `docker-compose` the credentials are configured on a set up container since they can't be set up on a config file on the new version of Elasticsearch.
+
 ## Nginx Proxy
 
 An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client** and **server**, ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections.
@@ -80,7 +100,7 @@ An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **cli
 
 Git Actions are used for automating various tasks in the repository:
 
-- `Build and Push Docker Images` generates the Docker images for the **client** and **server** on each push to the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
+- `Build and Push Docker Images` generates the Docker images for the **client**, the **server** and the **consumer** on each push to the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
 
 ## Pre-Push Hook
@@ -91,13 +111,11 @@ A pre-push hook is implemented using [Husky](https://typicode.github.io/husky/) 
 
 The application includes basic test coverage using [Jest](https://jestjs.io/), primarily as an experiment. While the current coverage is minimal, additional tests may be added in the future to enhance reliability.
 
-## Bash Scripts
+## Bash Scripts  
 
-The `setupLocalEnvironment.sh` bash script configures the host machine to run this application. It executes three sub-scripts to achieve this:
+The `setupLocalEnvironment.sh` script configures the host machine to run this application by setting up environment variables, generating SSL certificates, ensuring local DNS resolution, configuring executable permissions, and adjusting the virtual memory settings of the OS. It automates tasks like inserting dummy passwords, creating and trusting a Certificate Authority (CA), and modifying the hosts file for local development.
 
-- The real `.env` file is not uploaded to the repository for security reasons. However, a dummy `.env` file is included, and its passwords can be auto-populated using `insertDummyPasswords.sh`.
-- `insertDummyPasswords.sh` generates the Certificate Authority (CA) and the key required for creating SSL certificates. It also configures the CA to be recognized as a valid authority by the operating system. Additionally, this script automatically configures Google Chrome and Mozilla Firefox to trust the CA.
-- `configureHostsFile.sh` modifies the hosts file to enable local DNS resolution for the domains `notesaver` and `server.notesaver`.
+
 
 ## How to Run this App
 
@@ -133,5 +151,5 @@ Access https://notesaver:8080 on the browser
 
 #### Credentials During Development
 
-During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file. For RabbitMQ, the username is `admin`, and the password is also `password`.
+During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
 
