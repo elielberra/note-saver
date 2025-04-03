@@ -21,12 +21,12 @@ jobs:
 
     - name: Build and push client image
       run: |
-        docker build -t elober/notesaver-client:latest ./client
+        docker build -t elober/notesaver-client:latest -f ./client/Dockerfile.prod ./client
         docker push elober/notesaver-client:latest
 
     - name: Build and push server image
       run: |
-        docker build -t elober/notesaver-server:latest ./server
+        docker build -t elober/notesaver-server:latest -f ./server/Dockerfile.prod ./server
         docker push elober/notesaver-server:latest
 
     - name: Build and push consumer image

@@ -1,0 +1,8 @@
+node_modules
+Dockerfile*
+dist
+eslint.config.mjs
+jest.config.js
+.prettierrc
+.svgrrc.js
+.husky
