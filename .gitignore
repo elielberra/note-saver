@@ -30,3 +30,10 @@ vagrant/ubuntu*
 # Go compiled code
 consumer/consumer
 consumer/tmp
+
+# Terraform local files
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfstate.backup
