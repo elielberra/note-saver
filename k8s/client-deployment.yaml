@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notesaver-client
+  labels:
+    app: notesaver-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notesaver-client
+  template:
+    metadata:
+      labels:
+        app: notesaver-client
+    spec:
+      containers:
+      - name: notesaver-client
+        image: elober/notesaver-client:latest
+        ports:
+        - containerPort: 80
