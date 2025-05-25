@@ -16,9 +16,7 @@ client/dist
 *.crt
 *.csr
 *.cnf
-
-# EC2 instance data
-/ec2
+*.srl
 
 # Testing scripts
 scripts/test.sh
