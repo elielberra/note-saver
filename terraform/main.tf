@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.98.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.13.0"
+    }
   }
 }
 
@@ -45,3 +49,39 @@ module "eks" {
     }
   }
 }
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.auth.token
+  }
+}
+
+data "aws_eks_cluster_auth" "auth" {
+  name = module.eks.cluster_name
+}
+
+resource "helm_release" "nginx_ingress" {
+  name       = "ingress-nginx"
+  namespace  = "ingress-nginx"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  version    = "1.12.2"
+
+  # set {
+  #   name  = "controller.replicaCount"
+  #   value = "2"
+  # }
+
+  # set {
+  #   name  = "controller.nodeSelector.kubernetes\\.io/os"
+  #   value = "linux"
+  # }
+
+  # set {
+  #   name  = "controller.service.externalTrafficPolicy"
+  #   value = "Cluster"
+  # }
+}
+
