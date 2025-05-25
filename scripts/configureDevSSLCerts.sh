@@ -90,6 +90,26 @@ DNS.1 = ${commonName}
 DNS.2 = server.${commonName}
 IP.1 = 127.0.0.1
 EOF
+
+# Check if minikube is installed and get its IP
+minikubeIP=""
+if command -v minikube &> /dev/null; then
+    echo "Minikube is installed"
+    # Start minikube if not already running
+    if ! minikube status | grep -q "Running"; then
+        echo "Starting minikube..."
+        minikube start
+    fi
+    minikubeIP=$(minikube ip)
+    echo "Minikube IP: ${minikubeIP}"
+else
+    echo "Minikube is not installed. Skipping Minikube IP configuration."
+fi
+# Append Minikube IP if available
+if [[ -n "${minikubeIP}" ]]; then
+    echo "IP.2 = ${minikubeIP}" >> "${certExtConfFilename}"
+fi
+
 # CA signs the Certificate Signing Request, generating the Certificate itself
 openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" \
     -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
