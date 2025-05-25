@@ -1,22 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: notesaver-simple-ingress
-    # Optional: If you want to force HTTPS redirection from HTTP
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-
+  name: notesaver
 spec:
   ingressClassName: nginx
-
-  # TLS configuration (optional, but highly recommended for production)
-  # If you want to use HTTPS, you'll need a Secret containing your TLS certs.
-  # For now, I'm omitting it based on your request, but keep it in mind.
-  # tls:
-  #   - hosts:
-  #       - notesaver-client.example.com
-  #       - notesaver-server.example.com
-  #     secretName: my-tls-secret # Replace with the name of your TLS secret
-
+  tls:
+    - hosts:
+        - notesaver
+        - server.notesaver
+      secretName: notesaver-tls
   rules:
     - host: notesaver
       http:
@@ -25,18 +17,16 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: notesaver-client-svc
+                name: notesaver-client
                 port:
                   number: 80
-
-    # # Rule for the server application
-    # - host: server.notesaver # Replace with your actual server domain
-    #   http:
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix # Matches all paths under this host
-    #         backend:
-    #           service:
-    #             name: notesaver-server-svc # Name of the server Service
-    #             port:
-    #               number: 80           # Port of the server Service
+    - host: server.notesaver
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: notesaver-server
+                port:
+                  number: 80
