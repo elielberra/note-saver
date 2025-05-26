@@ -8,5 +8,7 @@ resources:
 
 configMapGenerator:
   - name: server-env
-    files:
-      - .env=files/.env
+    envs:
+      - files/.env
+generatorOptions:
+  disableNameSuffixHash: true
