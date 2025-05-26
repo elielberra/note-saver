@@ -7,5 +7,6 @@ resources:
   # - db
   - rabbitmq
   - server
+  # TODO: Move resources below to separate directories
   - helmrepository.yaml
   - ingress.yaml
