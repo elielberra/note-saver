@@ -19,6 +19,3 @@ spec:
     loadDefinition:
       enabled: true
       existingSecret: rabbitmq-definitions
-    extraConfiguration: |
-      load_definitions = /app/load_definition.json
-    # command: ["sleep", "infinity"]

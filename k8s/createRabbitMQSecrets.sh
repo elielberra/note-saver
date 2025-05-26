@@ -7,3 +7,5 @@ kubectl create secret generic rabbitmq-conf \
 kubectl delete secret rabbitmq-definitions --ignore-not-found
 kubectl create secret generic rabbitmq-definitions \
   --from-file="load_definition.json"=../rabbitmq/definitions.json
+
+# TODO: Change path of files
