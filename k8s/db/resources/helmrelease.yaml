@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgresql
+spec:
+  interval: 1m # TODO: Delete me
+  timeout: 1m
+  chart:
+    spec:
+      chart: postgresql
+      version: "16.7.4"
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    primary:
+      initdb:
+        scriptsConfigMap: db-init
+    auth:
+      existingSecret: postgresql-passwords

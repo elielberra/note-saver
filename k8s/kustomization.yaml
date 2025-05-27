@@ -4,7 +4,7 @@ kind: Kustomization
 
 resources:
   - client
-  # - db
+  - db
   - rabbitmq
   - server
   # TODO: Move resources below to separate directories
