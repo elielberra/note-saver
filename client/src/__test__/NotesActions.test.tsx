@@ -5,7 +5,8 @@ jest.mock("../lib/utils", () => ({
   fetchNotes: jest.fn(),
   getHeadersWithAuth: jest.fn(),
   handleErrorInResponse: jest.fn(),
-  handleLogging: jest.fn()
+  handleLogging: jest.fn(),
+  getProxyPort: jest.fn()
 }));
 
 describe("NoteActions Component", () => {
