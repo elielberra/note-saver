@@ -6,14 +6,14 @@ import http from "http";
 import { initializePassport } from "./passport/passportConfig";
 import router from "./routes/routes";
 import { generateLog } from "./logging";
-import { getProxyPort } from "./lib/utils";
+import { getCorsPort } from "./lib/utils";
 
 dotenv.config();
 const app = express();
 app.use(express.json());
 
 const corsOptions: CorsOptions = {
-  origin: [`https://notesaver:${getProxyPort()}`],
+  origin: [`https://notesaver${getCorsPort()}`],
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));

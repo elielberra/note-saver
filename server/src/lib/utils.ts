@@ -10,9 +10,8 @@ export function isProductionEnv() {
   return process.env.NODE_ENV === PRODUCTION;
 }
 
-const PROD_PROXY_PORT = "443" as const;
-const DEV_PROXY_PORT = "8080" as const;
+const DEV_PROXY_PORT = ":8080" as const;
 
-export function getProxyPort() {
-  return isProductionEnv() ? PROD_PROXY_PORT : DEV_PROXY_PORT;
+export function getCorsPort() {
+  return isProductionEnv() ? "" : DEV_PROXY_PORT;
 }
