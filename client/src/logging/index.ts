@@ -1,6 +1,7 @@
 import log from "loglevel";
+import { isProductionEnv } from "../lib/utils";
 
-if (process.env.NODE_ENV === "production") {
+if (isProductionEnv()) {
   log.setLevel("silent");
 } else {
   log.setLevel("debug");

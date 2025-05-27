@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { Response } from "express";
 import { generateLog, getLogErrorData } from "../logging";
 import { LogData, UNSPECIFIED_ERROR } from "../types/types";
+import { isTestingEnv } from "../lib/utils";
 
 export async function checkIfPasswordIsValid(enteredPassword: string, userPassword: string) {
   return await bcrypt.compare(enteredPassword, userPassword);
@@ -9,7 +10,7 @@ export async function checkIfPasswordIsValid(enteredPassword: string, userPasswo
 
 export function handleErrorResponse(res: Response, message: string, error: unknown) {
   res.status(500).send("Internal server error");
-  process.env.NODE_ENV !== "test" &&
+  !isTestingEnv() &&
     generateLog({
       logLevel: "error",
       logMessage: message,
