@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { getHeadersWithContentType, handleErrorInResponse, handleLogging } from "../lib/utils";
+import {
+  getHeadersWithContentType,
+  getProxyPort,
+  handleErrorInResponse,
+  handleLogging
+} from "../lib/utils";
 import {
   AuthenticateUserResponse,
   SuccessfulAuthResponse,
@@ -36,7 +41,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch(`https://server.notesaver:8080/${action}`, {
+      const response = await fetch(`https://server.notesaver:${getProxyPort()}/${action}`, {
         method: "POST",
         headers: getHeadersWithContentType(),
         body: JSON.stringify({ username, password })

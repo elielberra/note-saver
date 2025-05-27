@@ -36,7 +36,7 @@ export async function fetchNotes(
 ) {
   try {
     const response = await fetch(
-      `https://server.notesaver:8080/notes?areActive=${notesStatus}${
+      `https://server.notesaver:${getProxyPort()}/notes?areActive=${notesStatus}${
         filteringText ? `&filteringText=${filteringText}` : ""
       }`,
       {
@@ -54,8 +54,17 @@ export async function fetchNotes(
   }
 }
 
+const PRODUCTION = "production" as const;
+
 export function isProductionEnv() {
-  return process.env.NODE_ENV === "production";
+  return process.env.NODE_ENV === PRODUCTION;
+}
+
+const PROD_PROXY_PORT = "443" as const;
+const DEV_PROXY_PORT = "8080" as const;
+
+export function getProxyPort() {
+  return isProductionEnv() ? PROD_PROXY_PORT : DEV_PROXY_PORT;
 }
 
 export async function handleLogging(logLevel: LogLevels, message: string, error?: unknown) {
@@ -87,7 +96,7 @@ export async function handleLogging(logLevel: LogLevels, message: string, error?
     requestBody.errorName = UNSPECIFIED_ERROR;
   }
   try {
-    const response = await fetch("https://server.notesaver:8080/logs", {
+    const response = await fetch(`https://server.notesaver:${getProxyPort()}/logs`, {
       method: "POST",
       headers: sessionStorage.getItem("authToken")
         ? getHeadersWithAuthAndContentType()
@@ -140,7 +149,7 @@ export function getNewSortedNotes(
 
 export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticatedResponse> {
   try {
-    const response = await fetch("https://server.notesaver:8080/isauthenticated", {
+    const response = await fetch(`https://server.notesaver:${getProxyPort()}/isauthenticated`, {
       headers: getHeadersWithAuth()
     });
     if (!response.ok && response.status !== 401 && response.status !== 403) {
