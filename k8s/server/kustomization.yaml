@@ -10,5 +10,3 @@ configMapGenerator:
   - name: server-env
     envs:
       - files/.env
-generatorOptions:
-  disableNameSuffixHash: true

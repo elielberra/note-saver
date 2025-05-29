@@ -21,8 +21,9 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: client-config-volume
-              mountPath: /app/public
-            # TODO: Check why this is failing, and ensure note-icon.png is not overwritten
+              mountPath: /usr/share/nginx/html/config.json
+              subPath: config.json
+            # TODO: Check why this is failing, and ensure why files are being overwritten
       volumes:
         - name: client-config-volume
           configMap:
