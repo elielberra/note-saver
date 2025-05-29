@@ -15,7 +15,15 @@ spec:
         app: notesaver-client
     spec:
       containers:
-      - name: notesaver-client
-        image: elober/notesaver-client:latest
-        ports:
-        - containerPort: 80
+        - name: notesaver-client
+          image: elober/notesaver-client:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: client-config-volume
+              mountPath: /app/public
+            # TODO: Check why this is failing, and ensure note-icon.png is not overwritten
+      volumes:
+        - name: client-config-volume
+          configMap:
+            name: client-config

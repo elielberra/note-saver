@@ -5,3 +5,10 @@ kind: Kustomization
 resources:
   - resources/client-deployment.yaml
   - resources/client-service.yaml
+
+configMapGenerator:
+  - name: client-config
+    files:
+      - config.json=files/config.json
+generatorOptions:
+  disableNameSuffixHash: true

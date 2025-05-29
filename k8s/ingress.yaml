@@ -6,11 +6,11 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - notesaver
-        - server.notesaver
+        - minikube.notesaver
+        - minikube.server.notesaver
       secretName: notesaver-tls
   rules:
-    - host: notesaver
+    - host: minikube.notesaver
       http:
         paths:
           - path: /
@@ -20,7 +20,7 @@ spec:
                 name: notesaver-client
                 port:
                   number: 80
-    - host: server.notesaver
+    - host: minikube.server.notesaver
       http:
         paths:
           - path: /
