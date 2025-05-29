@@ -3,6 +3,7 @@ import MaginfyingGlassIcon from "../components/icons/MagnifyingGlassIcon";
 import { NoteT } from "../types/types";
 import { FormEventHandler } from "react";
 import { fetchNotes } from "../lib/utils";
+import { useConfig } from "./ConfigContext";
 
 type SearchBarProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -17,16 +18,17 @@ export default function SearchBar({
   searchText,
   setSearchText
 }: SearchBarProps) {
+  const config = useConfig();
   async function filterNotes(event: React.ChangeEvent<HTMLInputElement>) {
     const filteringText = event.target.value;
     setSearchText(filteringText);
-    if (!filteringText) fetchNotes(setNotes, isShowingActiveNotes);
-    await fetchNotes(setNotes, isShowingActiveNotes, filteringText);
+    if (!filteringText) fetchNotes(config.SERVER_URL, setNotes, isShowingActiveNotes);
+    await fetchNotes(config.SERVER_URL, setNotes, isShowingActiveNotes, filteringText);
   }
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    await fetchNotes(setNotes, isShowingActiveNotes, searchText);
+    await fetchNotes(config.SERVER_URL, setNotes, isShowingActiveNotes, searchText);
   };
 
   return (

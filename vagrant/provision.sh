@@ -68,5 +68,5 @@ echo "Clone the repository with \`git clone https://github.com/elielberra/note-s
 echo "Change to the directory of the repository with \`cd <path_to_repo>/note-saver\`"
 echo "Then run the script \`bash scripts/setupLocalEnvironment.sh\`"
 echo "Start the app with \`docker compose up\`"
-echo "Access https://notesaver:8080 on the browser"
+echo "Access https://docker-compose.notesaver:8080 on the browser"
 echo "The VM was succesfully configured!"

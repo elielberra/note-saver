@@ -35,3 +35,6 @@ consumer/tmp
 *.tfstate.*
 .terraform.lock.hcl
 terraform.tfstate.backup
+
+# Client public files mounted as bind volume
+client/public/config.json

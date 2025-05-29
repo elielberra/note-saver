@@ -8,10 +8,10 @@ import {
   getHeadersWithAuthAndContentType,
   getNewSortedNotes,
   getNoteToBeUpdated,
-  getProxyPort,
   handleErrorInResponse,
   handleLogging
 } from "../lib/utils";
+import { useConfig } from "./ConfigContext";
 
 type TagProps = {
   tag: NoteT["tags"][number];
@@ -20,16 +20,17 @@ type TagProps = {
 };
 
 export default function Tag({ tag, setNotes, noteId }: TagProps) {
+  const config = useConfig();
   const [tagContent, setTagContent] = useState(tag.tagContent);
   async function deleteTag() {
     try {
-      const response = await fetch(`https://server.notesaver:${getProxyPort()}/delete-tag`, {
+      const response = await fetch(`${config.SERVER_URL}/delete-tag`, {
         method: "DELETE",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: tag.tagId })
       });
       if (!response.ok) {
-        handleErrorInResponse(response);
+        handleErrorInResponse(config.SERVER_URL, response);
         return;
       }
       setNotes((prevNotes) => {
@@ -45,26 +46,23 @@ export default function Tag({ tag, setNotes, noteId }: TagProps) {
         return getNewSortedNotes(prevNotes, noteId, newNote);
       });
     } catch (error) {
-      handleLogging("error", "Error while updating note content", error);
+      handleLogging(config.SERVER_URL, "error", "Error while updating note content", error);
     }
   }
 
   const saveTagOnDB = useCallback(
     async (newContent: string) => {
       try {
-        const response = await fetch(
-          `https://server.notesaver:${getProxyPort()}/update-tag-content`,
-          {
-            method: "POST",
-            headers: getHeadersWithAuthAndContentType(),
-            body: JSON.stringify({ id: tag.tagId, newContent })
-          }
-        );
+        const response = await fetch(`${config.SERVER_URL}/update-tag-content`, {
+          method: "POST",
+          headers: getHeadersWithAuthAndContentType(),
+          body: JSON.stringify({ id: tag.tagId, newContent })
+        });
         if (!response.ok) {
-          handleErrorInResponse(response);
+          handleErrorInResponse(config.SERVER_URL, response);
         }
       } catch (error) {
-        handleLogging("error", "Error while updating tag content", error);
+        handleLogging(config.SERVER_URL, "error", "Error while updating tag content", error);
       }
     },
     [tag.tagId]

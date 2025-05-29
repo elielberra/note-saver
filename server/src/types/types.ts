@@ -133,3 +133,7 @@ export interface LogData extends ErrorLogData {
 export interface LogDataTimestamp extends LogData {
   timestamp: Date;
 }
+
+export const validEnvironments = ["docker-compose", "minikube", "eks"] as const;
+
+export type PlatformEnvironment = (typeof validEnvironments)[number];

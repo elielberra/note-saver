@@ -86,8 +86,8 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = ${commonName}
-DNS.2 = server.${commonName}
+DNS.1 = docker-compose.${commonName}
+DNS.2 = docker-compose.server.${commonName}
 IP.1 = 127.0.0.1
 EOF
 

@@ -5,13 +5,8 @@ import UnarchivedIcon from "./icons/UnarchivedIcon";
 import SearchBar from "./SearchBar";
 import "./NotesActions.css";
 import { NoteT } from "../types/types";
-import {
-  fetchNotes,
-  getHeadersWithAuth,
-  getProxyPort,
-  handleErrorInResponse,
-  handleLogging
-} from "../lib/utils";
+import { fetchNotes, getHeadersWithAuth, handleErrorInResponse, handleLogging } from "../lib/utils";
+import { useConfig } from "./ConfigContext";
 
 type NoteActionsProps = {
   setNotes: (value: React.SetStateAction<NoteT[]>) => void;
@@ -27,16 +22,17 @@ export default function NoteActions({
   searchText,
   setSearchText
 }: NoteActionsProps) {
+  const config = useConfig();
   const iconProps = { height: 20, fill: "#D9D9D9" };
 
   async function addNote() {
     try {
-      const response = await fetch(`https://server.notesaver:${getProxyPort()}/create-note`, {
+      const response = await fetch(`${config.SERVER_URL}/create-note`, {
         method: "POST",
         headers: getHeadersWithAuth()
       });
       if (!response.ok) {
-        handleErrorInResponse(response);
+        handleErrorInResponse(config.SERVER_URL, response);
         return;
       }
       const { newNoteId } = await response.json();
@@ -50,17 +46,17 @@ export default function NoteActions({
         }
       ]);
     } catch (error) {
-      handleLogging("error", "Error while creating a new note", error);
+      handleLogging(config.SERVER_URL, "error", "Error while creating a new note", error);
     }
   }
 
   async function getNotesAccordingToStatus(notesStatus: boolean) {
     try {
-      await fetchNotes(setNotes, notesStatus);
+      await fetchNotes(config.SERVER_URL, setNotes, notesStatus);
       setIsShowingActiveNotes(notesStatus);
       setSearchText("");
     } catch (error) {
-      handleLogging("error", "Error while creating a new note", error);
+      handleLogging(config.SERVER_URL, "error", "Error while creating a new note", error);
     }
   }
   return (

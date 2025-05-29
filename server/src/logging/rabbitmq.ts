@@ -12,9 +12,14 @@ class RabbitMQSender {
       return;
     }
     try {
-      const connection = await amqp.connect(
-        `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_SERVICENAME}/${process.env.RABBITMQ_VHOST}`
-      );
+      const connection = await amqp.connect({
+        protocol: "amqp",
+        hostname: process.env.RABBITMQ_SERVICENAME,
+        username: process.env.RABBITMQ_USER,
+        password: process.env.RABBITMQ_PASSWORD,
+        vhost: process.env.RABBITMQ_VHOST,
+        frameMax: 8192
+      });
       this.channel = await connection.createChannel();
       this.isChannelOpened = true;
       this.channel.on("close", () => {

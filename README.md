@@ -29,6 +29,10 @@ This project is organized as a monorepo to streamline development and deployment
 
 It was developed with React and TypeScript. It is compiled and served through [Webpack](https://webpack.js.org/).
 
+#### Configuration File (`config.json`)
+
+This application uses a `config.json` file to define environment-specific settings. The file must include the `SERVER_URL`, which specifies the base URL of the backend server that the client will send API requests to. This value will vary depending on the environment (e.g., development, staging, production). The `config.json` file should be mounted or placed in the application's `public/` folder so that it is accessible at runtime from the root path (`/config.json`).
+
 #### Generate React Icon
 
 The icons were downloaded from the web (the licenses are found in the SVG files). These icons were transformed into React components using the `svgr` library. The config file `.svgrc.js` uses a template to format them and manipulate some of their properties. To generate a React icon component from an SVG, store the SVG in `client/src/assets` and run the command `npm run icons:create`.
@@ -148,7 +152,7 @@ cd <path_to_notesaver_repo>\note-saver
 bash scripts/setupLocalEnvironment.sh
 docker compose up
 ```
-Access https://notesaver:8080 on the browser
+Access https://docker-compose.notesaver:8080 on the browser
 
 #### Credentials During Development
 
