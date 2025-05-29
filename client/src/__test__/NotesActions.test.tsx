@@ -1,5 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import NoteActions from "../components/NotesActions";
+import { ConfigProvider } from "../components/ConfigContext";
+import { ConfigFile } from "../types/types";
 
 jest.mock("../lib/utils", () => ({
   fetchNotes: jest.fn(),
@@ -8,7 +10,15 @@ jest.mock("../lib/utils", () => ({
   handleLogging: jest.fn()
 }));
 
+const mockConfig: ConfigFile = {
+  SERVER_URL: "https://docker-compose.server.notesaver:8080"
+};
+
 describe("NoteActions Component", () => {
+  function renderWithProvider(ui: React.ReactElement) {
+    return render(<ConfigProvider value={mockConfig}>{ui}</ConfigProvider>);
+  }
+
   it("adds a new note when 'Add' button is clicked", async () => {
     const mockSetNotes = jest.fn();
     const mockFetch = jest.fn().mockResolvedValue({
@@ -26,7 +36,7 @@ describe("NoteActions Component", () => {
       setSearchText: jest.fn()
     };
 
-    render(<NoteActions {...defaultProps} />);
+    renderWithProvider(<NoteActions {...defaultProps} />);
 
     const addButton = screen.getByText("Add");
     fireEvent.click(addButton);

@@ -1,7 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import NoteButtons from "../components/NoteButtons";
-import { NoteT } from "../types/types";
+import { NoteT, ConfigFile } from "../types/types";
 import { createRootElement, mockModalFunctions } from "./utils/utils";
+import { ConfigProvider } from "../components/ConfigContext";
 
 jest.mock("../lib/utils", () => ({
   getHeadersWithAuthAndContentType: jest.fn(),
@@ -11,7 +12,15 @@ jest.mock("../lib/utils", () => ({
   handleLogging: jest.fn()
 }));
 
+const mockConfig: ConfigFile = {
+  SERVER_URL: "https://docker-compose.server.notesaver:8080"
+};
+
 describe("NoteButtons Component", () => {
+  function renderWithProvider(ui: React.ReactElement) {
+    return render(<ConfigProvider value={mockConfig}>{ui}</ConfigProvider>);
+  }
+
   it("deletes a note when 'Delete' button is clicked", async () => {
     createRootElement();
     mockModalFunctions();
@@ -36,7 +45,7 @@ describe("NoteButtons Component", () => {
       isShowingActiveNotes: true
     };
 
-    render(<NoteButtons {...defaultProps} />);
+    renderWithProvider(<NoteButtons {...defaultProps} />);
 
     const deleteButton = screen.getByTestId("delete-btn");
     fireEvent.click(deleteButton);
