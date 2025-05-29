@@ -6,4 +6,4 @@ kubectl create secret generic rabbitmq-conf \
 
 kubectl delete secret rabbitmq-definitions --ignore-not-found
 kubectl create secret generic rabbitmq-definitions \
-  --from-file="load_definition.json"=rabbitmq/files/load_definition.json
+  --from-file="load_definition.json"=../rabbitmq/files/load_definition.json

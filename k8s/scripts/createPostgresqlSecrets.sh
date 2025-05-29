@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables from .env
-source "./db/files/.env"
+source "../db/files/.env"
 
 # Delete the secret if it exists
 kubectl delete secret postgresql-passwords --ignore-not-found
