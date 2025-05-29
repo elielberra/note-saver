@@ -1,9 +1,8 @@
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import Notes from "../components/Notes";
-import { NoteT, ConfigFile } from "../types/types";
-import { createRootElement, mockModalFunctions } from "./utils/utils";
-import { ConfigProvider } from "../components/ConfigContext";
+import { NoteT } from "../types/types";
+import { createRootElement, mockModalFunctions, renderWithProvider } from "./utils/utils";
 
 describe("Notes Component", () => {
   const mockSetNotes = jest.fn();
@@ -15,14 +14,6 @@ describe("Notes Component", () => {
     searchText: "",
     isFetchingNotes: false
   };
-
-  const mockConfig: ConfigFile = {
-    SERVER_URL: "https://docker-compose.server.notesaver:8080"
-  };
-
-  function renderWithProvider(ui: React.ReactElement) {
-    return render(<ConfigProvider value={mockConfig}>{ui}</ConfigProvider>);
-  }
 
   it("renders fallback text when no notes are available and searchText is empty", () => {
     renderWithProvider(<Notes {...defaultProps} />);
