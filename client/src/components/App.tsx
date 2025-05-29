@@ -8,9 +8,10 @@ import PageNotFound from "./PageNotFound";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { UserProvider } from "./UserContext";
 import { ConfigProvider } from "./ConfigContext";
-import { ConfigFile } from "../types/types";
+import { ConfigFile, validServerUrls } from "../types/types";
 import LoadingSpinner from "./LoadingSpinner";
 import FallbackText from "./FallbackText";
+import { isValidServerUrl } from "../lib/utils";
 
 export default function App() {
   const [config, setConfig] = useState<ConfigFile | null>(null);
@@ -22,8 +23,13 @@ export default function App() {
       try {
         const response = await fetch("/config.json");
         if (!response.ok) throw new Error("Failed to load config.json");
-        const data = await response.json();
-        setConfig(data);
+        const configData: ConfigFile = await response.json();
+        if (!isValidServerUrl(configData.SERVER_URL)) {
+          throw new Error(
+            `Invalid SERVER_URL found on config.js: "${configData.SERVER_URL}". Expected one of ${validServerUrls.join(", ")}.`
+          );
+        }
+        setConfig(configData);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);

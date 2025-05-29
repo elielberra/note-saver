@@ -6,8 +6,10 @@ import {
   LogData,
   LogLevels,
   NoteT,
+  ServerUrl,
   UNSPECIFIED_ERROR,
-  UnsuccessfulAuthResponse
+  UnsuccessfulAuthResponse,
+  validServerUrls
 } from "../types/types";
 
 export function getAuthTokenFromStorage() {
@@ -169,4 +171,8 @@ export async function validateAndGetUserIfAuthenticated(
     handleLogging(serverUrl, "error", "Error while checking user authentication status", error);
     return { isAuthenticated: false } as IsAuthenticatedResponse;
   }
+}
+
+export function isValidServerUrl(env: string | undefined): env is ServerUrl {
+  return validServerUrls.includes(env as ServerUrl);
 }
