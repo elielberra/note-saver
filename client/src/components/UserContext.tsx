@@ -36,7 +36,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [navigate]);
   useEffect(() => {
     async function checkAuthStatus() {
-      const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated(config.SERVER_URL);
+      const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated(
+        config.SERVER_URL
+      );
       if (isAuthenticated) {
         login(username);
       }

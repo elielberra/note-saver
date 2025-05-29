@@ -126,7 +126,11 @@ export async function handleErrorInResponse(
   responseWithError: Response,
   responseBody?: UnsuccessfulAuthResponse
 ) {
-  handleLogging(serverUrl, "error", await getResponseErrorFormatted(responseWithError, responseBody));
+  handleLogging(
+    serverUrl,
+    "error",
+    await getResponseErrorFormatted(responseWithError, responseBody)
+  );
 }
 
 export function getNoteToBeUpdated(prevNotes: NoteT[], noteToBeUpdatedId: NoteT["noteId"]) {

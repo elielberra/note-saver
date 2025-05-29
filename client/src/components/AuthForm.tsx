@@ -47,7 +47,8 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
       if (response.status === 400 || response.status === 401 || response.status === 409) {
         isUnsuccessfulResponse(responseBody) && setError(responseBody.message);
       } else if (!response.ok) {
-        isUnsuccessfulResponse(responseBody) && handleErrorInResponse(config.SERVER_URL, response, responseBody);
+        isUnsuccessfulResponse(responseBody) &&
+          handleErrorInResponse(config.SERVER_URL, response, responseBody);
         return;
       }
       error && setError(null);
