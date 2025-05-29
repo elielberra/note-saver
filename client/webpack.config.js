@@ -48,10 +48,10 @@ module.exports = (_, { mode }) => {
         directory: path.join(__dirname, "public")
       },
       server: "http",
-      allowedHosts: ["notesaver"],
+      allowedHosts: ["docker-compose.notesaver"],
       historyApiFallback: true,
       client: {
-        webSocketURL: "wss://notesaver:8080/ws"
+        webSocketURL: "wss://docker-compose.notesaver:8080/ws"
       }
     }
   };

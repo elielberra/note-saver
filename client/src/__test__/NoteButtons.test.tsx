@@ -1,17 +1,15 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import NoteButtons from "../components/NoteButtons";
 import { NoteT } from "../types/types";
-import { createRootElement, mockModalFunctions } from "./utils/utils";
+import { createRootElement, mockModalFunctions, renderWithProvider } from "./utils/utils";
 
 jest.mock("../lib/utils", () => ({
   getHeadersWithAuthAndContentType: jest.fn(),
   getNewSortedNotes: jest.fn(),
   getNoteToBeUpdated: jest.fn(),
   handleErrorInResponse: jest.fn(),
-  handleLogging: jest.fn(),
-  getProxyPort: jest.fn()
+  handleLogging: jest.fn()
 }));
-
 describe("NoteButtons Component", () => {
   it("deletes a note when 'Delete' button is clicked", async () => {
     createRootElement();
@@ -37,7 +35,7 @@ describe("NoteButtons Component", () => {
       isShowingActiveNotes: true
     };
 
-    render(<NoteButtons {...defaultProps} />);
+    renderWithProvider(<NoteButtons {...defaultProps} />);
 
     const deleteButton = screen.getByTestId("delete-btn");
     fireEvent.click(deleteButton);

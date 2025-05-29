@@ -30,3 +30,6 @@ vagrant/ubuntu*
 # Go compiled code
 consumer/consumer
 consumer/tmp
+
+# Client public files mounted as bind volume
+client/public/config.json

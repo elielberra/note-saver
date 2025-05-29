@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  getHeadersWithContentType,
-  getProxyPort,
-  handleErrorInResponse,
-  handleLogging
-} from "../lib/utils";
+import { getHeadersWithContentType, handleErrorInResponse, handleLogging } from "../lib/utils";
 import {
   AuthenticateUserResponse,
   SuccessfulAuthResponse,
@@ -13,6 +8,7 @@ import {
 import Button from "./Button";
 import "./AuthForm.css";
 import { useUserContext } from "./UserContext";
+import { useConfig } from "./ConfigContext";
 
 type AuthFormProps = {
   header: string;
@@ -33,6 +29,7 @@ function isUnsuccessfulResponse(
 }
 
 export default function AuthForm({ header, action, btnText }: AuthFormProps) {
+  const config = useConfig();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +38,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await fetch(`https://server.notesaver:${getProxyPort()}/${action}`, {
+      const response = await fetch(`${config.SERVER_URL}/${action}`, {
         method: "POST",
         headers: getHeadersWithContentType(),
         body: JSON.stringify({ username, password })
@@ -50,7 +47,8 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
       if (response.status === 400 || response.status === 401 || response.status === 409) {
         isUnsuccessfulResponse(responseBody) && setError(responseBody.message);
       } else if (!response.ok) {
-        isUnsuccessfulResponse(responseBody) && handleErrorInResponse(response, responseBody);
+        isUnsuccessfulResponse(responseBody) &&
+          handleErrorInResponse(config.SERVER_URL, response, responseBody);
         return;
       }
       error && setError(null);
@@ -60,6 +58,7 @@ export default function AuthForm({ header, action, btnText }: AuthFormProps) {
       }
     } catch (error) {
       handleLogging(
+        config.SERVER_URL,
         "error",
         `Error while ${action == "signin" ? "signing in" : "signing up"} the user`,
         error

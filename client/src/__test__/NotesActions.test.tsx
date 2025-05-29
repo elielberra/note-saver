@@ -1,12 +1,12 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import NoteActions from "../components/NotesActions";
+import { renderWithProvider } from "./utils/utils";
 
 jest.mock("../lib/utils", () => ({
   fetchNotes: jest.fn(),
   getHeadersWithAuth: jest.fn(),
   handleErrorInResponse: jest.fn(),
-  handleLogging: jest.fn(),
-  getProxyPort: jest.fn()
+  handleLogging: jest.fn()
 }));
 
 describe("NoteActions Component", () => {
@@ -27,7 +27,7 @@ describe("NoteActions Component", () => {
       setSearchText: jest.fn()
     };
 
-    render(<NoteActions {...defaultProps} />);
+    renderWithProvider(<NoteActions {...defaultProps} />);
 
     const addButton = screen.getByText("Add");
     fireEvent.click(addButton);
