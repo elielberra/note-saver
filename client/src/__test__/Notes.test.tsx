@@ -17,7 +17,7 @@ describe("Notes Component", () => {
   };
 
   const mockConfig: ConfigFile = {
-    SERVER_URL: "https://docker-compose.server.notesaver:8080" // replace with a valid URL from `validServerUrls`
+    SERVER_URL: "https://docker-compose.server.notesaver:8080"
   };
 
   function renderWithProvider(ui: React.ReactElement) {
