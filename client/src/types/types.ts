@@ -58,3 +58,15 @@ export interface LogData extends ErrorLogData {
   service: Services;
   timestamp: Date;
 }
+
+export const validServerUrls = [
+  "https://docker-compose.server.notesaver:8080",
+  "https://minikube.server.notesaver",
+  "https://eks.docker-compose.server.notesaver"
+] as const;
+
+export type ServerUrl = (typeof validServerUrls)[number];
+
+export type ConfigFile = {
+  SERVER_URL: ServerUrl;
+};

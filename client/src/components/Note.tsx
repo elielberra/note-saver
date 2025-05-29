@@ -5,10 +5,10 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import debounce from "lodash/debounce";
 import {
   getHeadersWithAuthAndContentType,
-  getProxyPort,
   handleErrorInResponse,
   handleLogging
 } from "../lib/utils";
+import { useConfig } from "./ConfigContext";
 
 export type NoteProps = {
   note: NoteT;
@@ -17,25 +17,23 @@ export type NoteProps = {
 };
 
 export default function Note({ note, setNotes, isShowingActiveNotes }: NoteProps) {
+  const config = useConfig();
   const { noteId, noteContent } = note;
   const [noteText, setNoteText] = useState(noteContent);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const saveNoteOnDB = useCallback(
     async (newContent: string) => {
       try {
-        const response = await fetch(
-          `https://server.notesaver:${getProxyPort()}/update-note-content`,
-          {
-            method: "POST",
-            headers: getHeadersWithAuthAndContentType(),
-            body: JSON.stringify({ id: noteId, newContent })
-          }
-        );
+        const response = await fetch(`${config.SERVER_URL}/update-note-content`, {
+          method: "POST",
+          headers: getHeadersWithAuthAndContentType(),
+          body: JSON.stringify({ id: noteId, newContent })
+        });
         if (!response.ok) {
-          handleErrorInResponse(response);
+          handleErrorInResponse(config.SERVER_URL, response);
         }
       } catch (error) {
-        handleLogging("error", "Error while updating note content", error);
+        handleLogging(config.SERVER_URL, "error", "Error while updating note content", error);
       }
     },
     [noteId]

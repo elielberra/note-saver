@@ -11,11 +11,11 @@ import {
   getHeadersWithAuthAndContentType,
   getNewSortedNotes,
   getNoteToBeUpdated,
-  getProxyPort,
   handleErrorInResponse,
   handleLogging
 } from "../lib/utils";
 import { useState } from "react";
+import { useConfig } from "./ConfigContext";
 
 export type NoteButtonsProps = {
   note: NoteT;
@@ -24,35 +24,36 @@ export type NoteButtonsProps = {
 };
 
 export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: NoteButtonsProps) {
+  const config = useConfig();
   const { noteId, tags, isActive } = note;
   const [isDeleteNoteModalOpen, setIsDeleteNoteModalOpen] = useState(false);
 
   async function deleteNote() {
     try {
-      const response = await fetch(`https://server.notesaver:${getProxyPort()}/delete-note`, {
+      const response = await fetch(`${config.SERVER_URL}/delete-note`, {
         method: "DELETE",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId })
       });
       if (!response.ok) {
-        handleErrorInResponse(response);
+        handleErrorInResponse(config.SERVER_URL, response);
         return;
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      handleLogging("error", "Error while deleting a note", error);
+      handleLogging(config.SERVER_URL, "error", "Error while deleting a note", error);
     }
   }
 
   async function addTag() {
     try {
-      const response = await fetch(`https://server.notesaver:${getProxyPort()}/create-tag`, {
+      const response = await fetch(`${config.SERVER_URL}/create-tag`, {
         method: "POST",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId })
       });
       if (!response.ok) {
-        handleErrorInResponse(response);
+        handleErrorInResponse(config.SERVER_URL, response);
         return;
       }
       const { newTagId } = await response.json();
@@ -71,24 +72,24 @@ export default function NoteButtons({ note, setNotes, isShowingActiveNotes }: No
         return getNewSortedNotes(prevNotes, noteId, newNote);
       });
     } catch (error) {
-      handleLogging("error", "Error while creating a new tag", error);
+      handleLogging(config.SERVER_URL, "error", "Error while creating a new tag", error);
     }
   }
 
   async function changeNoteStatus(noteStatus: boolean) {
     try {
-      const response = await fetch(`https://server.notesaver:${getProxyPort()}/set-note-status`, {
+      const response = await fetch(`${config.SERVER_URL}/set-note-status`, {
         method: "POST",
         headers: getHeadersWithAuthAndContentType(),
         body: JSON.stringify({ id: noteId, isActive: noteStatus })
       });
       if (!response.ok) {
-        handleErrorInResponse(response);
+        handleErrorInResponse(config.SERVER_URL, response);
         return;
       }
       setNotes((prevNotes) => [...prevNotes.filter((note) => note.noteId !== noteId)]);
     } catch (error) {
-      handleLogging("error", "Error while updating the note status", error);
+      handleLogging(config.SERVER_URL, "error", "Error while updating the note status", error);
     }
   }
 

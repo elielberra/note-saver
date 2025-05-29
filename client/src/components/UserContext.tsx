@@ -2,6 +2,7 @@ import { createContext, useState, ReactNode, useContext, useEffect, useCallback 
 import { UserT } from "../types/types";
 import { validateAndGetUserIfAuthenticated } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useConfig } from "./ConfigContext";
 
 type UserContextT = {
   isFetchingAuthStatus: boolean;
@@ -14,6 +15,7 @@ type UserContextT = {
 const UserContext = createContext<UserContextT | null>(null);
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const config = useConfig();
   const [isFetchingAuthStatus, setIsFetchingAuthStatus] = useState(true);
   const [username, setUsername] = useState<UserContextT["username"]>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<UserContextT["isLoggedIn"]>(false);
@@ -34,7 +36,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [navigate]);
   useEffect(() => {
     async function checkAuthStatus() {
-      const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated();
+      const { isAuthenticated, username } = await validateAndGetUserIfAuthenticated(config.SERVER_URL);
       if (isAuthenticated) {
         login(username);
       }

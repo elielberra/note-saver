@@ -148,7 +148,7 @@ cd <path_to_notesaver_repo>\note-saver
 bash scripts/setupLocalEnvironment.sh
 docker compose up
 ```
-Access https://notesaver:8080 on the browser
+Access https://docker-compose.notesaver:8080 on the browser
 
 #### Credentials During Development
 

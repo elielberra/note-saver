@@ -3,8 +3,10 @@ import NoteActions from "./NotesActions";
 import Notes from "./Notes";
 import { NoteT } from "../types/types";
 import { fetchNotes } from "../lib/utils";
+import { useConfig } from "./ConfigContext";
 
 export default function MainPage() {
+  const config = useConfig();
   const [notes, setNotes] = useState<NoteT[]>([]);
   const [isFetchingNotes, setIsFecthingNotes] = useState(false);
   const [isShowingActiveNotes, setIsShowingActiveNotes] = useState(true);
@@ -12,7 +14,7 @@ export default function MainPage() {
   useEffect(() => {
     async function getNotes() {
       setIsFecthingNotes(true);
-      await fetchNotes(setNotes, isShowingActiveNotes);
+      await fetchNotes(config.SERVER_URL, setNotes, isShowingActiveNotes);
       setIsFecthingNotes(false);
     }
     getNotes();

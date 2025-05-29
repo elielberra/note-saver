@@ -30,13 +30,14 @@ export function getHeadersWithAuthAndContentType() {
 }
 
 export async function fetchNotes(
+  serverUrl: string,
   setNotes: (value: React.SetStateAction<NoteT[]>) => void,
   notesStatus: boolean,
   filteringText: string | null = null
 ) {
   try {
     const response = await fetch(
-      `https://server.notesaver:${getProxyPort()}/notes?areActive=${notesStatus}${
+      `${serverUrl}/notes?areActive=${notesStatus}${
         filteringText ? `&filteringText=${filteringText}` : ""
       }`,
       {
@@ -44,13 +45,13 @@ export async function fetchNotes(
       }
     );
     if (!response.ok) {
-      handleErrorInResponse(response);
+      handleErrorInResponse(serverUrl, response);
       return;
     }
     const activeNotes: NoteT[] = await response.json();
     setNotes(activeNotes);
   } catch (error) {
-    handleLogging("error", "Error while fetching the notes", error);
+    handleLogging(serverUrl, "error", "Error while fetching the notes", error);
   }
 }
 
@@ -60,14 +61,12 @@ export function isProductionEnv() {
   return process.env.NODE_ENV === PRODUCTION;
 }
 
-const PROD_PROXY_PORT = "443" as const;
-const DEV_PROXY_PORT = "8080" as const;
-
-export function getProxyPort() {
-  return isProductionEnv() ? PROD_PROXY_PORT : DEV_PROXY_PORT;
-}
-
-export async function handleLogging(logLevel: LogLevels, message: string, error?: unknown) {
+export async function handleLogging(
+  serverUrl: string,
+  logLevel: LogLevels,
+  message: string,
+  error?: unknown
+) {
   switch (logLevel) {
     case "debug":
       log.debug(message);
@@ -96,7 +95,7 @@ export async function handleLogging(logLevel: LogLevels, message: string, error?
     requestBody.errorName = UNSPECIFIED_ERROR;
   }
   try {
-    const response = await fetch(`https://server.notesaver:${getProxyPort()}/logs`, {
+    const response = await fetch(`${serverUrl}/logs`, {
       method: "POST",
       headers: sessionStorage.getItem("authToken")
         ? getHeadersWithAuthAndContentType()
@@ -123,10 +122,11 @@ async function getResponseErrorFormatted(
 }
 
 export async function handleErrorInResponse(
+  serverUrl: string,
   responseWithError: Response,
   responseBody?: UnsuccessfulAuthResponse
 ) {
-  handleLogging("error", await getResponseErrorFormatted(responseWithError, responseBody));
+  handleLogging(serverUrl, "error", await getResponseErrorFormatted(responseWithError, responseBody));
 }
 
 export function getNoteToBeUpdated(prevNotes: NoteT[], noteToBeUpdatedId: NoteT["noteId"]) {
@@ -147,20 +147,22 @@ export function getNewSortedNotes(
   return sortedNewNotes;
 }
 
-export async function validateAndGetUserIfAuthenticated(): Promise<IsAuthenticatedResponse> {
+export async function validateAndGetUserIfAuthenticated(
+  serverUrl: string
+): Promise<IsAuthenticatedResponse> {
   try {
-    const response = await fetch(`https://server.notesaver:${getProxyPort()}/isauthenticated`, {
+    const response = await fetch(`${serverUrl}/isauthenticated`, {
       headers: getHeadersWithAuth()
     });
     if (!response.ok && response.status !== 401 && response.status !== 403) {
-      handleErrorInResponse(response);
+      handleErrorInResponse(serverUrl, response);
       return { isAuthenticated: false };
     } else if (response.status === 401 || response.status === 403) {
       return (await response.json()) as IsAuthenticatedUnsuccessfulResponse;
     }
     return (await response.json()) as IsAuthenticatedSuccessfulResponse;
   } catch (error) {
-    handleLogging("error", "Error while checking user authentication status", error);
+    handleLogging(serverUrl, "error", "Error while checking user authentication status", error);
     return { isAuthenticated: false } as IsAuthenticatedResponse;
   }
 }

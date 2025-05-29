@@ -6,3 +6,4 @@ jest.config.js
 .prettierrc
 .svgrrc.js
 .husky
+config.json
