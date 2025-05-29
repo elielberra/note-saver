@@ -115,7 +115,7 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-      # - ./client/config.json:/app/public/config.json
+      - ./client/config.json:/app/public/config.json
     depends_on:
       server:
         condition: service_healthy
