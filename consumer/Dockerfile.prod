@@ -1,6 +1,7 @@
 FROM golang:1.23 AS builder
 
 # TARGETARCH is automatically set by Docker Buildx during multi-platform builds.
+# The GitHub Action will be in charge of setting the value.
 # It will be either "amd64" or "arm64" depending on the target platform.
 ARG TARGETARCH
 
