@@ -7,7 +7,11 @@ services:
       - ./elk/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     env_file:
       - ./elk/base_credentials/.env
-    mem_limit: 1073741824
+      - ./elk/elastic/.env
+    # This image is RAM hungry
+    # Its RAM consumption will be regulated via env vars and mem_limit
+    mem_limit: 1g
+    # Allows to lock memory in RAM (prevents swapping to disk, which could hurt performance)
     ulimits:
       memlock:
         soft: -1
@@ -25,7 +29,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     env_file:
       - ./elk/base_credentials/.env
-    mem_limit: 1073741824
     volumes:
       - ./elk/kibana/setKibanaCredentials.sh:/scripts/setKibanaCredentials.sh
     command: ["bash","-c", "/scripts/setKibanaCredentials.sh"]
@@ -38,12 +41,16 @@ services:
       elastic:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:8.7.0
+    # This image is RAM hungry
+    # Its RAM consumption will be regulated via env vars and mem_limit
+    mem_limit: 1g
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=512
     volumes:
       - kibana_data:/usr/share/kibana/data
       - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - 5601:5601
-    mem_limit: 1073741824
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -61,7 +68,7 @@ services:
   consumer:
     build:
       context: ./consumer
-      dockerfile: Dockerfile.dev # TODO: Change to .prod
+      dockerfile: Dockerfile.prod
     container_name: consumer
     env_file:
       - ./consumer/.env
