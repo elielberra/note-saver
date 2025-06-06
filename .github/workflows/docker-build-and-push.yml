@@ -9,27 +9,31 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        component: [client, server, consumer]
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Set up QEMU (for multi-arch builds)
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: elober
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push client image
-      run: |
-        docker build -t elober/notesaver-client:latest -f ./client/Dockerfile.prod ./client
-        docker push elober/notesaver-client:latest
-
-    - name: Build and push server image
-      run: |
-        docker build -t elober/notesaver-server:latest -f ./server/Dockerfile.prod ./server
-        docker push elober/notesaver-server:latest
-
-    - name: Build and push consumer image
-      run: |
-        docker build -t elober/notesaver-consumer:latest -f ./consumer/Dockerfile.prod ./consumer
-        docker push elober/notesaver-consumer:latest
+    - name: Build and push ${{ matrix.component }} image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./${{ matrix.component }}
+        file: ./${{ matrix.component }}/Dockerfile.prod
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: elober/notesaver-${{ matrix.component }}:latest

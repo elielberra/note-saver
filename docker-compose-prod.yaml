@@ -7,16 +7,20 @@ services:
       - ./elk/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     env_file:
       - ./elk/base_credentials/.env
-    mem_limit: 1073741824
+      - ./elk/elastic/.env
+    # This image is RAM hungry
+    # Its RAM consumption will be regulated via env vars and mem_limit
+    mem_limit: 1g
+    # Allows to lock memory in RAM (prevents swapping to disk, which could hurt performance)
     ulimits:
       memlock:
         soft: -1
         hard: -1
     healthcheck:
       test: ["CMD-SHELL", "curl 'localhost:9200/_cluster/health'"]
-      interval: 15s
+      interval: 10s
       timeout: 5s
-      retries: 20
+      retries: 5
       start_period: 15s
   setup_kibana:
     container_name: setup_kibana
@@ -25,7 +29,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     env_file:
       - ./elk/base_credentials/.env
-    mem_limit: 1073741824
     volumes:
       - ./elk/kibana/setKibanaCredentials.sh:/scripts/setKibanaCredentials.sh
     command: ["bash","-c", "/scripts/setKibanaCredentials.sh"]
@@ -38,12 +41,16 @@ services:
       elastic:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:8.7.0
+    # This image is RAM hungry
+    # Its RAM consumption will be regulated via env vars and mem_limit
+    mem_limit: 1g
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=512
     volumes:
       - kibana_data:/usr/share/kibana/data
       - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - 5601:5601
-    mem_limit: 1073741824
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -53,15 +60,15 @@ services:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 10s
+      start_period: 20s
   consumer:
     build:
       context: ./consumer
-      dockerfile: Dockerfile.dev # TODO: Change to .prod
+      dockerfile: Dockerfile.prod
     container_name: consumer
     env_file:
       - ./consumer/.env
@@ -82,8 +89,8 @@ services:
       - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d note_saver"]
-      interval: 15s
-      timeout: 60s
+      interval: 10s
+      timeout: 5s
       retries: 5
       start_period: 10s
   server:
@@ -100,10 +107,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl 'localhost:3333/health'"]
-      interval: 15s
-      timeout: 60s
-      retries: 20
-      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
   client:
     build:
       context: ./client
@@ -116,10 +123,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl 'localhost:3000'"]
-      interval: 15s
-      timeout: 60s
-      retries: 20
-      start_period: 15s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
   nginx:
     image: nginx:latest
     container_name: nginx

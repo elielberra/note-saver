@@ -1,15 +1,19 @@
-FROM golang:1.23 as builder
+FROM golang:1.23 AS builder
+
+# TARGETARCH is automatically set by Docker Buildx during multi-platform builds.
+# The GitHub Action will be in charge of setting the value.
+# It will be either "amd64" or "arm64" depending on the target platform.
+ARG TARGETARCH
 
 WORKDIR /app
 
 COPY go.mod go.sum ./
-
 RUN go mod download
 
 COPY . .
 
-# Disable cgo and set the target OS to Linux for a statically linked binary
-RUN CGO_ENABLED=0 GOOS=linux go build -o consumer .
+# Disable cgo and set the target OS to Linux and target architecture based on the build platform
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -o consumer .
 
 FROM alpine:3.21
 

@@ -42,7 +42,7 @@ export function generateLog(logData: LogData) {
     ...logData,
     timestamp: new Date()
   };
-  rabbitMQSender.sendToQueue(JSON.stringify(logWithTimestamp));
+  if (process.env.RABBITMQ_ENABLED! == "true") rabbitMQSender.sendToQueue(JSON.stringify(logWithTimestamp));
   if (logData.service === "client") return;
   consoleLogger.log(logData.logLevel, logData.logMessage, {
     errorDetails: getConsoleErrorMessage(logData)

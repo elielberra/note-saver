@@ -21,8 +21,9 @@ This project is organized as a monorepo to streamline development and deployment
 - **Consumer**: Processes messages from RabbitMQ  
 - **Elasticsearch**: Search and analytics engine  
 - **Kibana**: Visualization tool for Elasticsearch  
-- **Bash scripts**: Automation and utility scripts  
-- **Git Actions**: CI/CD workflows for automation 
+- **Bash scripts**: Automation and utility scripts 
+- **Git Actions**: CI/CD workflows for automation  
+- **Git Hooks**: Run tests and linters before commits  
 - **Vagrant**: Local development environment setup  
 
 ## Frontend Client
@@ -79,6 +80,8 @@ You might be wondering why the app doesn’t harvest logs through Filebeat and s
 
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
+The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
+
 When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
 
 ## Consumer
@@ -105,7 +108,7 @@ An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **cli
 
 Git Actions are used for automating various tasks in the repository:
 
-- `Build and Push Docker Images` generates the Docker images for the **client**, the **server** and the **consumer** on each push to the master branch with a CI/CD pipeline, ensuring smooth integration and deployment processes.
+- `Build and Push Docker Images` generates the Docker images for the **client**, the **server**, and the **consumer** on each push to the `master` branch using a CI/CD pipeline. This process ensures that the latest code changes are automatically built, tested, and pushed to Docker Hub. It also builds images for multiple platforms (e.g., `amd64` and `arm64`) in parallel using matrix builds, allowing for broader compatibility and faster deployments across different environments.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
 
 ## Pre-Push Hook
@@ -119,8 +122,6 @@ The application includes basic test coverage using [Jest](https://jestjs.io/), p
 ## Bash Scripts  
 
 The `setupLocalEnvironment.sh` script configures the host machine to run this application by setting up environment variables, generating SSL certificates, ensuring local DNS resolution, configuring executable permissions, and adjusting the virtual memory settings of the OS. It automates tasks like inserting dummy passwords, creating and trusting a Certificate Authority (CA), and modifying the hosts file for local development.
-
-
 
 ## How to Run this App
 
@@ -157,4 +158,3 @@ Access https://docker-compose.notesaver:8080 on the browser
 #### Credentials During Development
 
 During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
-
