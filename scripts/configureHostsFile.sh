@@ -10,7 +10,7 @@ source "${scriptDir}/utils.sh"
 
 setAndValidateEnvironment $@
 
-if [[ "${environment}" != "${DOCKER_COMPOSE}" && "${environment}" != "${MINIKUBE}" ]]; then
+if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
     environmentIp="127.0.0.1"
 else
     environmentIp=$(minikube ip)
