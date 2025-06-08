@@ -26,7 +26,7 @@ source "${scriptDir}/utils.sh"
 
 setAndValidateEnvironment $@
 
-# Set sslCertsDir based on environment
+# Set sslCertsDir based on the environment
 if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
     sslCertsDir="${rootProjectDir}/ssl-certs"
 else
