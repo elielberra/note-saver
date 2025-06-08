@@ -1,9 +1,13 @@
 #!/bin/bash
 
+ENVIRONMENT="minikube"
+
+# Directory paths
 scriptDir=$(dirname $0)
 rootProjectDir=$(realpath "${scriptDir}/../..")
 
 minikube start
 flux install
 minikube addons enable ingress
-bash "${rootProjectDir}/scripts/configureDevSSLCerts.sh" "--environment" "minikube"
+bash "${rootProjectDir}/scripts/configureDevSSLCerts.sh" "--environment" "${ENVIRONMENT}"
+bash "${rootProjectDir}/scripts/configureHostsFile.sh" "--environment" "${ENVIRONMENT}"

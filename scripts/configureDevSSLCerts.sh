@@ -21,34 +21,12 @@ scriptDir=$(realpath $(dirname $0))
 rootProjectDir="$(dirname "${scriptDir}")"
 localCACertificatesDir="/usr/local/share/ca-certificates"
 
-# Environment options
-DOCKER_COMPOSE="docker-compose"
-MINIKUBE="minikube"
+# Parse utility functions
+source "${scriptDir}/utils.sh"
 
-# Default value for environment flag
-environment="docker-compose"
+setAndValidateEnvironment $@
 
-# Parse flags
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --environment)
-            environment="$2"
-            shift 2
-            ;;
-        *)
-            echo "Unknown parameter passed: $1"
-            exit 1
-            ;;
-    esac
-done
-
-# Validate boolean
-if [[ "${environment}" != "${DOCKER_COMPOSE}" && "${environment}" != "${MINIKUBE}" ]]; then
-    echo "Error: --environment must be set to '${DOCKER_COMPOSE}' or '${MINIKUBE}'"
-    exit 1
-fi
-
-# Set sslCertsDir based on isCertForMinikube
+# Set sslCertsDir based on environment
 if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
     sslCertsDir="${rootProjectDir}/ssl-certs"
 else
@@ -73,10 +51,6 @@ certKeyFilename="cert-key.pem"
 CSRFilename="cert.csr"
 certExtConfFilename="openssl.cnf"
 certFilename="cert.pem"
-
-# Parse environment variables and utility functions
-source "${scriptDir}/.env"
-source "${scriptDir}/utils.sh"
 
 # Check if dependencies are install apt packages if not
 verifyAndInstallDependency "certutil" "libnss3-tools"
