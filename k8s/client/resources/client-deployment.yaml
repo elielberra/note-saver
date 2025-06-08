@@ -23,7 +23,6 @@ spec:
             - name: client-config-volume
               mountPath: /usr/share/nginx/html/config.json
               subPath: config.json
-            # TODO: Check why this is failing, and ensure why files are being overwritten
       volumes:
         - name: client-config-volume
           configMap:
