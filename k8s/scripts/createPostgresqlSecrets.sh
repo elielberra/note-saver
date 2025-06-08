@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# Load environment variables from .env
-source "../db/files/.env"
+# Directory paths
+scriptDir=$(dirname $0)
+k8sProjectDir=$(realpath "${scriptDir}/..")
+cd "${k8sProjectDir}"
 
-# Delete the secret if it exists
+source "./db/files/.env"
+
 kubectl delete secret postgresql-passwords --ignore-not-found
 
-# Create the secret using values from the .env file
 kubectl create secret generic postgresql-passwords \
   --from-literal=password="$POSTGRES_USER" \
   --from-literal=postgres-password="$POSTGRES_PASSWORD"
