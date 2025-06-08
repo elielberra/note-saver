@@ -1,7 +1,9 @@
-#!/bin/bash -e
+# The creation of the certificates was based on Chrstian Lempa's post:
+# https://www.patreon.com/posts/109937722
+# Adding the certs to the browser NSS DB was based on Thomas Leister's post"
+# https://thomas-leister.de/en/how-to-import-ca-root-certificate/
 
-# The creation of the certificates was based on Chrstian Lempa's post https://www.patreon.com/posts/109937722
-# Adding the certs to the browser NSS DB was based on Thomas Leister's post https://thomas-leister.de/en/how-to-import-ca-root-certificate/
+#!/bin/bash -e
 
 insertCertIntoNSSDB() {
     local browserNSSDBDir=$1
@@ -14,6 +16,45 @@ insertCertIntoNSSDB() {
     certutil -A -n "${certificateAuthorityName}" -t "TCu,Cu,Tu" -i "${localCACertificatesDir}/${CAFilename}" -d sql:"${browserNSSDBDir}"
 }
 
+# Directory paths
+scriptDir=$(realpath $(dirname $0))
+rootProjectDir="$(dirname "${scriptDir}")"
+localCACertificatesDir="/usr/local/share/ca-certificates"
+
+# Environment options
+DOCKER_COMPOSE="docker-compose"
+MINIKUBE="minikube"
+
+# Default value for environment flag
+environment="docker-compose"
+
+# Parse flags
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --environment)
+            environment="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown parameter passed: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Validate boolean
+if [[ "${environment}" != "${DOCKER_COMPOSE}" && "${environment}" != "${MINIKUBE}" ]]; then
+    echo "Error: --environment must be set to '${DOCKER_COMPOSE}' or '${MINIKUBE}'"
+    exit 1
+fi
+
+# Set sslCertsDir based on isCertForMinikube
+if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
+    sslCertsDir="${rootProjectDir}/ssl-certs"
+else
+    sslCertsDir="${rootProjectDir}/k8s/ssl-certs"
+fi
+
 # Default Certificate Properties
 country="AR"
 state="Ciudad Autónoma de Buenos Aires"
@@ -22,7 +63,7 @@ company="NoteSaver"
 organization="NoteSaver"
 organizationUnit="Engineering"
 commonName="notesaver"
-certificateAuthorityName="NoteSaverCertificateAuthority"
+certificateAuthorityName="NoteSaverCertificateAuthority-${environment}"
 certTTL=3650
 
 # Certificate filenames
@@ -33,12 +74,6 @@ CSRFilename="cert.csr"
 certExtConfFilename="openssl.cnf"
 certFilename="cert.pem"
 
-# Directory paths
-scriptDir=$(realpath $(dirname $0))
-rootProjectDir="$(dirname "${scriptDir}")"
-sslCertsDir="ssl-certs"
-localCACertificatesDir="/usr/local/share/ca-certificates"
-
 # Parse environment variables and utility functions
 source "${scriptDir}/.env"
 source "${scriptDir}/utils.sh"
@@ -47,10 +82,9 @@ source "${scriptDir}/utils.sh"
 verifyAndInstallDependency "certutil" "libnss3-tools"
 
 # Remove previous ssl directory, if exists, and create a new one
-cd "${rootProjectDir}"
-[ -d "./${sslCertsDir}" ] && sudo rm -rf "./${sslCertsDir}"
-mkdir "./${sslCertsDir}"
-cd "./${sslCertsDir}"
+[ -d "${sslCertsDir}" ] && sudo rm -rf "${sslCertsDir}"
+mkdir "${sslCertsDir}"
+cd "${sslCertsDir}"
 
 # Generate CA's key
 openssl genrsa -aes256 -out "${CAKeyFilename}" -passout pass:"${CA_PASSPHRASE}" 4096 
@@ -86,42 +120,21 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = docker-compose.${commonName}
-DNS.2 = docker-compose.server.${commonName}
-IP.1 = 127.0.0.1
+DNS.1 = ${environment}.${commonName}
+DNS.2 = ${environment}.server.${commonName}
 EOF
 
-# Check if minikube is installed and get its IP
-minikubeIP=""
-if command -v minikube &> /dev/null; then
-    echo "Minikube is installed"
-    # Start minikube if not already running
-    if ! minikube status | grep -q "Running"; then
-        echo "Starting minikube..."
-        minikube start
-    fi
-    minikubeIP=$(minikube ip)
-    echo "Minikube IP: ${minikubeIP}"
+if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
+    echo "IP.1 = 127.0.0.1" >> "${certExtConfFilename}"
 else
-    echo "Minikube is not installed. Skipping Minikube IP configuration."
-fi
-# Append Minikube IP if available
-if [[ -n "${minikubeIP}" ]]; then
-    echo "IP.2 = ${minikubeIP}" >> "${certExtConfFilename}"
+    minikubeIp=$(minikube ip)
+    echo "IP.1 = ${minikubeIp}" >> "${certExtConfFilename}"
 fi
 
 # CA signs the Certificate Signing Request, generating the Certificate itself
 openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" \
     -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
 echo "The certificate was successfully generated and signed by the CA"
-
-# Delete previous ssl certs, if exist, and copy into server and client dirs
-echo "Copying certificates into each application directory"
-for app in "client" "server"; do
-    [ -d "../${app}/${sslCertsDir}" ] && rm -rf "../${app}/${sslCertsDir}"
-    mkdir "../${app}/${sslCertsDir}"
-    cp "${certKeyFilename}" "${certFilename}" "../${app}/${sslCertsDir}"
-done
 
 # If exists, remove the previous certificate of the Operating System and run update
 if [ -f ".${localCACertificatesDir}/${CAFilename}" ]; then
