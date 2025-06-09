@@ -6,7 +6,9 @@ ENVIRONMENT="minikube"
 scriptDir=$(dirname $0)
 rootProjectDir=$(realpath "${scriptDir}/../..")
 
-minikube start
+if ! minikube status | grep -q "host: Running"; then
+    minikube start
+fi
 flux install
 minikube addons enable ingress
 bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVIRONMENT}"
