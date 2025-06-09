@@ -9,3 +9,5 @@ configMapGenerator:
   - name: db-init
     files:
       - init.sql=files/init.sql
+    options:
+      disableNameSuffixHash: true
