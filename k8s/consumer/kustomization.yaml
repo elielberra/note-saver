@@ -7,6 +7,6 @@ resources:
   - resources/consumer-service.yaml
 
 configMapGenerator:
-  - name: server-env
+  - name: consumer-env
     envs:
       - files/.env

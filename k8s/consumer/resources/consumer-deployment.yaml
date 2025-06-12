@@ -17,5 +17,6 @@ spec:
       containers:
         - name: notesaver-consumer
           image: elober/notesaver-consumer:latest
-          ports:
-            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: consumer-env
