@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notesaver-consumer
+  labels:
+    app: notesaver-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notesaver-consumer
+  template:
+    metadata:
+      labels:
+        app: notesaver-consumer
+    spec:
+      containers:
+        - name: notesaver-consumer
+          image: elober/notesaver-consumer:latest
+          ports:
+            - containerPort: 80
