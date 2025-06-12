@@ -32,10 +32,12 @@ func sendToElastic(msg amqp091.Delivery) {
 		os.Getenv("ELASTIC_INDEX"),
 		bytes.NewReader(msg.Body),
 	)
-	defer res.Body.Close()
 	if err != nil {
 		log.Printf("Error while trying to index a log: %s", err)
 		return
+	}
+	if res != nil {
+		defer res.Body.Close()
 	}
 	if res.IsError() {
 		log.Printf("Error on the Response to Elasticsearch - Status code: %s", res.Status())
