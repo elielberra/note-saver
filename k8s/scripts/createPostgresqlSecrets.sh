@@ -7,8 +7,9 @@ cd "${k8sProjectDir}"
 
 source "./db/files/.env"
 
-kubectl delete secret postgresql-passwords --ignore-not-found
+kubectl delete secret postgresql-passwords --ignore-not-found -n note-saver
 
 kubectl create secret generic postgresql-passwords \
   --from-literal=password="${POSTGRES_USER}" \
-  --from-literal=postgres-password="${POSTGRES_PASSWORD}"
+  --from-literal=postgres-password="${POSTGRES_PASSWORD}" \
+  -n note-saver
