@@ -11,6 +11,7 @@ if ! minikube status | grep -q "host: Running"; then
 fi
 flux install
 minikube addons enable ingress
+bash "${rootProjectDir}/k8s/scripts/createNamespace.sh"
 bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureDevSslCerts.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureHostsFile.sh" "--environment" "${ENVIRONMENT}"
