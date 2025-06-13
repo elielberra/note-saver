@@ -6,6 +6,7 @@ ENVIRONMENT="minikube"
 scriptDir=$(dirname $0)
 rootProjectDir=$(realpath "${scriptDir}/../..")
 
+bash "${rootProjectDir}/k8s/scripts/verifyDependencies.sh"
 # Start minikube only if it is not already running
 if ! minikube status | grep -q "host: Running"; then
     minikube start
