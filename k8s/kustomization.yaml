@@ -6,8 +6,9 @@ resources:
   - repository
   - ingress.yaml
   # TODO: Move resources above to separate directories
-  - rabbitmq
-  - consumer
-  - db
-  - server
   - client
+  - db
+  - elastic
+  - consumer
+  - rabbitmq
+  - server

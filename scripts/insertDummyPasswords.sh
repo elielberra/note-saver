@@ -13,7 +13,7 @@ setAndValidateEnvironment $@
 if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
     dirsWithEnvDummyFile=("server" "db" "scripts" "consumer" "elk/base_credentials")
 else
-    dirsWithEnvDummyFile=("k8s/server/files" "k8s/db/files" "k8s/consumer/files" )
+    dirsWithEnvDummyFile=( "k8s/db/files" "k8s/consumer/files" "k8s/elastic/files" "k8s/server/files" )
 fi
 
 dummyFile=".env_dummy"
