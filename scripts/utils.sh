@@ -28,3 +28,32 @@ verifyAndInstallDependency() {
         sudo apt-get install -y "${dependencyName}"
     fi
 }
+
+setAndValidateEnvironment() {
+    # Environment options
+    DOCKER_COMPOSE="docker-compose"
+    MINIKUBE="minikube"
+
+    # Default value for environment flag
+    environment="docker-compose"
+
+    # Parse flags
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            --environment)
+                environment="$2"
+                shift 2
+                ;;
+            *)
+                echo "Unknown parameter passed: $1"
+                exit 1
+                ;;
+        esac
+    done
+
+    # Validate boolean
+    if [[ "${environment}" != "${DOCKER_COMPOSE}" && "${environment}" != "${MINIKUBE}" ]]; then
+        echo "Error: --environment must be set to '${DOCKER_COMPOSE}' or '${MINIKUBE}' instead of ${environment}"
+        exit 1
+    fi
+}
