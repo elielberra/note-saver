@@ -3,7 +3,7 @@ kind: HelmRelease
 metadata:
   name: rabbitmq
 spec:
-  timeout: 1m
+  interval: 5m
   chart:
     spec:
       chart: rabbitmq
