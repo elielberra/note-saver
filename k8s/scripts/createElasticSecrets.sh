@@ -5,9 +5,9 @@ scriptDir=$(dirname $0)
 k8sProjectDir=$(realpath "${scriptDir}/..")
 cd "${k8sProjectDir}"
 
-source "./elastic/files/.env"
+source "./elastic-kibana/files/.env"
 
-kubectl delete secret elastic-creds --ignore-not-found -n note-saver
-kubectl create secret generic elastic-creds \
+kubectl delete secret elastic-password --ignore-not-found -n note-saver
+kubectl create secret generic elastic-password \
   --from-literal=password="${ELASTIC_PASSWORD}" \
   -n note-saver

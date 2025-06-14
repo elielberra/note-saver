@@ -24,6 +24,16 @@ spec:
     ingest:
       replicaCount: 0
     security:
-      existingSecret: elastic-creds
+      existingSecret: elastic-password
       tls:
         restEncryption: false
+    global:
+      kibanaEnabled: true
+    kibana:
+      elasticsearch:
+        security:
+          auth:
+            enabled: true
+            existingSecret: elastic-password
+          tls:
+            enabled: false

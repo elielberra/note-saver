@@ -8,7 +8,7 @@ resources:
   # TODO: Move resources above to separate directories
   - client
   - db
-  - elastic
+  - elastic-kibana
   - consumer
   - rabbitmq
   - server
