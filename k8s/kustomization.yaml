@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: note-saver
 
 resources:
-  - repository
   - ingress.yaml
   # TODO: Move resources above to separate directories
   - client
