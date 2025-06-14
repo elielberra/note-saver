@@ -18,3 +18,4 @@ done
 if [ "$missingDependency" = true ]; then
     exit 1
 fi
+echo "All required dependencies are already installed"

@@ -13,7 +13,10 @@ if ! minikube status | grep -q "host: Running"; then
 fi
 # Install flux on the cluster only if it is not already installed
 kubectl get namespace flux-system > /dev/null 2>&1 || flux install
-minikube addons enable ingress
+# Enable the ingress addon only if it is not already enabled
+if minikube addons list | grep -E 'ingress[[:space:]]' | grep -q 'disabled'; then
+    minikube addons enable ingress
+fi
 bash "${rootProjectDir}/k8s/scripts/createNamespace.sh"
 bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureDevSslCerts.sh" "--environment" "${ENVIRONMENT}"

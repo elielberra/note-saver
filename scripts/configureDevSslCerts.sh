@@ -23,6 +23,7 @@ localCACertificatesDir="/usr/local/share/ca-certificates"
 
 # Parse utility functions
 source "${scriptDir}/utils.sh"
+source "${scriptDir}/.env"
 
 setAndValidateEnvironment $@
 
