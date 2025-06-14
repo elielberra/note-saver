@@ -97,6 +97,8 @@ subjectAltName = @alt_names
 [ alt_names ]
 DNS.1 = ${environment}.${commonName}
 DNS.2 = ${environment}.server.${commonName}
+DNS.3 = ${environment}.kibana.${commonName}
+DNS.4 = ${environment}.rabbitmq.${commonName}
 EOF
 
 if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then

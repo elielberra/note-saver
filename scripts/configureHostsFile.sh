@@ -17,7 +17,7 @@ else
 fi
 
 # Entry for resolving domains to localhost IP
-domains="${environment}.notesaver ${environment}.server.notesaver"
+domains="${environment}.notesaver ${environment}.server.notesaver ${environment}.kibana.notesaver ${environment}.rabbitmq.notesaver"
 entry="${environmentIp}    ${domains}"
 hostsFile="/etc/hosts"
 finalMessage="Completed configuring hosts file"
