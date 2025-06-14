@@ -3,7 +3,6 @@ kind: HelmRelease
 metadata:
   name: elasticsearch
 spec:
-  interval: 1m # TODO: Delete me
   timeout: 1m
   chart:
     spec:

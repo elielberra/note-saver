@@ -5,7 +5,6 @@ namespace: note-saver
 
 resources:
   - ingress.yaml
-  # TODO: Move resources above to separate directories
   - client
   - db
   - elastic-kibana

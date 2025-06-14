@@ -22,4 +22,3 @@ spec:
         envFrom:
           - configMapRef:
               name: server-env
-        # command: ["sleep", "infinity"] # TODO: Delete me
