@@ -11,7 +11,7 @@ setAndValidateEnvironment $@
 
 # Set list of directories with .env_dummy files based on the environment
 if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
-    dirsWithEnvDummyFile=( "consumer" "db" "elastic-kibana/base_credentials" "scripts" "server")
+    dirsWithEnvDummyFile=( "consumer" "db" "elastic-kibana/base_credentials" "elastic-kibana/elastic" "scripts" "server")
 else
     dirsWithEnvDummyFile=( "scripts" "k8s/db/files" "k8s/consumer/files" "k8s/elastic/files" "k8s/server/files" )
 fi
