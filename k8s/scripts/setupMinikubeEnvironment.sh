@@ -17,6 +17,10 @@ kubectl get namespace flux-system > /dev/null 2>&1 || flux install
 if minikube addons list | grep -E 'ingress[[:space:]]' | grep -q 'disabled'; then
     minikube addons enable ingress
 fi
+# Enable the metrics-server addon only if it is not already enabled
+if minikube addons list | grep -E 'metrics-server[[:space:]]' | grep -q 'disabled'; then
+    minikube addons enable metrics-server
+fi
 bash "${rootProjectDir}/k8s/scripts/createNamespace.sh"
 bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureDevSslCerts.sh" "--environment" "${ENVIRONMENT}"

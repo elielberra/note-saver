@@ -9,5 +9,5 @@ source "./elastic-kibana/files/.env"
 
 kubectl delete secret elastic-password --ignore-not-found -n note-saver
 kubectl create secret generic elastic-password \
-  --from-literal=password="${ELASTIC_PASSWORD}" \
+  --from-literal=elasticsearch-password="${ELASTIC_PASSWORD}" \
   -n note-saver
