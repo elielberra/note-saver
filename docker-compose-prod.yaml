@@ -139,6 +139,8 @@ services:
     depends_on:
       client:
         condition: service_healthy
+      kibana:
+        condition: service_started
 volumes:
   db_data: {}
   elastic_data: {}
