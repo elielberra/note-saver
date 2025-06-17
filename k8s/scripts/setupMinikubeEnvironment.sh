@@ -21,6 +21,7 @@ fi
 if minikube addons list | grep -E 'metrics-server[[:space:]]' | grep -q 'disabled'; then
     minikube addons enable metrics-server
 fi
+# Create k8s resources
 bash "${rootProjectDir}/k8s/scripts/createNamespace.sh"
 bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureDevSslCerts.sh" "--environment" "${ENVIRONMENT}"

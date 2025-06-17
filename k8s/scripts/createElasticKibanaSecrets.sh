@@ -7,6 +7,7 @@ cd "${k8sProjectDir}"
 
 source "./elastic-kibana/files/.env"
 
+# Delete previous secrets and create new ones
 kubectl delete secret elastic-password --ignore-not-found -n note-saver
 kubectl create secret generic elastic-password \
   --from-literal=elasticsearch-password="${ELASTIC_PASSWORD}" \
