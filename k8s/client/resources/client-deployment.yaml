@@ -23,6 +23,11 @@ spec:
             - name: client-config-volume
               mountPath: /usr/share/nginx/html/config.json
               subPath: config.json
+          resources:
+            requests:
+              memory: "0.5Gi
+              memory: "1Gi"
+              cpu: "0.5"
       volumes:
         - name: client-config-volume
           configMap:
