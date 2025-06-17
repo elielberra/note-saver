@@ -15,7 +15,7 @@ var esClient *elasticsearch.Client
 func init() {
 	cfg := elasticsearch.Config{
 		Addresses: []string{
-			fmt.Sprintf("http://%s:9200", os.Getenv("ELASTIC_DOMAIN")),
+			fmt.Sprintf("%s://%s:%s", os.Getenv("ELASTIC_PROTOCOL"), os.Getenv("ELASTIC_DOMAIN"), os.Getenv("ELASTIC_PORT")),
 		},
 		Username: os.Getenv("ELASTIC_USER"),
 		Password: os.Getenv("ELASTIC_PASSWORD"),
