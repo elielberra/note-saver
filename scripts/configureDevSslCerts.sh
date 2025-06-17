@@ -1,9 +1,9 @@
+#!/bin/bash -e
+
 # The creation of the certificates was based on Chrstian Lempa's post:
 # https://www.patreon.com/posts/109937722
 # Adding the certs to the browser NSS DB was based on Thomas Leister's post"
 # https://thomas-leister.de/en/how-to-import-ca-root-certificate/
-
-#!/bin/bash -e
 
 insertCertIntoNSSDB() {
     local browserNSSDBDir=$1
