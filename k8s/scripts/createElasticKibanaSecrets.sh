@@ -11,3 +11,8 @@ kubectl delete secret elastic-password --ignore-not-found -n note-saver
 kubectl create secret generic elastic-password \
   --from-literal=elasticsearch-password="${ELASTIC_PASSWORD}" \
   -n note-saver
+
+kubectl delete secret kibana-password --ignore-not-found -n note-saver
+kubectl create secret generic kibana-password \
+  --from-literal=kibana-password="${KIBANA_PASSWORD}" \
+  -n note-saver

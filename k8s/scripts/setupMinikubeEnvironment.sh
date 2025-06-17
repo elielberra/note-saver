@@ -26,7 +26,7 @@ bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVI
 bash "${rootProjectDir}/scripts/configureDevSslCerts.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureHostsFile.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/k8s/scripts/createSslSecrets.sh"
-bash "${rootProjectDir}/k8s/scripts/createElasticSecrets.sh"
+bash "${rootProjectDir}/k8s/scripts/createElasticKibanaSecrets.sh"
 bash "${rootProjectDir}/k8s/scripts/createPostgresqlSecrets.sh"
 bash "${rootProjectDir}/k8s/scripts/createRabbitmqSecrets.sh"
 kubectl apply -k "${rootProjectDir}/k8s/helmrepository"
