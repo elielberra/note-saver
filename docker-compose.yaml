@@ -22,6 +22,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 15s
   setup_kibana:
     container_name: setup_kibana
     # The elasticsearch image is only used because it has bash and curl preinstalled
