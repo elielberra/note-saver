@@ -80,6 +80,8 @@ You might be wondering why the app doesn’t harvest logs through Filebeat and s
 
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
+The password set on the `password_hash` key of the definitions file, can be created with the command `docker run --rm rabbitmq:3-management rabbitmqctl hash_password '<PASSWORD>'`. The value that is set on the `rabbitmq/definitions.json` and `k8s/rabbitmq/files/load_definition.json` was created with the value "password", so that it is consistent with the `insertDummyPasswords.sh` script.
+
 The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
 
 When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
