@@ -84,7 +84,7 @@ The password set on the `password_hash` key of the definitions file, can be crea
 
 The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
 
-When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
+When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://docker-compose.rabbitmq.notesaver:8080](http://docker-compose.rabbitmq.notesaver:8080) using the username `admin` and the password `password`.
 
 ## Consumer
 
@@ -98,19 +98,19 @@ Note that the Consumer will actually consume the messages from the queue. Theref
 
 ## Kibana  
 
-[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at [localhost:5601](http://localhost:5601) using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
+[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at [https://docker-compose.kibana.notesaver:8080](https://docker-compose.kibana.notesaver:8080) using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
 
 When running Kibana with `docker-compose` the credentials are configured on a set up container since they can't be set up on a config file on the new version of Elasticsearch.
 
 ## Nginx Proxy
 
-An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client** and **server**, ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections.
+When running the App with `docker-compose`, an [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client**, **server**, **RabbitMQ Magement UI** and **Kibana** ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections. On `Kubernetes`, an [Nginx Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/) will be in charge of routing the requests to each correspondent service.
 
 ## Git Actions
 
 Git Actions are used for automating various tasks in the repository:
 
-- `Build and Push Docker Images` generates the Docker images for the **client**, the **server**, and the **consumer** on each push to the `master` branch using a CI/CD pipeline. This process ensures that the latest code changes are automatically built, tested, and pushed to Docker Hub. It also builds images for multiple platforms (e.g., `amd64` and `arm64`) in parallel using matrix builds, allowing for broader compatibility and faster deployments across different environments.
+- `Build and Push Docker Images` generates the Docker images for the **client**, the **server**, and the **consumer** on each push to the `master` branch using a CI/CD pipeline. This process ensures that the latest code changes are automatically built, tested, and pushed to Docker Hub. It also builds images for multiple platforms (`amd64` and `arm64`) in parallel using matrix builds, allowing for broader compatibility and faster deployments across different environments.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
 
 ## Pre-Push Hook
@@ -159,4 +159,4 @@ Access https://docker-compose.notesaver:8080 on the browser
 
 #### Credentials During Development
 
-During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
+During development, the script `insertDummyPasswords.sh` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.

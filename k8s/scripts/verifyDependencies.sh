@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Associative array with dependecies and its correspondant installation guides
+# Associative array with dependecies and its correspondent installation guides
 declare -A dependencies
 dependencies["minikube"]="https://minikube.sigs.k8s.io/docs/start"
 dependencies["kubectl"]="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux"
