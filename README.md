@@ -20,14 +20,14 @@ This project is organized as a monorepo to streamline development and deployment
 - **Consumer**: Processes messages from RabbitMQ  
 - **Elasticsearch**: Search and analytics engine  
 - **Kibana**: Visualization tool for Elasticsearch  
-- **Nginx**: An nginx server proxy
+- **Nginx**: An Nginx server proxy
 - **SSL**: Automatic SSL certificates setup during Development
 - **Docker**: All the services are containerized
-- **Kubernetes**: Deployment using the Kubernetes infrastructure  
+- **Kubernetes**: Deploy using Kubernetes infrastructure  
 - **Bash scripts**: Automation and utility scripts 
 - **Git Actions**: CI/CD workflows for automation  
 - **Git Hooks**: Run tests and linters before commits  
-- **Vagrant**: Local development environment setup  
+- **Vagrant**: Virtual Debian distribution environment setup  
 
 ## Frontend Client
 
@@ -127,6 +127,18 @@ The application includes basic test coverage using [Jest](https://jestjs.io/), p
 ## Bash Scripts  
 
 The `setupDockerComposeEnvironment.sh` script configures the host machine to run this application by setting up environment variables, generating SSL certificates, ensuring local DNS resolution, configuring executable permissions, and adjusting the virtual memory settings of the OS. It automates tasks like inserting dummy passwords, creating and trusting a Certificate Authority (CA), and modifying the hosts file for local development.
+
+The `setupMinikubeEnvironment.sh` script sets up a local Kubernetes environment using Minikube by verifying dependencies, installing Flux for GitOps-based deployments, and enabling essential addons like Ingress and Metrics Server. It configures the development environment by creating the necessary namespace, inserting dummy passwords, generating and trusting SSL certificates, updating the local hosts file for DNS resolution. Finally, it applies Kubernetes manifests and Helm repository configurations to deploy the application into the cluster.
+
+Some scripts in the `k8s/scripts` folder call shared base scripts from the `scripts` folder using the `--environment minikube` flag. This approach avoids code duplication and enables environment-specific configuration, allowing the same base scripts to be reused for both Docker Compose and Minikube setups by simply changing the environment parameter.
+
+## Vagrant
+
+Using a VM ensures the app runs consistently across different operating systems (like Windows or macOS), since the setup scripts are tailored for Ubuntu-based environments.
+
+The `provision.sh` script configures an Ubuntu-based virtual machine by installing a graphical user interface (GUI), Docker, Docker Compose, and Google Chrome. It also sets up system permissions, initializes a file for SSL certificate generation, and provides instructions to the user for starting the Note Saver application with Docker Compose.
+
+The `Vagrantfile` defines a virtual machine using the `ubuntu/bionic64` base image  and provisions the VM using the `provision.sh` script to automatically set up the development environment.
 
 ## How to Run this App
 
