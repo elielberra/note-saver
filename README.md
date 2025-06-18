@@ -8,19 +8,22 @@ This app allows users to write notes. Once the users are logged in, they can cre
 
 ### Objective
 
-I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes some noteworthy infrastructure features.
+I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes several noteworthy infrastructure features.
 
 ## Monorepo Structure
 
 This project is organized as a monorepo to streamline development and deployment. It contains:
 - **Client**: Frontend application  
 - **Server**: Backend services  
-- **Database**: Configuration and setup  
-- **Nginx**: An nginx server proxy  
+- **Database**: Configuration and setup
 - **RabbitMQ Server**: Message broker for async communication  
 - **Consumer**: Processes messages from RabbitMQ  
 - **Elasticsearch**: Search and analytics engine  
 - **Kibana**: Visualization tool for Elasticsearch  
+- **Nginx**: An nginx server proxy
+- **SSL**: Automatic SSL certificates setup during Development
+- **Docker**: All the services are containerized
+- **Kubernetes**: Deployment using the Kubernetes infrastructure  
 - **Bash scripts**: Automation and utility scripts 
 - **Git Actions**: CI/CD workflows for automation  
 - **Git Hooks**: Run tests and linters before commits  
@@ -84,7 +87,7 @@ The password set on the `password_hash` key of the definitions file, can be crea
 
 The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
 
-When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://docker-compose.rabbitmq.notesaver:8080](http://docker-compose.rabbitmq.notesaver:8080) using the username `admin` and the password `password`.
+When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing https://docker-compose.rabbitmq.notesaver:8080 using the username `admin` and the password `password`.
 
 ## Consumer
 
@@ -98,7 +101,7 @@ Note that the Consumer will actually consume the messages from the queue. Theref
 
 ## Kibana  
 
-[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at [https://docker-compose.kibana.notesaver:8080](https://docker-compose.kibana.notesaver:8080) using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
+[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at https://docker-compose.kibana.notesaver:8080 using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
 
 When running Kibana with `docker-compose` the credentials are configured on a set up container since they can't be set up on a config file on the new version of Elasticsearch.
 
@@ -129,7 +132,7 @@ The `setupDockerComposeEnvironment.sh` script configures the host machine to run
 
 ### Locally
 
-The `setupDockerComposeEnvironment` script is designed specifically for Debian/Ubuntu distributions. If you are using Windows, macOS, or another Linux distribution, the script may not work as-is. You can try modifying it to run on your OS.
+The `setupDockerComposeEnvironment.sh` script is designed specifically for Debian/Ubuntu distributions. If you are using Windows, macOS, or another Linux distribution, the script may not work as-is. You can try modifying it to run on your OS.
 
 To ensure the app runs correctly, the environment must be set up using this script. If you don’t have a Debian/Ubuntu machine, you can either manually adapt the script for your system or use the provided `Vagrantfile`. This file sets up an Ubuntu Bionic virtual machine where all dependencies will be installed automatically, including a UI, Docker, Docker Compose, and Google Chrome.
 
@@ -155,6 +158,7 @@ cd <path_to_notesaver_repo>\note-saver
 bash scripts/setupDockerComposeEnvironment.sh
 docker compose up
 ```
+
 Access https://docker-compose.notesaver:8080 on the browser
 
 #### Credentials During Development
