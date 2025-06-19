@@ -87,8 +87,6 @@ The password set on the `password_hash` key of the definitions file, can be crea
 
 The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
 
-When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing https://docker-compose.rabbitmq.notesaver:8080 using the username `admin` and the password `password`.
-
 ## Consumer
 
 The Consumer service is written in Go and is responsible for retrieving messages from a RabbitMQ service. Once the messages are received, it sends the data to an Elasticsearch service for log storage and indexing.
@@ -101,7 +99,7 @@ Note that the Consumer will actually consume the messages from the queue. Theref
 
 ## Kibana  
 
-[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at https://docker-compose.kibana.notesaver:8080 using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
+[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
 
 When running Kibana with `docker-compose` the credentials are configured on a set up container since they can't be set up on a config file on the new version of Elasticsearch.
 
@@ -144,13 +142,21 @@ The `Vagrantfile` defines a virtual machine using the `ubuntu/bionic64` base ima
 
 ### Locally
 
+You can run this app locally using either `docker-compose` or `minikube`.
+
+#### Docker Compose
+
+This is the simplest and most straightforward way to deploy this app. You only need to have [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+##### Environment Setup
+
 The `setupDockerComposeEnvironment.sh` script is designed specifically for Debian/Ubuntu distributions. If you are using Windows, macOS, or another Linux distribution, the script may not work as-is. You can try modifying it to run on your OS.
 
 To ensure the app runs correctly, the environment must be set up using this script. If you don’t have a Debian/Ubuntu machine, you can either manually adapt the script for your system or use the provided `Vagrantfile`. This file sets up an Ubuntu Bionic virtual machine where all dependencies will be installed automatically, including a UI, Docker, Docker Compose, and Google Chrome.
 
 If you already have a Debian/Ubuntu machine, you can skip this and proceed directly to the section [Start the Application](#start-the-application).
 
-#### How to set up the VM
+##### How to set up the VM
 
 You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. Clone this repository on your host machine. And follow these commands:
 
@@ -161,7 +167,7 @@ vagrant up
 
 The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupDockerComposeEnvironment.sh` script). Follow the steps down below.
 
-#### Start the Application
+##### Start the Application
 
 After you have cloned/downloaded this repository perform these commands:
 
@@ -173,6 +179,32 @@ docker compose up
 
 Access https://docker-compose.notesaver:8080 on the browser
 
+#### Minikube
+
+You can deploy this app locally on a Kubernetes cluster using [Minikube](https://minikube.sigs.k8s.io/docs/). You can also use `k3d` or any other similar tool, but the script `setupDockerComposeEnvironment.sh` will automatically configure your machine for seamless deployment.  
+To do so, run the following commands:
+
+```bash
+cd <path_to_notesaver_repo>\note-saver
+bash scripts/setupDockerComposeEnvironment.sh
+```
+
+Wait a couple of minutes for all services to be ready. You can use [k9s](https://k9scli.io/topics/install/) to interact with your local cluster.
+
 #### Credentials During Development
 
 During development, the script `insertDummyPasswords.sh` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
+
+### URLs for each service with its Credentials
+
+| Service   | Environment    | URL                                               | User   | Password |
+|-----------|----------------|---------------------------------------------------|--------|----------|
+| Client    | Docker Compose | https://docker-compose.notesaver:8080            | N/A    | N/A      |
+| Client    | Minikube       | https://minikube.notesaver                       | N/A    | N/A      |
+| Server    | Docker Compose | https://docker-compose.server.notesaver:8080     | N/A    | N/A      |
+| Server    | Minikube       | https://minikube.server.notesaver                | N/A    | N/A      |
+| Kibana    | Docker Compose | https://docker-compose.kibana.notesaver:8080     | elastic| password |
+| Kibana    | Minikube       | https://minikube.kibana.notesaver                | elastic| password |
+| RabbitMQ  | Docker Compose | https://docker-compose.rabbitmq.notesaver:8080   | admin  | password |
+| RabbitMQ  | Minikube       | https://minikube.rabbitmq.notesaver              | admin  | password |
+
