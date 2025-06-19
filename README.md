@@ -195,7 +195,7 @@ Wait a couple of minutes for all services to be ready. You can use [k9s](https:/
 
 During development, the script `insertDummyPasswords.sh` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
 
-### URLs for each service with its Credentials
+### URLs for Each Service With its Credentials
 
 | Service   | Environment    | URL                                               | User   | Password |
 |-----------|----------------|---------------------------------------------------|--------|----------|
