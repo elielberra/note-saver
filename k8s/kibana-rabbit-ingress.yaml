@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kibana-rabbit-ingress
+  namespace: note-saver
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - minikube.kibana.notesaver
+        - minikube.rabbitmq.notesaver
+      secretName: notesaver-tls
+  rules:
+    - host: minikube.rabbitmq.notesaver
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rabbitmq
+                port:
+                  number: 15672
+    - host: minikube.kibana.notesaver
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: elasticsearch-kibana
+                port:
+                  number: 5601
