@@ -8,23 +8,26 @@ This app allows users to write notes. Once the users are logged in, they can cre
 
 ### Objective
 
-I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes some noteworthy infrastructure features.
+I developed this application as an exploratory project to experiment with various technology stacks and infrastructure tools. While the user interface is relatively simple, the code adheres to good practices and includes several noteworthy infrastructure features.
 
 ## Monorepo Structure
 
 This project is organized as a monorepo to streamline development and deployment. It contains:
 - **Client**: Frontend application  
 - **Server**: Backend services  
-- **Database**: Configuration and setup  
-- **Nginx**: An nginx server proxy  
+- **Database**: Configuration and setup
 - **RabbitMQ Server**: Message broker for async communication  
 - **Consumer**: Processes messages from RabbitMQ  
 - **Elasticsearch**: Search and analytics engine  
 - **Kibana**: Visualization tool for Elasticsearch  
+- **Nginx**: An Nginx server proxy
+- **SSL**: Automatic SSL certificates setup during Development
+- **Docker**: All the services are containerized
+- **Kubernetes**: Deploy using Kubernetes infrastructure  
 - **Bash scripts**: Automation and utility scripts 
 - **Git Actions**: CI/CD workflows for automation  
 - **Git Hooks**: Run tests and linters before commits  
-- **Vagrant**: Local development environment setup  
+- **Vagrant**: Virtual Debian distribution environment setup  
 
 ## Frontend Client
 
@@ -80,9 +83,9 @@ You might be wondering why the app doesn’t harvest logs through Filebeat and s
 
 The user, queue, virtual host, and other configurations are declared in a `definitions.json` file, which is loaded by `rabbitmq.conf` during startup.
 
-The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
+The password set on the `password_hash` key of the definitions file, can be created with the command `docker run --rm rabbitmq:3-management rabbitmqctl hash_password '<PASSWORD>'`. The value that is set on the `rabbitmq/definitions.json` and `k8s/rabbitmq/files/load_definition.json` was created with the value "password", so that it is consistent with the `insertDummyPasswords.sh` script.
 
-When running locally with Docker Compose, for a user-friendly interaction with RabbitMQ, I recommend accessing [http://localhost:15672](http://localhost:15672) using the username `admin` and the password `password`.
+The server can be configured to avoid sending logs to the RabbitMQ service using the `RABBITMQ_ENABLED` environment variable. Sometimes it's easier to disable it—especially when you want to quickly test something in development mode, or if you simply want to run the client, server, and database without the additional overhead of RabbitMQ, the consumer, Elasticsearch, and Kibana.
 
 ## Consumer
 
@@ -96,19 +99,19 @@ Note that the Consumer will actually consume the messages from the queue. Theref
 
 ## Kibana  
 
-[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. You can access it at [localhost:5601](http://localhost:5601) using the username `elastic` and the password `password`. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
+[Kibana](https://www.elastic.co/guide/en/kibana/8.7/index.html) is a visualization tool for exploring and analyzing data in Elasticsearch. Create a data view (the version 8 equivalent of an index pattern) with the `note-saver` index pattern to view the logs.
 
 When running Kibana with `docker-compose` the credentials are configured on a set up container since they can't be set up on a config file on the new version of Elasticsearch.
 
 ## Nginx Proxy
 
-An [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client** and **server**, ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections.
+When running the App with `docker-compose`, an [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client**, **server**, **RabbitMQ Magement UI** and **Kibana** ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections. On `Kubernetes`, an [Nginx Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/) will be in charge of routing the requests to each correspondent service.
 
 ## Git Actions
 
 Git Actions are used for automating various tasks in the repository:
 
-- `Build and Push Docker Images` generates the Docker images for the **client**, the **server**, and the **consumer** on each push to the `master` branch using a CI/CD pipeline. This process ensures that the latest code changes are automatically built, tested, and pushed to Docker Hub. It also builds images for multiple platforms (e.g., `amd64` and `arm64`) in parallel using matrix builds, allowing for broader compatibility and faster deployments across different environments.
+- `Build and Push Docker Images` generates the Docker images for the **client**, the **server**, and the **consumer** on each push to the `master` branch using a CI/CD pipeline. This process ensures that the latest code changes are automatically built, tested, and pushed to Docker Hub. It also builds images for multiple platforms (`amd64` and `arm64`) in parallel using matrix builds, allowing for broader compatibility and faster deployments across different environments.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
 
 ## Pre-Push Hook
@@ -121,19 +124,39 @@ The application includes basic test coverage using [Jest](https://jestjs.io/), p
 
 ## Bash Scripts  
 
-The `setupLocalEnvironment.sh` script configures the host machine to run this application by setting up environment variables, generating SSL certificates, ensuring local DNS resolution, configuring executable permissions, and adjusting the virtual memory settings of the OS. It automates tasks like inserting dummy passwords, creating and trusting a Certificate Authority (CA), and modifying the hosts file for local development.
+The `setupDockerComposeEnvironment.sh` script configures the host machine to run this application by setting up environment variables, generating SSL certificates, ensuring local DNS resolution, configuring executable permissions, and adjusting the virtual memory settings of the OS. It automates tasks like inserting dummy passwords, creating and trusting a Certificate Authority (CA), and modifying the hosts file for local development.
+
+The `setupMinikubeEnvironment.sh` script sets up a local Kubernetes environment using Minikube by verifying dependencies, installing Flux for GitOps-based deployments, and enabling essential addons like Ingress and Metrics Server. It configures the development environment by creating the necessary namespace, inserting dummy passwords, generating and trusting SSL certificates, updating the local hosts file for DNS resolution. Finally, it applies Kubernetes manifests and Helm repository configurations to deploy the application into the cluster.
+
+Some scripts in the `k8s/scripts` folder call shared base scripts from the `scripts` folder using the `--environment minikube` flag. This approach avoids code duplication and enables environment-specific configuration, allowing the same base scripts to be reused for both Docker Compose and Minikube setups by simply changing the environment parameter.
+
+## Vagrant
+
+Using a VM ensures the app runs consistently across different operating systems (like Windows or macOS), since the setup scripts are tailored for Ubuntu-based environments.
+
+The `provision.sh` script configures an Ubuntu-based virtual machine by installing a graphical user interface (GUI), Docker, Docker Compose, and Google Chrome. It also sets up system permissions, initializes a file for SSL certificate generation, and provides instructions to the user for starting the Note Saver application with Docker Compose.
+
+The `Vagrantfile` defines a virtual machine using the `ubuntu/bionic64` base image  and provisions the VM using the `provision.sh` script to automatically set up the development environment.
 
 ## How to Run this App
 
 ### Locally
 
-The `setupLocalEnvironment` script is designed specifically for Debian/Ubuntu distributions. If you are using Windows, macOS, or another Linux distribution, the script may not work as-is. You can try modifying it to run on your OS.
+You can run this app locally using either `docker-compose` or `minikube`.
+
+#### Docker Compose
+
+This is the simplest and most straightforward way to deploy this app. You only need to have [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+##### Environment Setup
+
+The `setupDockerComposeEnvironment.sh` script is designed specifically for Debian/Ubuntu distributions. If you are using Windows, macOS, or another Linux distribution, the script may not work as-is. You can try modifying it to run on your OS.
 
 To ensure the app runs correctly, the environment must be set up using this script. If you don’t have a Debian/Ubuntu machine, you can either manually adapt the script for your system or use the provided `Vagrantfile`. This file sets up an Ubuntu Bionic virtual machine where all dependencies will be installed automatically, including a UI, Docker, Docker Compose, and Google Chrome.
 
 If you already have a Debian/Ubuntu machine, you can skip this and proceed directly to the section [Start the Application](#start-the-application).
 
-#### How to set up the VM
+##### How to set up the VM
 
 You first need to have [Vagrant](https://developer.hashicorp.com/vagrant/docs/installation) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. Clone this repository on your host machine. And follow these commands:
 
@@ -142,19 +165,46 @@ cd <path_to_notesaver_repo>/vagrant
 vagrant up
 ```
 
-The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupLocalEnvironment.sh` script). Follow the steps down below.
+The UI of Virtual Box with the VM initializating will appear. Switch back to the terminal on which you run the `vagrant up` command and wait for the message 'The VM was succesfully configured!' to appear (be patient, it may take a while). After that, switch back to Virtual Box's UI and login into the Ubuntu session with these default credentials: user 'vagrant' and password 'vagrant'. When prompted for the setup of the first startup select 'Use default config'". Launch `google-chrome` from a terminal to initialize the browser (it is important that you initialize google-chrome with this command before runing the `setupDockerComposeEnvironment.sh` script). Follow the steps down below.
 
-#### Start the Application
+##### Start the Application
 
 After you have cloned/downloaded this repository perform these commands:
 
 ```bash
 cd <path_to_notesaver_repo>\note-saver
-bash scripts/setupLocalEnvironment.sh
+bash scripts/setupDockerComposeEnvironment.sh
 docker compose up
 ```
+
 Access https://docker-compose.notesaver:8080 on the browser
+
+#### Minikube
+
+You can deploy this app locally on a Kubernetes cluster using [Minikube](https://minikube.sigs.k8s.io/docs/). You can also use `k3d` or any other similar tool, but the script `setupDockerComposeEnvironment.sh` will automatically configure your machine for seamless deployment.  
+To do so, run the following commands:
+
+```bash
+cd <path_to_notesaver_repo>\note-saver
+bash scripts/setupDockerComposeEnvironment.sh
+```
+
+Wait a couple of minutes for all services to be ready. You can use [k9s](https://k9scli.io/topics/install/) to interact with your local cluster.
 
 #### Credentials During Development
 
-During development, the script `insertDummyPasswords` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
+During development, the script `insertDummyPasswords.sh` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
+
+### URLs for Each Service With its Credentials
+
+| Service   | Environment    | URL                                               | User   | Password |
+|-----------|----------------|---------------------------------------------------|--------|----------|
+| Client    | Docker Compose | https://docker-compose.notesaver:8080            | N/A    | N/A      |
+| Client    | Minikube       | https://minikube.notesaver                       | N/A    | N/A      |
+| Server    | Docker Compose | https://docker-compose.server.notesaver:8080     | N/A    | N/A      |
+| Server    | Minikube       | https://minikube.server.notesaver                | N/A    | N/A      |
+| Kibana    | Docker Compose | https://docker-compose.kibana.notesaver:8080     | elastic| password |
+| Kibana    | Minikube       | https://minikube.kibana.notesaver                | elastic| password |
+| RabbitMQ  | Docker Compose | https://docker-compose.rabbitmq.notesaver:8080   | admin  | password |
+| RabbitMQ  | Minikube       | https://minikube.rabbitmq.notesaver              | admin  | password |
+

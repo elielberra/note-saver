@@ -16,12 +16,11 @@ client/dist
 *.crt
 *.csr
 *.cnf
-
-# EC2 instance data
-/ec2
+*.srl
 
 # Testing scripts
 scripts/test.sh
+k8s/scripts/test.sh
 
 # Vagrant specific VM files
 vagrant/.vagrant
@@ -30,6 +29,13 @@ vagrant/ubuntu*
 # Go compiled code
 consumer/consumer
 consumer/tmp
+
+# Terraform local files
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfstate.backup
 
 # Client public files mounted as bind volume
 client/public/config.json

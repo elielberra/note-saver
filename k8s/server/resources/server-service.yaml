@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notesaver-server
+  labels:
+    app: notesaver-server
+spec:
+  selector:
+    app: notesaver-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

@@ -1,13 +1,23 @@
 #!/bin/bash
 
-dummyFile=".env_dummy"
-envFile=".env"
-# List of directories with .env_dummy files
-dirsWithEnvDummyFile=("server" "db" "scripts" "consumer" "elk/base_credentials")
+# Directory paths
 scriptDir=$(realpath $(dirname $0))
 rootProjectDir="$(dirname "${scriptDir}")"
 
-cd "${rootProjectDir}"
+# Parse utility functions
+source "${scriptDir}/utils.sh"
+
+setAndValidateEnvironment $@
+
+# Set list of directories with .env_dummy files based on the environment
+if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
+    dirsWithEnvDummyFile=( "consumer" "db" "elastic-kibana/base_credentials" "elastic-kibana/elastic" "scripts" "server")
+else
+    dirsWithEnvDummyFile=( "k8s/db/files" "k8s/consumer/files" "k8s/elastic-kibana/files" "k8s/server/files" "scripts" )
+fi
+
+dummyFile=".env_dummy"
+envFile=".env"
 
 # Iterate over each file
 for dir in "${dirsWithEnvDummyFile[@]}"; do

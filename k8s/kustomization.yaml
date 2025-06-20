@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: note-saver
+
+resources:
+  - ingress.yaml
+  - client
+  - db
+  - elastic-kibana
+  - consumer
+  - rabbitmq
+  - server

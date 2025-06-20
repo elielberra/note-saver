@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
-# The creation of the certificates was based on Chrstian Lempa's post https://www.patreon.com/posts/109937722
-# Adding the certs to the browser NSS DB was based on Thomas Leister's post https://thomas-leister.de/en/how-to-import-ca-root-certificate/
+# The creation of the certificates was based on Chrstian Lempa's post:
+# https://www.patreon.com/posts/109937722
+# Adding the certs to the browser NSS DB was based on Thomas Leister's post"
+# https://thomas-leister.de/en/how-to-import-ca-root-certificate/
 
 insertCertIntoNSSDB() {
     local browserNSSDBDir=$1
@@ -14,6 +16,24 @@ insertCertIntoNSSDB() {
     certutil -A -n "${certificateAuthorityName}" -t "TCu,Cu,Tu" -i "${localCACertificatesDir}/${CAFilename}" -d sql:"${browserNSSDBDir}"
 }
 
+# Directory paths
+scriptDir=$(realpath $(dirname $0))
+rootProjectDir="$(dirname "${scriptDir}")"
+localCACertificatesDir="/usr/local/share/ca-certificates"
+
+# Parse utility functions
+source "${scriptDir}/utils.sh"
+source "${scriptDir}/.env"
+
+setAndValidateEnvironment $@
+
+# Set sslCertsDir based on the environment
+if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
+    sslCertsDir="${rootProjectDir}/ssl-certs"
+else
+    sslCertsDir="${rootProjectDir}/k8s/ssl-certs"
+fi
+
 # Default Certificate Properties
 country="AR"
 state="Ciudad Autónoma de Buenos Aires"
@@ -22,7 +42,7 @@ company="NoteSaver"
 organization="NoteSaver"
 organizationUnit="Engineering"
 commonName="notesaver"
-certificateAuthorityName="NoteSaverCertificateAuthority"
+certificateAuthorityName="NoteSaverCertificateAuthority-${environment}"
 certTTL=3650
 
 # Certificate filenames
@@ -33,24 +53,13 @@ CSRFilename="cert.csr"
 certExtConfFilename="openssl.cnf"
 certFilename="cert.pem"
 
-# Directory paths
-scriptDir=$(realpath $(dirname $0))
-rootProjectDir="$(dirname "${scriptDir}")"
-sslCertsDir="ssl-certs"
-localCACertificatesDir="/usr/local/share/ca-certificates"
-
-# Parse environment variables and utility functions
-source "${scriptDir}/.env"
-source "${scriptDir}/utils.sh"
-
 # Check if dependencies are install apt packages if not
 verifyAndInstallDependency "certutil" "libnss3-tools"
 
 # Remove previous ssl directory, if exists, and create a new one
-cd "${rootProjectDir}"
-[ -d "./${sslCertsDir}" ] && sudo rm -rf "./${sslCertsDir}"
-mkdir "./${sslCertsDir}"
-cd "./${sslCertsDir}"
+[ -d "${sslCertsDir}" ] && sudo rm -rf "${sslCertsDir}"
+mkdir "${sslCertsDir}"
+cd "${sslCertsDir}"
 
 # Generate CA's key
 openssl genrsa -aes256 -out "${CAKeyFilename}" -passout pass:"${CA_PASSPHRASE}" 4096 
@@ -86,22 +95,23 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = docker-compose.${commonName}
-DNS.2 = docker-compose.server.${commonName}
-IP.1 = 127.0.0.1
+DNS.1 = ${environment}.${commonName}
+DNS.2 = ${environment}.server.${commonName}
+DNS.3 = ${environment}.kibana.${commonName}
+DNS.4 = ${environment}.rabbitmq.${commonName}
 EOF
+
+if [[ "${environment}" == "${DOCKER_COMPOSE}" ]]; then
+    echo "IP.1 = 127.0.0.1" >> "${certExtConfFilename}"
+else
+    minikubeIp=$(minikube ip)
+    echo "IP.1 = ${minikubeIp}" >> "${certExtConfFilename}"
+fi
+
 # CA signs the Certificate Signing Request, generating the Certificate itself
 openssl x509 -req -sha256 -days ${certTTL} -in "${CSRFilename}" -CA "${CAFilename}" -CAkey "${CAKeyFilename}" \
     -out "${certFilename}" -extfile "${certExtConfFilename}" -extensions v3_req -CAcreateserial -passin pass:${CA_PASSPHRASE} 
 echo "The certificate was successfully generated and signed by the CA"
-
-# Delete previous ssl certs, if exist, and copy into server and client dirs
-echo "Copying certificates into each application directory"
-for app in "client" "server"; do
-    [ -d "../${app}/${sslCertsDir}" ] && rm -rf "../${app}/${sslCertsDir}"
-    mkdir "../${app}/${sslCertsDir}"
-    cp "${certKeyFilename}" "${certFilename}" "../${app}/${sslCertsDir}"
-done
 
 # If exists, remove the previous certificate of the Operating System and run update
 if [ -f ".${localCACertificatesDir}/${CAFilename}" ]; then
