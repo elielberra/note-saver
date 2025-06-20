@@ -7,3 +7,14 @@ spec:
   interval: 1h
   url: oci://registry-1.docker.io/bitnamicharts
   type: oci
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: elober-charts
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: oci://registry-1.docker.io/elober
+  type: oci
+# TODO: Change filename

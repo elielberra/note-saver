@@ -39,3 +39,6 @@ terraform.tfstate.backup
 
 # Client public files mounted as bind volume
 client/public/config.json
+
+# helm built package
+helm/*.tgz

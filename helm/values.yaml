@@ -51,7 +51,11 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
-# TODO: Add value for envFrom here and on deployment template
+# Loads environment variables from ConfigMaps or Secrets into the container
+envFrom: []
+# envFrom:
+#   - configMapRef:
+#       name: foo-env
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
@@ -62,7 +66,7 @@ service:
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  enabled: true
+  enabled: false
   className: "nginx"
   hosts:
     - host: ""

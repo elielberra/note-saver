@@ -10,6 +10,9 @@ spec:
     matchLabels:
       {{- include "notesaver-service.selectorLabels" . | nindent 6 }}
   template:
+    metadata:
+      labels:
+        {{- include "notesaver-service.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.podSecurityContext }}
       securityContext:
@@ -41,6 +44,10 @@ spec:
           {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- with .Values.volumes }}
