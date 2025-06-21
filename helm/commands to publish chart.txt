@@ -1,0 +1,3 @@
+helm package .
+helm registry login docker.io
+helm push notesaver-service-1.0.0.tgz oci://docker.io/elober
