@@ -28,16 +28,21 @@ securityContext: {}
 # Specifies the minimum and maximum CPU/memory the container can use
 resources: {}
 
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-livenessProbe: {}
+# Liveness and readiness probes: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  # httpGet sends HTTP request to check container health
   # httpGet:
   #   path: /
   #   port: http
+
+  # exec runs a command inside container to check health
   # exec:
   #   command:
   #     - sh
   #     - -c
-  #     - 'curl -sf http://server:80/health' 
+  #     - |
+  #       nc -z -w 5 postgresql 5432
+
 readinessProbe: {}
 
 # Additional volumes on the output Deployment definition.
