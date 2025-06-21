@@ -17,4 +17,3 @@ spec:
   interval: 1h
   url: oci://registry-1.docker.io/elober
   type: oci
-# TODO: Change filename
