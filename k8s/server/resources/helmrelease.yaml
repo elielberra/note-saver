@@ -31,9 +31,12 @@ spec:
         path: /health
         port: http
     readinessProbe:
-      httpGet:
-        path: /health
-        port: http
+      exec:
+        command:
+          - sh
+          - -c
+          - |
+            nc -z -w 5 postgresql 5432 && nc -z -w 5 rabbitmq 5672
     envFrom:
       - configMapRef:
           name: server-env

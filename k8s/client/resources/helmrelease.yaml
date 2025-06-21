@@ -31,9 +31,11 @@ spec:
         path: /
         port: http
     readinessProbe:
-      httpGet:
-        path: /
-        port: http
+      exec:
+        command:
+          - sh
+          - -c
+          - 'curl -sf http://server:80/health'
     volumeMounts:
     - name: client-config-volume
       mountPath: /usr/share/nginx/html/config.json

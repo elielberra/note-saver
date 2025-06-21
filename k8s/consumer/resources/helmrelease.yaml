@@ -26,14 +26,13 @@ spec:
       limits:
         memory: "250Mi"
         cpu: "0.5"
-    livenessProbe:
-      httpGet:
-        path: /health
-        port: http
     readinessProbe:
-      httpGet:
-        path: /health
-        port: http
+      exec:
+        command:
+          - sh
+          - -c
+          - |
+            nc -z -w 5 elasticsearch 9200 && nc -z -w 5 rabbitmq 5672
     envFrom:
       - configMapRef:
           name: consumer-env
