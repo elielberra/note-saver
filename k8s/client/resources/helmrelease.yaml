@@ -43,6 +43,7 @@ spec:
       configMap:
         name: client-config
     service:
+      enabled: true
       port: 80
     ingress:
       enabled: true
