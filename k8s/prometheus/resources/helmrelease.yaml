@@ -21,13 +21,8 @@ spec:
       ingress:
         enabled: true
         ingressClassName: "nginx"
-        ## Redirect ingress to an additional defined port on the service
-        # servicePort: 8081
         hosts:
           - minikube.prometheus.notesaver
-
-        ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
-        ##
         paths:
         - /
         pathType: ImplementationSpecific
@@ -35,8 +30,19 @@ spec:
           - secretName: notesaver-tls
             hosts:
               - minikube.prometheus.notesaver
-
-
+    alertmanager:
+      ingress:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - minikube.alertmanager.notesaver
+        paths:
+        - /
+        pathType: ImplementationSpecific
+        tls:
+          - secretName: notesaver-tls
+            hosts:
+              - minikube.alertmanager.notesaver
     additionalPrometheusRulesMap:
        notesaver-alerts:
         groups:
