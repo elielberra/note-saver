@@ -1,5 +1,4 @@
 Mandatory
-- Add Prometheus metrics
 - Use terraform to create a cluster with EKS
 
 Nice to have but probably won't be done
