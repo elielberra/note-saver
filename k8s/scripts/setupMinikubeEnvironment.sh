@@ -22,7 +22,7 @@ if minikube addons list | grep -E 'metrics-server[[:space:]]' | grep -q 'disable
     minikube addons enable metrics-server
 fi
 # Create k8s resources
-bash "${rootProjectDir}/k8s/scripts/createNamespace.sh"
+bash "${rootProjectDir}/k8s/scripts/createNamespaces.sh"
 bash "${rootProjectDir}/scripts/insertDummyPasswords.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureDevSslCerts.sh" "--environment" "${ENVIRONMENT}"
 bash "${rootProjectDir}/scripts/configureHostsFile.sh" "--environment" "${ENVIRONMENT}"
@@ -31,4 +31,5 @@ bash "${rootProjectDir}/k8s/scripts/createElasticKibanaSecrets.sh"
 bash "${rootProjectDir}/k8s/scripts/createPostgresqlSecrets.sh"
 bash "${rootProjectDir}/k8s/scripts/createRabbitmqSecrets.sh"
 kubectl apply -k "${rootProjectDir}/k8s/helmrepos"
+kubectl apply -k "${rootProjectDir}/k8s/prometheus"
 kubectl apply -k "${rootProjectDir}/k8s"

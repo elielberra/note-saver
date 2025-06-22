@@ -18,6 +18,9 @@ fi
 
 # Entry for resolving domains to localhost IP
 domains="${environment}.notesaver ${environment}.server.notesaver ${environment}.kibana.notesaver ${environment}.rabbitmq.notesaver"
+if [[ "${environment}" == "${MINIKUBE}" ]]; then
+    domains+=" ${environment}.prometheus.notesaver ${environment}.alertmanager.notesaver"
+fi
 entry="${environmentIp}    ${domains}"
 hostsFile="/etc/hosts"
 finalMessage="Completed configuring hosts file"
