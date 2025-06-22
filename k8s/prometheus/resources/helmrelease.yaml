@@ -51,9 +51,18 @@ spec:
               - alert: PodCrashLooping
                 expr: |
                   kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", namespace="note-saver"} > 0
-                for: 2m
+                for: 5m
                 labels:
-                  severity: warning
+                  severity: critical
                 annotations:
                   summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is in CrashLoopBackOff"
                   description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is crashing repeatedly."
+              - alert: PodNotReady
+                expr: |
+                  kube_pod_status_ready{condition="true", namespace="note-saver"} == 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is not ready"
+                  description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has not been ready for more than 5 minutes."
