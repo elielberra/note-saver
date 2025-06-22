@@ -124,6 +124,8 @@ Git Actions are used for automating various tasks in the repository:
 
 - `Build and Push Docker Images` generates the Docker images for the **client**, the **server**, and the **consumer** on each push to the `master` branch using a CI/CD pipeline. This process ensures that the latest code changes are automatically built, tested, and pushed to Docker Hub. It also builds images for multiple platforms (`amd64` and `arm64`) in parallel using matrix builds, allowing for broader compatibility and faster deployments across different environments.
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
+- `Package and Publish Helm Chart to Docker Hub` runs whenever you push changes to the `master` branch that affect the `helm/` folder or the workflow file itself. It packages your Helm chart found in the `helm/` directory and extracts its version from `Chart.yaml`. Then, it logs into Docker Hub and pushes the packaged Helm chart as an OCI image to your Docker Hub repository.
+
 
 ## Pre-Push Hook
 
