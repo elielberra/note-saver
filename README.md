@@ -23,8 +23,9 @@ This project is organized as a monorepo to streamline development and deployment
 - **Nginx**: An Nginx server proxy
 - **SSL**: Automatic SSL certificates setup during Development
 - **Docker**: Containerized services
-- **Kubernetes**: Kubernetes infrastructure deployments
+- **Kubernetes**: K8s infrastructure deployments
 - **Helm**: Chart for deploying micro services
+- **Prometheus**: Metrics for monitoring k8s resoruces
 - **Bash scripts**: Automation and utility scripts 
 - **Git Actions**: CI/CD workflows for automation  
 - **Git Hooks**: Run tests and linters before commits  
@@ -117,6 +118,17 @@ Kubernetes is used to deploy the app in container orchestration environments. Th
 A minimal [Helm](https://helm.sh/) chart has been created to simplify the deployment of some micro services within the note-saver app. This chart only includes templates for core components such as Deployments, Services, and Ingress, making it easier to manage configurations and deploy the services of the app in a consistent and reusable way.
 
 The **client**, **server**, and **consumer** micro services are deployed using a custom Helm chart I created, while **Elasticsearch**, **Kibana**, **PostgreSQL**, and **RabbitMQ** are deployed using official charts from the [Bitnami Helm repository](https://bitnami.com/stacks/helm).
+
+## Prometheus
+
+To monitor the health and performance of the note-saver app, [Prometheus](https://prometheus.io/) and [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) are used on Kubernetes environments. Prometheus collects metrics from Kubernetes and services, while Alertmanager sends alerts when something goes wrong—like a pod crashing or becoming unresponsive.
+
+Both tools are deployed using the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) Helm chart, which bundles Prometheus, Alertmanager, and other monitoring components into a single easy-to-install package.
+
+Two custom alerting rules are included:
+
+- `PodCrashLooping` alerts when a pod in the `note-saver` namespace is in a `CrashLoopBackOff` state for more than 5 minutes.
+- `PodNotReady` alerts when a pod in the `note-saver` namespace has not been ready for more than 5 minutes.
 
 ## Git Actions
 
@@ -219,4 +231,5 @@ During development, the script `insertDummyPasswords.sh` automatically sets the 
 | Kibana    | Minikube       | https://minikube.kibana.notesaver                | elastic| password |
 | RabbitMQ  | Docker Compose | https://docker-compose.rabbitmq.notesaver:8080   | admin  | password |
 | RabbitMQ  | Minikube       | https://minikube.rabbitmq.notesaver              | admin  | password |
-
+| Prometheus  | Minikube     | https://minikube.prometheus.notesaver            | N/A  | N/A |
+| Alertmanager  | Minikube   | https://minikube.alertmanager.notesaver          | N/A  | N/A |

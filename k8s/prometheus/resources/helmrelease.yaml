@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "75.4.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+      interval: 1m
+  values:
+    prometheus:
+      prometheusSpec:
+        ruleSelectorNilUsesHelmValues: false
+      ingress:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - minikube.prometheus.notesaver
+        paths:
+        - /
+        pathType: ImplementationSpecific
+        tls:
+          - secretName: notesaver-tls
+            hosts:
+              - minikube.prometheus.notesaver
+    alertmanager:
+      ingress:
+        enabled: true
+        ingressClassName: "nginx"
+        hosts:
+          - minikube.alertmanager.notesaver
+        paths:
+        - /
+        pathType: ImplementationSpecific
+        tls:
+          - secretName: notesaver-tls
+            hosts:
+              - minikube.alertmanager.notesaver
+    additionalPrometheusRulesMap:
+       notesaver-alerts:
+        groups:
+          - name: pod-crashloop-alerts
+            rules:
+              - alert: PodCrashLooping
+                expr: |
+                  kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", namespace="note-saver"} > 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is in CrashLoopBackOff"
+                  description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is crashing repeatedly."
+              - alert: PodNotReady
+                expr: |
+                  kube_pod_status_ready{condition="true", namespace="note-saver"} == 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is not ready"
+                  description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has not been ready for more than 5 minutes."
