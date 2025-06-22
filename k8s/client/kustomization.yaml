@@ -3,10 +3,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - resources/client-deployment.yaml
-  - resources/client-service.yaml
+  - resources/helmrelease.yaml
 
 configMapGenerator:
   - name: client-config
     files:
       - config.json=files/config.json
+    options:
+      disableNameSuffixHash: true

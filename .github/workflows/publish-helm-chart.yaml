@@ -1,0 +1,36 @@
+name: Package and Publish Helm Chart to Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm/**'
+      - '.github/workflows/publish-helm-chart.yaml'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Extract chart version
+        id: chart_version
+        run: |
+          VERSION=$(grep '^version:' helm/Chart.yaml | awk '{print $2}')
+          echo "chart_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Package Helm chart
+        run: |
+          helm package helm --destination packaged
+
+      - name: Push chart as OCI image to Docker Hub
+        run: |
+          helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          helm push packaged/notesaver-service-${{ steps.chart_version.outputs.chart_version }}.tgz oci://registry-1.docker.io/elober

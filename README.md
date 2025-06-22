@@ -13,17 +13,18 @@ I developed this application as an exploratory project to experiment with variou
 ## Monorepo Structure
 
 This project is organized as a monorepo to streamline development and deployment. It contains:
-- **Client**: Frontend application  
-- **Server**: Backend services  
-- **Database**: Configuration and setup
+- **Client**: Frontend service  
+- **Server**: Backend service
+- **Database**: PostgreSQL database
 - **RabbitMQ Server**: Message broker for async communication  
 - **Consumer**: Processes messages from RabbitMQ  
 - **Elasticsearch**: Search and analytics engine  
 - **Kibana**: Visualization tool for Elasticsearch  
 - **Nginx**: An Nginx server proxy
 - **SSL**: Automatic SSL certificates setup during Development
-- **Docker**: All the services are containerized
-- **Kubernetes**: Deploy using Kubernetes infrastructure  
+- **Docker**: Containerized services
+- **Kubernetes**: Kubernetes infrastructure deployments
+- **Helm**: Chart for deploying micro services
 - **Bash scripts**: Automation and utility scripts 
 - **Git Actions**: CI/CD workflows for automation  
 - **Git Hooks**: Run tests and linters before commits  
@@ -107,6 +108,16 @@ When running Kibana with `docker-compose` the credentials are configured on a se
 
 When running the App with `docker-compose`, an [Nginx](https://nginx.org/en/) proxy is used to forward requests to the **client**, **server**, **RabbitMQ Magement UI** and **Kibana** ensuring seamless communication between services. Additionally, the proxy is configured with SSL certificates to provide secure connections. On `Kubernetes`, an [Nginx Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/) will be in charge of routing the requests to each correspondent service.
 
+## Kubernetes
+
+Kubernetes is used to deploy the app in container orchestration environments. The current setup supports both local development with [Minikube](https://minikube.sigs.k8s.io/) and cloud deployment on [Amazon EKS](https://aws.amazon.com/eks/). Kubernetes manifests define the necessary resources—such as Deployments, Services, and Ingresses—to ensure each component of the app runs reliably and can communicate with others in the cluster.
+
+## Helm
+
+A minimal [Helm](https://helm.sh/) chart has been created to simplify the deployment of some micro services within the note-saver app. This chart only includes templates for core components such as Deployments, Services, and Ingress, making it easier to manage configurations and deploy the services of the app in a consistent and reusable way.
+
+The **client**, **server**, and **consumer** micro services are deployed using a custom Helm chart I created, while **Elasticsearch**, **Kibana**, **PostgreSQL**, and **RabbitMQ** are deployed using official charts from the [Bitnami Helm repository](https://bitnami.com/stacks/helm).
+
 ## Git Actions
 
 Git Actions are used for automating various tasks in the repository:
@@ -181,12 +192,12 @@ Access https://docker-compose.notesaver:8080 on the browser
 
 #### Minikube
 
-You can deploy this app locally on a Kubernetes cluster using [Minikube](https://minikube.sigs.k8s.io/docs/). You can also use `k3d` or any other similar tool, but the script `setupDockerComposeEnvironment.sh` will automatically configure your machine for seamless deployment.  
+You can deploy this app locally on a Kubernetes cluster using [Minikube](https://minikube.sigs.k8s.io/docs/). You can also use `k3d` or any other similar tool, but the script `setupMinikubeEnvironment.sh` will automatically configure your machine for seamless deployment.  
 To do so, run the following commands:
 
 ```bash
 cd <path_to_notesaver_repo>\note-saver
-bash scripts/setupDockerComposeEnvironment.sh
+bash scripts/setupMinikubeEnvironment.sh
 ```
 
 Wait a couple of minutes for all services to be ready. You can use [k9s](https://k9scli.io/topics/install/) to interact with your local cluster.
@@ -195,7 +206,7 @@ Wait a couple of minutes for all services to be ready. You can use [k9s](https:/
 
 During development, the script `insertDummyPasswords.sh` automatically sets the super secure value `password` as a placeholder for all environment variables containing `PASSWORD`, `SECRET`, or `PASSPHRASE`. Therefore, that will be the default value for each service, and the usernames are specified in the `.env` file.
 
-### URLs for Each Service With its Credentials
+### URLs for each Service with its Credentials
 
 | Service   | Environment    | URL                                               | User   | Password |
 |-----------|----------------|---------------------------------------------------|--------|----------|

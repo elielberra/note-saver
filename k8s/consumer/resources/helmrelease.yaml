@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: consumer
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: notesaver-service
+      version: "1.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: elober-charts
+        namespace: flux-system
+  values:
+    nameOverride: "consumer"
+    image:
+      repository: "elober/notesaver-consumer"
+      pullPolicy: IfNotPresent
+      tag: "latest"
+    replicaCount: 1
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+    resources:
+      requests:
+        memory: "125Mi"
+        cpu: "0.25"
+      limits:
+        memory: "250Mi"
+        cpu: "0.5"
+    readinessProbe:
+      exec:
+        command:
+          - sh
+          - -c
+          - |
+            nc -z -w 5 elasticsearch 9200 && nc -z -w 5 rabbitmq 5672
+    envFrom:
+      - configMapRef:
+          name: consumer-env
+    service:
+      enabled: false

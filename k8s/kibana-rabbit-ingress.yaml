@@ -1,38 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: notesaver
+  name: kibana-rabbit-ingress
   namespace: note-saver
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - minikube.notesaver
-        - minikube.server.notesaver
         - minikube.kibana.notesaver
         - minikube.rabbitmq.notesaver
       secretName: notesaver-tls
   rules:
-    - host: minikube.notesaver
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: notesaver-client
-                port:
-                  number: 80
-    - host: minikube.server.notesaver
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: notesaver-server
-                port:
-                  number: 80
     - host: minikube.rabbitmq.notesaver
       http:
         paths:
