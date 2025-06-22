@@ -24,7 +24,7 @@ This project is organized as a monorepo to streamline development and deployment
 - **SSL**: Automatic SSL certificates setup during Development
 - **Docker**: Containerized services
 - **Kubernetes**: Kubernetes infrastructure deployments
-- **Helm**: Chart for deploying services
+- **Helm**: Chart for deploying micro services
 - **Bash scripts**: Automation and utility scripts 
 - **Git Actions**: CI/CD workflows for automation  
 - **Git Hooks**: Run tests and linters before commits  
@@ -114,9 +114,9 @@ Kubernetes is used to deploy the app in container orchestration environments. Th
 
 ## Helm
 
-A minimal [Helm](https://helm.sh/) chart has been created to simplify the deployment of some services within the note-saver app. This chart only includes templates for core components such as Deployments, Services, and Ingress, making it easier to manage configurations and deploy the services of the app in a consistent and reusable way.
+A minimal [Helm](https://helm.sh/) chart has been created to simplify the deployment of some micro services within the note-saver app. This chart only includes templates for core components such as Deployments, Services, and Ingress, making it easier to manage configurations and deploy the services of the app in a consistent and reusable way.
 
-The **client**, **server**, and **consumer** services are deployed using a custom Helm chart I created, while **Elasticsearch**, **Kibana**, **PostgreSQL**, and **RabbitMQ** are deployed using official charts from the [Bitnami Helm repository](https://bitnami.com/stacks/helm).
+The **client**, **server**, and **consumer** micro services are deployed using a custom Helm chart I created, while **Elasticsearch**, **Kibana**, **PostgreSQL**, and **RabbitMQ** are deployed using official charts from the [Bitnami Helm repository](https://bitnami.com/stacks/helm).
 
 ## Git Actions
 
