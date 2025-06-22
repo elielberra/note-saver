@@ -126,7 +126,6 @@ Git Actions are used for automating various tasks in the repository:
 - `Auto Create Pull Request` automatically creates a Pull Request when a new branch is created in the remote repository.
 - `Package and Publish Helm Chart to Docker Hub` runs whenever you push changes to the `master` branch that affect the `helm/` folder or the workflow file itself. It packages your Helm chart found in the `helm/` directory and extracts its version from `Chart.yaml`. Then, it logs into Docker Hub and pushes the packaged Helm chart as an OCI image to your Docker Hub repository.
 
-
 ## Pre-Push Hook
 
 A pre-push hook is implemented using [Husky](https://typicode.github.io/husky/) to enforce styling and code quality checks. The hook is configured on the **client**, but since this is a monorepo, it also triggers checks for the **server**. These checks and tests only run when files specific to their respective services are modified.
