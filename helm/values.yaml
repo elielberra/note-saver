@@ -13,17 +13,15 @@ image:
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
-podSecurityContext: {}
-  # fsGroup: 2000
-  # TODO: try to not run as sudo
-
+# Sets security rules like user, group, and permissions for a container
 securityContext: {}
+  # runAsUser: 1000
+  # runAsGroup: 1000
+  # allowPrivilegeEscalation: false
+  # readOnlyRootFilesystem: true
   # capabilities:
   #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  #     - ALL
 
 # Specifies the minimum and maximum CPU/memory the container can use
 resources: {}
