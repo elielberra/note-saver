@@ -42,3 +42,5 @@ client/public/config.json
 
 # helm built package
 helm/*.tgz
+helm/test*.yaml
+test*.yaml
